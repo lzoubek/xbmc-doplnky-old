@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+<addon id="plugin.video.zapni.tv"
+       name="zapni.tv"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">zapni.tv</summary>
+    <summary lang="cs">zapni.tv</summary>
+    <description lang="en">Watch online content from zapnitv.biz</description>
+    <description lang="cs">Sledujte online obsah ze servru zapnitv.biz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="repository.xbmc.czech"
+       version="1.0"
+       name="xbmc-czech-repo (github.com)"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.addon" version="0.1"/>
+  </requires>
+  <extension point="xbmc.addon.repository"
+              name="xbmc-czech-repo">
+    <info compressed="false">https://raw.github.com/lzoubek/xbmc-czech-repo/master/addons.xml</info>
+    <checksum>https://raw.github.com/lzoubek/xbmc-czech-repo/master/addons.xml.md5</checksum>
+    <datadir zip="true">https://raw.github.com/lzoubek/xbmc-czech-repo/master/repo</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>xbmc-czech-repo (github.com)</summary>
+    <description>
+    	FIXME
+    </description>
+    <description lang="cs">
+    	FIXME
+    </description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.serialycz.cz"
+       name="serialycz.cz"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">serialycz.cz</summary>
+    <summary lang="cs">serialycz.cz</summary>
+    <description lang="en">Watch online series from serialycz.cz</description>
+    <description lang="cs">Sledujte online ze servru serialycz.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+</addons>

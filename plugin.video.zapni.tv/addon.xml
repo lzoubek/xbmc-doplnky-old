@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.zapni.tv"
+       name="zapni.tv"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">zapni.tv</summary>
+    <summary lang="cs">zapni.tv</summary>
+    <description lang="en">Watch online content from zapnitv.biz</description>
+    <description lang="cs">Sledujte online obsah ze servru zapnitv.biz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
