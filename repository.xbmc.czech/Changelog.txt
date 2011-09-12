@@ -1,9 +1,0 @@
-
-2010-07-07: repository.xbmc-czech.sf.net 1.0
-
- * Updated addon.xml, added icon.png
-
-2010-07-02: repository.xbmc-czech.sf.net 0.1
-
- * First alpha version (test repository in new XBMC addon manager)
-
