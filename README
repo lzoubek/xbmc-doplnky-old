@@ -1,18 +1,4 @@
 xbmc-czech-repo
 -------------------------------
 
-Pro instalaci repozitáře stáhněte poslední verzi z
-https://github.com/lzoubek/xbmc-czech-repo/downloads
-a v XBMC nainstalujte pomocí volby 'Instalovat doplněk ze zip archivu'.
-
-
-Obsah repozitáře:
- - serialycz.cz (Hromada seriálů, cca 80% obsahu by mělo jít přehrát - není mých silách testovat všechno)
-  - nefungují a nebudou fungovat streamy ze servru videotube.sk
- - zapni.tv (Seriály, online TV - cca 50% obsahu by mělo jít přehrát)
-  - nefungují a nebudou fungovat streamy ze servru livestream.com
- 
-Kontakt:
- xbmc-czech-repo (at) jezzovo.net
-
-Pokud hledáte doplňky pro iVisílání ČT, stream.cz, prima TV nebo Nova TV použijte repozitář http://sourceforge.net/projects/xbmc-czech/files/
+detaily http://code.google.com/p/xbmc-czech-repo/
