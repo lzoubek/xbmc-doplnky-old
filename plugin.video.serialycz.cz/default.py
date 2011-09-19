@@ -54,6 +54,7 @@ def _image(name,link):
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
+	util.add_dir('[B]Nejnovější epizody[/B]','newest=list','')
 	for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
 		util.add_dir(m.group('name'),'serie='+m.group('link')[len(BASE_URL):],_image(m.group('name'),m.group('link')))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -67,6 +68,13 @@ def list_episodes(url):
 		for m in re.finditer('<a href=\"(?P<link>[^\"]+)(.+?)(<strong>|<b>)(?P<name>[^<]+)', util.substr(data,'<div class=\"entry-content','</div>'), re.IGNORECASE | re.DOTALL):
 			util.add_video(m.group('name'),m.group('link')[len(BASE_URL):])
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def newest_episodes():
+	data = util.substr(util.request(BASE_URL+'category/new-episode/'),'<div id=\"archive-posts\"','</ul>')
+	pattern='<img(.+?)src=\"(?P<img>[^\"]+)(.+?)<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
+	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+		util.add_video(m.group('name'),m.group('link')[len(BASE_URL):],0,m.group('img'))	
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
 	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
@@ -83,6 +91,8 @@ def play(url):
 p = util.params()
 if p=={}:
 	list_series()
+if 'newest' in p.keys():
+	newest_episodes()
 if 'serie' in p.keys():
 	list_episodes(p['serie'])
 if 'play' in p.keys():
