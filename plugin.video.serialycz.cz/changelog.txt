@@ -1,2 +1,6 @@
+[B]1.0.1:[/B]
+ - opraveno neúplné listování epizod u některých seriálů
+ - přidaná závistols na script.module.stream.resolver - přesunut kód, který
+ získává URL streamů
 [B]1.0.0:[/B]
 Initial version
