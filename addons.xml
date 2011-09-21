@@ -22,8 +22,8 @@
 </addon>
 
 <addon id="repository.xbmc.czech"
-       version="1.0"
-       name="xbmc-czech-repo (github.com)"
+       version="1.0.0"
+       name="xbmc-czech-repo (github.com/lzoubek/xbmc-czech-repo)"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.addon" version="0.1"/>
@@ -35,23 +35,67 @@
     <datadir zip="true">https://raw.github.com/lzoubek/xbmc-czech-repo/master/repo</datadir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>xbmc-czech-repo (github.com)</summary>
+    <summary>xbmc-czech-repo (github.com/lzoubek/xbmc-czech-repo)</summary>
     <description>
-    	FIXME
+    	This repository contains mostly video addons for czech users.
+
+	Please send feedback, patches or fire any issues on https://github.com/lzoubek/xbmc-czech-repo
     </description>
     <description lang="cs">
-    	FIXME
+    	Tento repozitář obsahuje video doplňky pro nás čechy a slováky.
+
+	Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte https://github.com/lzoubek/xbmc-czech-repo.
     </description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="script.module.stream.resolver"
+       name="stream resolver"
+       version="1.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary>xbmc-czech-repo plugins common python modules mainly for resolving stream URLs</summary>
+    <description>Common python modules pack that is used by xbmc-czech-repo plugins</description>
+    <license>GNU GPL</license>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.kinotip.cz"
+       name="kinotip.cz"
+       version="0.2.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">kinotip.cz</summary>
+    <summary lang="cs">kinotip.cz</summary>
+    <description lang="en">Watch online movies from kinotip.cz</description>
+    <description lang="cs">Sledujte online filmy a seriály se servru kinotip.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.0" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
