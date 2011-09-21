@@ -52,10 +52,10 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0"
+       version="1.0.0"
        provider-name="lzoubek">
   <requires>
-    <import addon="xbmc.python" version="1.0.0"/>
+    <import addon="xbmc.python" version="1.0"/>
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />
