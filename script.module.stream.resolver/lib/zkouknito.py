@@ -21,16 +21,15 @@
 # */
 import re,util
 
-# returns the steam url by searching for it in piece of HTML 
-def url(data):
-	m = re.search('value=\"http\://www.zkouknito.cz/(.+?)vid=(?P<id>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-	if not m == None:
-		data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
-		return re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+def supports(url):
+	return not _regex(url) == None
 
-# returns the stream url directly from url found in HTML
-def stream_url(url):
-	m = re.search('zkouknito.cz/(.+?)vid=(?P<id>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
+# returns the steam url
+def url(url):
+	m = _regex(url)
 	if not m == None:
 		data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
-		return re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+		return [re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
+
+def _regex(url):
+	return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)

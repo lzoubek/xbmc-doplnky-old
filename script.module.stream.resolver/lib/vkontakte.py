@@ -20,12 +20,25 @@
 # *
 # */
 import re,util
-def url(data):
-	m = re.search('<iframe src=\"(?P<url>http\://(vkontakte.ru|vk.com)[^\"]+)(.+?)height=\"(?P<height>[\d]+)', data, re.IGNORECASE | re.DOTALL)
-	if not m == None:
-		data = util.request(m.group('url').replace('&#038;','&'))
+
+def supports(data):
+	return not _regex(data) == None
+
+def url(url):
+	if not _regex(url) == None:
+		data = util.request(url.replace('&#038;','&'))
 		data = util.substr(data,'div id=\"playerWrap\"','<embed>')
 		host = re.search('host=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 		oid = re.search('oid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 		vtag = re.search('vtag=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-		return '%su%s/video/%s.%s.mp4' % (host,oid,vtag,m.group('height'))
+		hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+		no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+		url = '%su%s/video/%s' % (host,oid,vtag)
+		if no_flv != '1':
+			return [url+'.flv']
+		if no_flv == '1' and int(hd) > 0:
+			resolutions=['240','360','480','720','1080']
+			return [url+'.'+resolutions[int(hd)]+'.mp4']
+
+def _regex(data):
+	return re.search('http\://(vkontakte.ru|vk.com)(.+?)', data, re.IGNORECASE | re.DOTALL)

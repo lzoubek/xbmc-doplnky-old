@@ -20,16 +20,15 @@
 # *
 # */
 
-# resolver for all servers that apparently do NOT work
+import random,util,re
 
-import re,util
+def supports(data):
+	return not _regex(data) == None
 
 def url(data):
-	for f in [_videotube]:
-		if f(data) == True:
-			return ''	
+	if supports(data):
+		id = re.sub('http://(www\.)?videobb.com/e/','',data)
+		return ['http://s%d.videobb.com/s?v=%s&r=1&t=%d&u=&c=12&start=0' % (random.randint(1,10),id,random.randint(1000000000,9999999999))]
 
-def _videotube(data):
-	m = re.search('src=\"(?P<js>http\://www.videotube.sk/js[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-	return not m == None
-		
+def _regex(data):
+	return re.search('http://(www\.)?videobb.com', data, re.IGNORECASE | re.DOTALL)

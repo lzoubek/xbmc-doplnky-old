@@ -21,7 +21,7 @@
 # */
 import re,sys,urllib2,traceback
 import xbmcgui,xbmcplugin
-import broken,zkouknito,videoweed,vkontakte
+import zkouknito,videoweed,vkontakte,videobb
 
 def request(url):
 	req = urllib2.Request(url)
@@ -35,11 +35,22 @@ def substr(data,start,end):
 	i2 = data.find(end,i1)
 	return data[i1:i2]
 
-def resolve_stream(html_data):
-	for f in [zkouknito.url,videoweed.url,vkontakte.url,broken.url]:
-		value = f(html_data)
-		if not value == None:
-			return value
+def resolve_stream(url):
+	print 'Resolving '+url
+	return _get_resolver(url)(url)
+
+def _get_resolver(url):	
+	for m in [zkouknito,videoweed,vkontakte,videobb]:
+		if m.supports(url):
+			return m.url
+	return _dummy_resolver
+
+def _dummy_resolver(url):
+	return None
+
+# returns true iff we are able to resolve stream by given URL
+def can_resolve(url):
+	return not _get_resolver(url) == None
 
 def add_dir(name,url,logo='',infoLabels={}):
 	name = decode_html(name)

@@ -30,33 +30,59 @@ __language__   = __addon__.getLocalizedString
 
 BASE_URL='http://www.serialycz.cz/'
 
-def _image(name,link):
-	# load image from disk or download it (slow for each serie, thatwhy we cache it)
+def _get_meta(name,link):
+	# load meta from disk or download it (slow for each serie, thatwhy we cache it)
 	local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 	if not os.path.exists(local):
 		os.makedirs(local)
 	m = md5.new()
 	m.update(name)
-	local = os.path.join(local,m.hexdigest()+'.png')
-	if os.path.exists(local):
-		return local
-	else:
-		data = util.substr(util.request(link),'<div id=\"archive-posts\"','</div>')
+	image = os.path.join(local,m.hexdigest()+'_img.png')
+	plot = os.path.join(local,m.hexdigest()+'_plot.txt')
+	if not os.path.exists(image):
+		data = util.request(link)
+		data = util.substr(data,'<div id=\"archive-posts\"','</div>')
+		m = re.search('<a(.+?)href=\"(?P<url>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
+		if not m == None:
+			data = util.request(m.group('url'))
+			_get_image(data,image)
+			_get_plot(data,plot)
+	return image,_load(plot)
+	
+
+def _save(data,local):
+	print 'Saving file %s' % local
+	f = open(local,'w')
+	f.write(data)
+	f.close()
+
+def _load(file):
+	if not os.path.exists(file):
+		return ''
+	f = open(file,'r')
+	data = f.read()
+	f.close()
+	return data
+
+def _get_plot(data,local):
+ 		data = util.substr(data,'<div class=\"entry-content\"','</p>')
+		m = re.search('<(strong|b)>(?P<plot>(.+?))<', data, re.IGNORECASE | re.DOTALL)
+		if not m == None:
+			_save(util.decode_html(m.group('plot')).encode('utf-8'),local)
+def _get_image(data,local):
+ 		data = util.substr(data,'<div class=\"entry-photo\"','</div>')
 		m = re.search('<img(.+?)src=\"(?P<img>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
 		if not m == None:
 			print ' Downloading %s' % m.group('img')
-			data = util.request(m.group('img'))
-			f = open(local,'w')
-			f.write(data)
-			f.close()
-			return local
-
+			_save(util.request(m.group('img')),local)
+	
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
 	util.add_dir('[B]Nejnovější epizody[/B]','newest=list','')
 	for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
-		util.add_dir(m.group('name'),'serie='+m.group('link')[len(BASE_URL):],_image(m.group('name'),m.group('link')))
+		image,plot = _get_meta(m.group('name'),m.group('link'))
+		util.add_dir(m.group('name'),'serie='+m.group('link')[len(BASE_URL):],image,infoLabels={'Plot':plot})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def list_episodes(url):	
@@ -77,14 +103,18 @@ def newest_episodes():
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
+	streams = None
 	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
-	stream_url = util.resolve_stream(data)
-	if stream_url == '':
+	m = re.search('<iframe(.+?)src=[\'\"](?P<url>(.+?))[\'\"]',data,re.IGNORECASE | re.DOTALL )
+	if not m == None:
+		streams = util.resolve_stream(m.group('url'))
+		
+	if streams == []:
 		xbmcgui.Dialog().ok(__scriptname__,'Video neni mozne prehrat,[CR]zdroj tento zdroj neni a nebude podporovan')
 		return
-	if not stream_url == None:
-		print 'Sending %s to player' % stream_url
-		li = xbmcgui.ListItem(path=stream_url,iconImage='DefaulVideo.png')
+	if not streams == None:
+		print 'Sending %s to player' % streams
+		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 	xbmcgui.Dialog().ok(__scriptname__,'Prehravani vybraneho videa bud zatim neni[CR]podporovano nebo video neni k dispozici.')
 
