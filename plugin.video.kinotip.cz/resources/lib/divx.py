@@ -1,7 +1,7 @@
 import xbmc,xbmcplugin,re,sys,urllib2,xbmcgui,random
 import util
-SERVER='filmy'
-BASE_URL='http://filmy.kinotip.cz/'
+SERVER='divx'
+BASE_URL='http://divx.kinotip.cz/'
 
 def add_dir(name,id,logo='',infoLabels={}):
 	if not logo == '':
@@ -12,10 +12,11 @@ def add_dir(name,id,logo='',infoLabels={}):
      	return util.add_dir(name,'server='+SERVER+'&'+id,logo,infoLabels)
 
 def add_stream(name,url,logo='',infoLabels={}):
+	url = util.decode_html(url).replace('?','!').replace('=','#').replace('&amp;','@').replace('&','@')
 	print [name,url]
 	return util.add_video(
 		name=name,
-		url=url.replace('?','!').replace('=','#')+'&server='+SERVER,
+		url=url+'&server='+SERVER,
 		bitrate='0',
 		logo=logo,
 		infoLabels=infoLabels
@@ -39,7 +40,7 @@ def listing(param):
 
 def listing_categories(data):
 	pattern='<li[^>]+><a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
-	for m in re.finditer(pattern, util.substr(data,'<h2>Kategorie filmů</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
+	for m in re.finditer(pattern, util.substr(data,'<h2>Kategorie DIVX filmů</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
 		add_dir(m.group('cat'),'cat='+m.group('link'),'')
 
 def listing_artists(data):
@@ -82,7 +83,8 @@ def _server_name(url):
 def movie(data):
 	print 'listing movie'
 	data = util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"')
-	pattern = '<embed src=\"(?P<embed>[^\"]+)(.+?)</p>'
+	print data
+	pattern = '<iframe(.+?)src=[\"\'](?P<embed>http\://stagevu(.+?))[\"\'](.+?)'
 	source = 1
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
 		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'),'')

@@ -19,33 +19,17 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
+import re,util
 
-import urllib2,re,os,random
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin
-import util
-__scriptid__   = 'plugin.video.kinotip.cz'
-__scriptname__ = 'kinotip.cz'
-__addon__      = xbmcaddon.Addon(id=__scriptid__)
-__language__   = __addon__.getLocalizedString
+def supports(url):
+	return not _regex(url) == None
 
-sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-import filmy,divx
-import util
+# returns the steam url
+def url(url):
+	m = _regex(url)
+	if not m == None:
+		data = util.substr(util.request(url),'<body>','</script>')
+		return [re.search('url\[[\d]+\] = \'([^\']+)',data,re.IGNORECASE | re.DOTALL).group(1)]
 
-def server(params):
-	if params['server'] == 'filmy':
-		return filmy.handle(params)
-	if params['server'] == 'divx':
-		return divx.handle(params)
-
-def root():
-	util.add_dir('Filmy','server=filmy','')
-	util.add_dir('DivX Filmy','server=divx','')
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-p = util.params()
-print p
-if p=={}:
-	root()
-if 'server' in p.keys():
-	server(p)
+def _regex(url):
+	return re.search('(www\.)?stagevu.com/(.+?)uid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)

@@ -21,7 +21,9 @@
 # */
 import os,re,sys,urllib,urllib2,traceback,cookielib
 import xbmcgui,xbmcplugin
+
 sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
+
 RESOLVERS = []
 for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
 	if module == '__init__.py' or module[-3:] != '.py':
@@ -30,7 +32,7 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
 	exec 'import %s' % module
 	RESOLVERS.append(eval(module))
 del module
-print RESOLVERS
+
 UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 
@@ -117,7 +119,7 @@ def params():
                         if (len(splitparams))==2:
                                 param[splitparams[0]]=splitparams[1]
 	for p in param.keys():
-		param[p] = param[p].replace('!','?').replace('#','=')
+		param[p] = param[p].replace('!','?').replace('#','=').replace('@','&')
 	return param
 
 def _substitute_entity(match):
