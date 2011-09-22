@@ -19,12 +19,37 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,sys,urllib2,traceback
+import os,re,sys,urllib,urllib2,traceback,cookielib
 import xbmcgui,xbmcplugin
-import zkouknito,videoweed,vkontakte,videobb
+sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
+RESOLVERS = []
+for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
+	if module == '__init__.py' or module[-3:] != '.py':
+		continue
+	module = module[:-3]
+	exec 'import %s' % module
+	RESOLVERS.append(eval(module))
+del module
+print RESOLVERS
+UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+
+
+def init_urllib():
+	cj = cookielib.LWPCookieJar()
+	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+	urllib2.install_opener(opener)
 
 def request(url):
 	req = urllib2.Request(url)
+	response = urllib2.urlopen(req)
+	data = response.read()
+	response.close()
+	return data
+
+def post(url,data):
+	postdata = urllib.urlencode(data)
+	req = urllib2.Request(url,postdata)
+	req.add_header('User-Agent',UA)
 	response = urllib2.urlopen(req)
 	data = response.read()
 	response.close()
@@ -40,9 +65,9 @@ def resolve_stream(url):
 	return _get_resolver(url)(url)
 
 def _get_resolver(url):	
-	for m in [zkouknito,videoweed,vkontakte,videobb]:
-		if m.supports(url):
-			return m.url
+	for r in RESOLVERS:
+		if r.supports(url):
+			return r.url
 	return _dummy_resolver
 
 def _dummy_resolver(url):
@@ -70,7 +95,7 @@ def add_video(name,url,bitrate='',logo='',infoLabels={}):
 	infoLabels['Title'] = name
 	if bit > 0:
 		name = '%s | %s kbps' % (name,bit)
-	url=sys.argv[0]+'?play='+url.replace('?','!').replace('=','#')
+	url=sys.argv[0]+'?play='+url
 	li=xbmcgui.ListItem(name,path = url,iconImage='DefaultVideo.png',thumbnailImage=logo)
         li.setInfo( type='Video', infoLabels=infoLabels )
 	li.setProperty('IsPlayable','true')

@@ -20,7 +20,7 @@
 # *
 # */
 
-import random,util,re
+import random,util,re,time
 
 def supports(data):
 	return not _regex(data) == None
@@ -28,7 +28,7 @@ def supports(data):
 def url(data):
 	if supports(data):
 		id = re.sub('http://(www\.)?videobb.com/e/','',data)
-		return ['http://s%d.videobb.com/s?v=%s&r=1&t=%d&u=&c=12&start=0' % (random.randint(1,10),id,random.randint(1000000000,9999999999))]
+		return ['http://s%d.videobb.com/s?v=%s&r=1&t=%d&u=&c=12&start=0' % (random.randint(1,10),id,int(time.time()))]
 
 def _regex(data):
 	return re.search('http://(www\.)?videobb.com', data, re.IGNORECASE | re.DOTALL)
