@@ -52,7 +52,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.0"
+       version="1.0.2"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -73,7 +73,7 @@
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.3"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -91,11 +91,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.0" />
+    <import addon="script.module.stream.resolver" version="1.0.3" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
