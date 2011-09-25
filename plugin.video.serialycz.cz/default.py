@@ -21,7 +21,7 @@
 # */
 import urllib2,re,os,md5
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
-import util
+import util,resolver
 
 __scriptid__   = 'plugin.video.serialycz.cz'
 __scriptname__ = 'serialycz.cz'
@@ -79,10 +79,10 @@ def _get_image(data,local):
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
-	util.add_dir('[B]Nejnovější epizody[/B]','newest=list','')
+	util.add_dir('[B]Nejnovější epizody[/B]',{'newest':'list'},'')
 	for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
 		image,plot = _get_meta(m.group('name'),m.group('link'))
-		util.add_dir(m.group('name'),'serie='+m.group('link')[len(BASE_URL):],image,infoLabels={'Plot':plot})
+		util.add_dir(m.group('name'),{'serie':m.group('link')[len(BASE_URL):]},image,infoLabels={'Plot':plot})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def list_episodes(url):	
@@ -92,31 +92,41 @@ def list_episodes(url):
 	if not m == None:
 		data = util.request(m.group('url'))
 		for m in re.finditer('<a href=\"(?P<link>[^\"]+)(.+?)(<strong>|<b>)(?P<name>[^<]+)', util.substr(data,'<div class=\"entry-content','</div>'), re.IGNORECASE | re.DOTALL):
-			util.add_video(m.group('name'),m.group('link')[len(BASE_URL):])
+			add_video(m.group('name'),m.group('link')[len(BASE_URL):])
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def newest_episodes():
 	data = util.substr(util.request(BASE_URL+'category/new-episode/'),'<div id=\"archive-posts\"','</ul>')
 	pattern='<img(.+?)src=\"(?P<img>[^\"]+)(.+?)<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_video(m.group('name'),m.group('link')[len(BASE_URL):],0,m.group('img'))	
+		add_video(m.group('name'),m.group('link')[len(BASE_URL):],m.group('img'))	
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def add_video(name,url,image=''):
+	return util.add_video(name,{'play':url},image)
 
 def play(url):
 	streams = None
 	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
-	m = re.search('<iframe(.+?)src=[\'\"](?P<url>(.+?))[\'\"]',data,re.IGNORECASE | re.DOTALL )
-	if not m == None:
-		streams = util.resolve_stream(m.group('url'))
-		
+	resolved = []
+	for m  in re.finditer('<iframe(.+?)src=[\'\"](?P<url>(.+?))[\'\"]',data,re.IGNORECASE | re.DOTALL ):
+		streams = resolver.resolve(m.group('url'))
+		if not streams == None:
+			resolved.extend(streams)
 	if streams == []:
-		xbmcgui.Dialog().ok(__scriptname__,'Video neni mozne prehrat,[CR]zdroj tento zdroj neni a nebude podporovan')
+		xbmcgui.Dialog().ok(__scriptname__,'Video neni dostupne, zkontrolujte,[CR]zda funguje na webu')
 		return
-	if not streams == None:
-		print 'Sending %s to player' % streams
-		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
+	if not resolved == []:
+		stream = resolved[0]
+		if len(resolved) > 1:
+			dialog = xbmcgui.Dialog()
+			ret = dialog.select('Zvolte zdroj', resolved)
+			if ret > 0:
+				stream = resolved[ret]
+		print 'Sending %s to player' % stream
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	xbmcgui.Dialog().ok(__scriptname__,'Prehravani vybraneho videa bud zatim neni[CR]podporovano nebo video neni k dispozici.')
+	xbmcgui.Dialog().ok(__scriptname__,'Prehravani vybraneho videa z tohoto zdroje[CR]zatim neni podporovano.')
 
 p = util.params()
 if p=={}:

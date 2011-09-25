@@ -1,3 +1,7 @@
+[B]1.0.2:[/B]
+- pokud je nalezen více než jeden zdroj seriálu, plugin nechá uživatele vybrat
+- opravy chyb, kdy přehrávání vůbec nefungovalo
+- oprava přehrávání na XboXu (doufejme)
 [B]1.0.1:[/B]
  - opraveno neúplné listování epizod u některých seriálů
  - přidaná závistols na script.module.stream.resolver - přesunut kód, který
