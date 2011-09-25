@@ -24,22 +24,11 @@ import re,util
 def supports(url):
 	return not _regex(url) == None
 
+# returns the steam url
 def url(url):
 	if not _regex(url) == None:
-		data = util.request(url)
-		data = util.substr(data,'div id=\"playerWrap\"','<embed>')
-		if len(data) > 0:
-			host = re.search('host=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			oid = re.search('oid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			vtag = re.search('vtag=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			url = '%su%s/video/%s' % (host,oid,vtag)
-			if no_flv != '1':
-				return [url+'.flv']
-			if no_flv == '1' and int(hd) >= 0:
-				resolutions=['240','360','480','720','1080']
-				return [url+'.'+resolutions[int(hd)]+'.mp4']
+		data = util.substr(util.request(url),'<embed type=\"video/divx','>')
+		return [re.search('src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
 
-def _regex(data):
-	return re.search('http\://(vkontakte.ru|vk.com)/(.+?)', data, re.IGNORECASE | re.DOTALL)
+def _regex(url):
+	return re.search('movshare.net/(.+?)',url,re.IGNORECASE | re.DOTALL)

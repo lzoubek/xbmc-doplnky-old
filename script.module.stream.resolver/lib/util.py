@@ -22,20 +22,10 @@
 import os,re,sys,urllib,urllib2,traceback,cookielib
 import xbmcgui,xbmcplugin
 
-sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
-
-RESOLVERS = []
-for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
-	if module == '__init__.py' or module[-3:] != '.py':
-		continue
-	module = module[:-3]
-	exec 'import %s' % module
-	RESOLVERS.append(eval(module))
-del module
-
 UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-
+##
+# initializes urllib cookie handler
 def init_urllib():
 	cj = cookielib.LWPCookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -62,46 +52,29 @@ def substr(data,start,end):
 	i2 = data.find(end,i1)
 	return data[i1:i2]
 
-def resolve_stream(url):
-	print 'Resolving '+url
-	return _get_resolver(url)(url)
-
-def _get_resolver(url):	
-	for r in RESOLVERS:
-		if r.supports(url):
-			return r.url
-	return _dummy_resolver
-
-def _dummy_resolver(url):
-	return None
-
-# returns true iff we are able to resolve stream by given URL
-def can_resolve(url):
-	return not _get_resolver(url) == None
-
-def add_dir(name,url,logo='',infoLabels={}):
+def add_dir(name,params,logo='',infoLabels={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
-        u=sys.argv[0]+'?'+url
 	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
         liz.setInfo( type='Video', infoLabels=infoLabels )
-        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
 
-def add_video(name,url,bitrate='',logo='',infoLabels={}):
-	bit = 0
-	try:
-		bit = int(bitrate)
-	except:
-		pass
+def add_video(name,params={},logo='',infoLabels={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
-	if bit > 0:
-		name = '%s | %s kbps' % (name,bit)
-	url=sys.argv[0]+'?play='+url
-	li=xbmcgui.ListItem(name,path = url,iconImage='DefaultVideo.png',thumbnailImage=logo)
+	url = _create_plugin_url(params)
+	li=xbmcgui.ListItem(name,path=url,iconImage='DefaultVideo.png',thumbnailImage=logo)
         li.setInfo( type='Video', infoLabels=infoLabels )
 	li.setProperty('IsPlayable','true')
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
+
+def _create_plugin_url(params):
+	url=[]
+	for key in params.keys():
+		value = decode_html(params[key].replace('&amp;','&').replace('&#038;','&'))
+		url.append(key+'='+value.encode('hex')+'&')	
+	return sys.argv[0]+'?'+''.join(url)
+	
 
 def params():
         param={}
@@ -119,7 +92,7 @@ def params():
                         if (len(splitparams))==2:
                                 param[splitparams[0]]=splitparams[1]
 	for p in param.keys():
-		param[p] = param[p].replace('!','?').replace('#','=').replace('@','&')
+		param[p] = param[p].decode('hex')
 	return param
 
 def _substitute_entity(match):
