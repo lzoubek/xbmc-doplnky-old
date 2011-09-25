@@ -19,30 +19,25 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import xbmcaddon,xbmc,xbmcplugin,os
 
-__scriptid__   = 'plugin.video.kinotip.cz'
-__scriptname__ = 'kinotip.cz'
-__addon__      = xbmcaddon.Addon(id=__scriptid__)
-__language__   = __addon__.getLocalizedString
+import util,xbmcplugin,xbmcgui,sys,re,resolver
 
-sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-import filmy,divx
-import util
+def play(base_name,base_url,url):
+	if url.find('http') < 0:
+		if url.find('/') == 0:
+			url = url[1:]
+		url = base_url+url
+		data = util.request(url)
+		m = re.search('<iframe(.+?)src=[\'\"](?P<url>(.+?))[\'\"]',data,re.IGNORECASE | re.DOTALL )
+		if not m == None:
+			url = m.group('url')
+	streams = resolver.resolve(url)
+	if streams == []:
+		xbmcgui.Dialog().ok(base_name,'Video neni dostupne, zkontrolujte,[CR]zda funguje na webu')
+		return
+	if not streams == None:
+		print 'Sending %s to player' % streams
+		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
+		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+	xbmcgui.Dialog().ok(base_name,'Prehravani vybraneho videa z tohoto zdroje[CR]zatim neni podporovano.')
 
-def server(params):
-	if params['server'] == 'filmy':
-		return filmy.handle(params)
-	if params['server'] == 'divx':
-		return divx.handle(params)
-
-def root():
-	util.add_dir('Filmy',{'server':'filmy'})
-	util.add_dir('DivX Filmy',{'server':'divx'})
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-p = util.params()
-if p=={}:
-	root()
-if 'server' in p.keys():
-	server(p)

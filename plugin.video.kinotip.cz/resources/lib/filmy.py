@@ -1,31 +1,54 @@
+# -*- coding: UTF-8 -*-
+#/*
+# *      Copyright (C) 2011 Libor Zoubek
+# *
+# *
+# *  This Program is free software; you can redistribute it and/or modify
+# *  it under the terms of the GNU General Public License as published by
+# *  the Free Software Foundation; either version 2, or (at your option)
+# *  any later version.
+# *
+# *  This Program is distributed in the hope that it will be useful,
+# *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+# *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# *  GNU General Public License for more details.
+# *
+# *  You should have received a copy of the GNU General Public License
+# *  along with this program; see the file COPYING.  If not, write to
+# *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# *  http://www.gnu.org/copyleft/gpl.html
+# *
+# */
+
+
 import xbmc,xbmcplugin,re,sys,urllib2,xbmcgui,random
-import util
+import util,common
+
 SERVER='filmy'
 BASE_URL='http://filmy.kinotip.cz/'
 
-def add_dir(name,id,logo='',infoLabels={}):
+def add_dir(name,params,logo='',infoLabels={}):
+	params['server']=SERVER
 	if not logo == '':
 		if logo.find('/') == 0:
 			logo = logo[1:]
 		if logo.find('http://') < 0:
 			logo = BASE_URL+logo
-     	return util.add_dir(name,'server='+SERVER+'&'+id,logo,infoLabels)
+     	return util.add_dir(name,params,logo,infoLabels)
 
 def add_stream(name,url,logo='',infoLabels={}):
-	print [name,url]
 	return util.add_video(
 		name=name,
-		url=url.replace('?','!').replace('=','#')+'&server='+SERVER,
-		bitrate='0',
+		params={'server':SERVER,'play':url},
 		logo=logo,
 		infoLabels=infoLabels
 	)
 
 def root():
-	add_dir('Kategorie filmů','list=categories','')
-	add_dir('Filmy podle herců','list=artists','')
-	add_dir('Filmy podle roku','list=years','')
-	add_dir('Vyhledat','search=string','')
+	add_dir('Kategorie filmů',{'list':'categories'})
+	add_dir('Filmy podle herců',{'list':'artists'})
+	add_dir('Filmy podle roku',{'list':'years'})
+	add_dir('Vyhledat',{'search':'string'})
 
 
 def listing(param):
@@ -40,18 +63,17 @@ def listing(param):
 def listing_categories(data):
 	pattern='<li[^>]+><a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Kategorie filmů</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),'cat='+m.group('link'),'')
+		add_dir(m.group('cat'),{'cat':m.group('link')})
 
 def listing_artists(data):
 	pattern='<a href=\'(?P<link>[^\']+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle herců</h2>','</li>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),'cat='+m.group('link'),'')
+		add_dir(m.group('cat'),{'cat':m.group('link')})
 
 def listing_years(data):
-	print util.substr(data,'<h2>Filmy podle roku</h2>','</ul>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle roku</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),'cat='+m.group('link'),'')
+		add_dir(m.group('cat'),{'cat':m.group('link')})
 def search():
 	kb = xbmc.Keyboard('','Vyhledat',False)
 	kb.doModal()
@@ -62,17 +84,16 @@ def search():
 def list_movies(data):
 	pattern = '<div class=\"post\"(.+?)<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<img(.+?)src=\"(?P<img>[^\"]+)[^>]+><br[^>]+>(?P<plot>(.+?))<br[^>]+'
 	for m in re.finditer(pattern,util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"'),re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('name'),'movie='+m.group('url'),m.group('img'),infoLabels={'Plot':m.group('plot')})
-		print [m.group('plot')]
+		add_dir(m.group('name'),{'movie':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
 	data = util.substr(data,'<div id=\'wp_page_numbers\'>','</div>')
 	k = re.search('<li class=\"page_info\">(?P<page>(.+?))</li>',data,re.IGNORECASE | re.DOTALL)
 	if not k == None:
 		n = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&lt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not n == None:
-			add_dir(k.group('page')+' - jít na předchozí','cat='+n.group('url'),'')
+			add_dir(k.group('page')+' - jít na předchozí',{'cat':n.group('url')})
 		m = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&gt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			add_dir(k.group('page')+' - jít na další','cat='+m.group('url'),'')
+			add_dir(k.group('page')+' - jít na další',{'cat':m.group('url')})
 
 def _server_name_full(url):
 	return re.search('http\://([^/]+)',url,re.IGNORECASE | re.DOTALL).group(1)
@@ -80,19 +101,17 @@ def _server_name(url):
 	return re.search('/(.+?)\\.php',url,re.IGNORECASE | re.DOTALL).group(1)+'.com'
 
 def movie(data):
-	print 'listing movie'
 	data = util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"')
 	pattern = '<embed src=\"(?P<embed>[^\"]+)(.+?)</p>'
 	source = 1
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'),'')
+		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'))
 		source += 1
 	for m in re.finditer('<a href=\"(?P<embed>(/putlocker|/novamov|/videoweed/shockshare)[^\"]+)',data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name(m.group('embed'))),m.group('embed'),'')
+		add_stream('Zdroj %d - %s' % (source,_server_name(m.group('embed'))),m.group('embed'))
 		source += 1
 
 def play(url):
-	print 'Playing '+url
 	if url.find('http') < 0:
 		if url.find('/') == 0:
 			url = url[1:]
@@ -102,12 +121,15 @@ def play(url):
 		if not m == None:
 			url = m.group('url')
 	streams = util.resolve_stream(url)
+	if streams == []:
+		xbmcgui.Dialog().ok('filmy.kinotip.cz','Video neni dostupne, zkontrolujte,[CR]zda funguje na webu')
+		return
 	if not streams == None:
 		print 'Sending %s to player' % streams
 		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	xbmcgui.Dialog().ok('filmy.kinotip.cz','Prehravani vybraneho videa bud zatim neni[CR]podporovano nebo video neni k dispozici.')
-	
+	xbmcgui.Dialog().ok('filmy.kinotip.cz','Prehravani vybraneho videa z tohoto zdroje[CR]zatim neni podporovano.')
+
 def handle(params):
 	if len(params)==1:
 		root()
@@ -120,6 +142,6 @@ def handle(params):
 	if 'movie' in params.keys():
 		movie(util.request(params['movie']))
 	if 'play' in params.keys():
-		play(params['play'])
+		common.play('filmy.kinotip.cz',BASE_URL,params['play'])
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	
