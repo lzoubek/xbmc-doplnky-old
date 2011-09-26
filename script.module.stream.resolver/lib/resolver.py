@@ -23,14 +23,16 @@ import sys,os,util
 sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
 
 RESOLVERS = []
+util.debug('%s searching for modules' % __name__)
 for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
 	if module == '__init__.py' or module[-3:] != '.py':
 		continue
 	module = module[:-3]
 	exec 'import %s' % module
+	util.debug('found %s %s' % (eval(module),dir(eval(module))))
 	RESOLVERS.append(eval(module))
 del module
-
+util.debug('done')
 ##
 # resolves given URL to list of streams 
 # @param url
@@ -39,7 +41,7 @@ del module
 # @return array of stream URL's 
 def resolve(url):
 	url = util.decode_html(url)
-	print 'Resolving '+url
+	util.info('Resolving '+url)
 	resolver = _get_resolver(url)
 	if resolver == None:
 		return None
@@ -48,8 +50,10 @@ def resolve(url):
 		return []
 	return value
 
-def _get_resolver(url):	
+def _get_resolver(url):
+	util.debug('Get resolver for '+url)
 	for r in RESOLVERS:
+		util.debug(' querying %s' % r)
 		if r.supports(url):
 			return r.url
 

@@ -20,7 +20,7 @@
 # *
 # */
 import os,re,sys,urllib,urllib2,traceback,cookielib
-import xbmcgui,xbmcplugin
+import xbmcgui,xbmcplugin,xbmc
 
 UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
@@ -119,5 +119,12 @@ def decode_html(data):
 		traceback.print_exc()
 		return data
 
+def debug(text):
+	xbmc.log(text,xbmc.LOGDEBUG)
 
+def info(text):
+	xbmc.log(text)
+
+def error(text):
+	xbmc.log(text,xbmc.LOGERROR)
 
