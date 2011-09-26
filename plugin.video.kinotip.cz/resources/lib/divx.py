@@ -135,6 +135,6 @@ def handle(params):
 	if 'movie' in params.keys():
 		movie(util.request(params['movie']))
 	if 'play' in params.keys():
-		common.play('divx.kinotip.cz',BASE_URL,params['play'])
+		common.play(__addon__,'divx.kinotip.cz',BASE_URL,params['play'])
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	
