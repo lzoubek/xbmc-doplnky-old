@@ -21,18 +21,18 @@
   </extension>
 </addon>
 
-<addon id="repository.xbmc.czech"
+<addon id="repository.xbmc.doplnky"
        version="1.0.0"
-       name="xbmc-czech-repo (github.com/lzoubek/xbmc-czech-repo)"
+       name="xbmc-doplnky (code.google.com/p/lzoubek/xbmc-doplnky)"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.addon" version="0.1"/>
   </requires>
   <extension point="xbmc.addon.repository"
               name="xbmc-czech-repo">
-    <info compressed="false">https://raw.github.com/lzoubek/xbmc-czech-repo/master/addons.xml</info>
-    <checksum>https://raw.github.com/lzoubek/xbmc-czech-repo/master/addons.xml.md5</checksum>
-    <datadir zip="true">https://raw.github.com/lzoubek/xbmc-czech-repo/master/repo</datadir>
+    <info compressed="false">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml</info>
+    <checksum>https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml.md5</checksum>
+    <datadir zip="true">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/repo</datadir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>xbmc-czech-repo (github.com/lzoubek/xbmc-czech-repo)</summary>
@@ -52,7 +52,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.2"
+       version="1.0.3"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -69,11 +69,11 @@
 
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
-       version="0.2.0"
+       version="0.2.1"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.2"/>
+    <import addon="script.module.stream.resolver" version="1.0.3"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -91,11 +91,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.2" />
+    <import addon="script.module.stream.resolver" version="1.0.3" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -106,7 +106,7 @@
     <summary lang="en">serialycz.cz</summary>
     <summary lang="cs">serialycz.cz</summary>
     <description lang="en">Watch online series from serialycz.cz</description>
-    <description lang="cs">Sledujte online ze servru serialycz.cz</description>
+    <description lang="cs">Sledujte online seriály ze servru serialycz.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
