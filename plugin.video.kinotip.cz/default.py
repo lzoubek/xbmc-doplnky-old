@@ -30,6 +30,11 @@ sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib
 import filmy,divx
 import util
 
+divx.__addon__ = __addon__
+divx.__language__ = __language__
+filmy.__addon__ = __addon__
+filmy.__language__ = __language__
+
 def server(params):
 	if params['server'] == 'filmy':
 		return filmy.handle(params)

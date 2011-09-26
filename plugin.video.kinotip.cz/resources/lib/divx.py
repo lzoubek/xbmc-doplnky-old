@@ -43,12 +43,11 @@ def add_stream(name,url,logo='',infoLabels={}):
 	)
 
 def root():
-	add_dir('Kategorie filmů',{'list':'categories'})
-	add_dir('Filmy podle herců',{'list':'artists'})
-	add_dir('Filmy podle roku',{'list':'years'})
-	add_dir('Vyhledat',{'search':'string'})
-
-
+	add_dir(__language__(30005),{'list':'latest'})
+	add_dir(__language__(30006),{'list':'categories'})
+	add_dir(__language__(30007),{'list':'artists'})
+	add_dir(__language__(30008),{'list':'years'})
+	add_dir(__language__(30003),{'list-search':''})
 
 def listing(param):
 	data = util.request(BASE_URL)
@@ -58,6 +57,8 @@ def listing(param):
 		return listing_artists(data)
 	if 'years' == param:
 		return listing_years(data)
+	if 'latest' == param:
+		list_movies(data)
 
 def listing_categories(data):
 	pattern='<li[^>]+><a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
@@ -73,12 +74,21 @@ def listing_years(data):
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle roku</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
 		add_dir(m.group('cat'),{'cat':m.group('link')})
-def search():
-	kb = xbmc.Keyboard('','Vyhledat',False)
-	kb.doModal()
-	if kb.isConfirmed():
-		data = util.request(BASE_URL+'?s='+kb.getText())
+def search(what):
+	if what == '':
+		kb = xbmc.Keyboard('',__language__(30003),False)
+		kb.doModal()
+		if kb.isConfirmed():
+			what = kb.getText()
+	if not what == '':
+		common.add_search(__addon__,SERVER,what)
+		data = util.request(BASE_URL+'?s='+what)
 		return list_movies(data)
+
+def list_search():
+	add_dir(__language__(30004),{'search':''})
+	for what in common.get_searches(__addon__,SERVER):
+		add_dir(what,{'search':what})
 
 def list_movies(data):
 	pattern = '<div class=\"post\"(.+?)<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<img(.+?)src=\"(?P<img>[^\"]+)[^>]+><br[^>]+>(?P<plot>(.+?))<br[^>]+'
@@ -117,7 +127,9 @@ def handle(params):
 	if 'list' in params.keys():
 		listing(params['list'])
 	if 'search' in params.keys():
-		search()
+		search(params['search'])
+	if 'list-search' in params.keys():
+		list_search()
 	if 'cat' in params.keys():
 		list_movies(util.request(params['cat']))
 	if 'movie' in params.keys():

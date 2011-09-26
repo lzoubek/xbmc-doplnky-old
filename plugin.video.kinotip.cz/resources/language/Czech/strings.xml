@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">Počet zapamatovaných hledání</string>
+	<string id="30001">Video není dostupné, zkontrolujte,[CR]zda funguje přehrávání na webu.</string>
+	<string id="30002">Přehrávání tohoto zdroje[CR]zatím není podporováno.</string>
+	<string id="30003">Vyhledat</string>
+	<string id="30004">[B]Nové hledání[/B]</string>
+	<string id="30005">Poslední přidané</string>
+	<string id="30006">Kategorie filmů</string>
+	<string id="30007">Filmy podle herců</string>
+	<string id="30008">Filmy podle roku</string>
+</strings>

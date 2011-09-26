@@ -20,9 +20,11 @@
 # *
 # */
 
-import util,xbmcplugin,xbmcgui,sys,re,resolver
+import util,xbmcplugin,xbmcgui,xbmc,os,sys,re,resolver
+import simplejson as json
 
-def play(base_name,base_url,url):
+def play(addon,base_name,base_url,url):
+	print addon
 	if url.find('http') < 0:
 		if url.find('/') == 0:
 			url = url[1:]
@@ -33,11 +35,53 @@ def play(base_name,base_url,url):
 			url = m.group('url')
 	streams = resolver.resolve(url)
 	if streams == []:
-		xbmcgui.Dialog().ok(base_name,'Video neni dostupne, zkontrolujte,[CR]zda funguje na webu')
+		xbmcgui.Dialog().ok(base_name,addon.getLocalizedString(30001))
 		return
 	if not streams == None:
 		print 'Sending %s to player' % streams
 		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	xbmcgui.Dialog().ok(base_name,'Prehravani vybraneho videa z tohoto zdroje[CR]zatim neni podporovano.')
+	xbmcgui.Dialog().ok(base_name,addon.getLocalizedString(30002))
+
+def get_searches(addon,server):
+	local = xbmc.translatePath(addon.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,server)
+	if not os.path.exists(local):
+		return []
+	f = open(local,'r')
+	data = f.read()
+	searches = json.loads(unicode(data.decode('utf-8','ignore')))
+	f.close()
+	return searches
+
+def add_search(addon,server,search):
+	maximum = 20
+	try:
+		maximum = int(addon.getSetting('keep-searches'))
+	except:
+		util.error('Unable to parse convert addon setting to number')
+		pass
+	searches = []
+	local = xbmc.translatePath(addon.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,server)
+	if os.path.exists(local):
+		f = open(local,'r')
+		data = f.read()
+		searches = json.loads(unicode(data.decode('utf-8','ignore')))
+		f.close()
+	searches.insert(0,search)
+	remove = len(searches)-maximum
+	if remove>0:
+		for i in range(remove):
+			searches.pop()
+	f = open(local,'w')
+	f.write(json.dumps(searches,ensure_ascii=True))
+	f.close()
+	
+
+
 

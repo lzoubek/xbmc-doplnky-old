@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">Size of search history</string>
+	<string id="30001">Video is not available, check[CR]whether it works using web page.</string>
+	<string id="30002">Playing this video[CR]is not yet supported.</string>
+	<string id="30003">Search</string>
+	<string id="30004">[B]New search[/B]</string>
+	<string id="30005">Latest movies</string>
+	<string id="30006">Categories</string>
+	<string id="30007">Movies by artist</string>
+	<string id="30008">Movies by year</string>
+</strings>
