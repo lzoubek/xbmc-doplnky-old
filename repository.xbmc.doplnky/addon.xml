@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="repository.xbmc.doplnky"
+       version="1.0.0"
+       name="xbmc-doplnky (code.google.com/p/lzoubek/xbmc-doplnky)"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.addon" version="0.1"/>
+  </requires>
+  <extension point="xbmc.addon.repository"
+              name="xbmc-doplnky">
+    <info compressed="false">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml</info>
+    <checksum>https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml.md5</checksum>
+    <datadir zip="true">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/repo</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>xbmc-doplnky (code.google.com/p/xbmc-doplnky)</summary>
+    <description>
+    	This repository contains mostly video addons for czech users.
+
+	Please send feedback, patches or fire any issues on https://code.google.com/p/xbmc-doplnky
+    </description>
+    <description lang="cs">
+    	XBMC Doplňky CZ SK
+    	Tento repozitář obsahuje video doplňky pro česky a slovensky mluvící uživatele.
+
+	Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte http://code.google.com/p/xbmc-doplnky.
+    </description>
+    <platform>all</platform>
+  </extension>
+</addon>
