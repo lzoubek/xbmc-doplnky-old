@@ -1,3 +1,6 @@
+[B]1.0.4:[/B]
+- lokalizace cs,en
+- zvýšení verze kvůli stream resolveru
 [B]1.0.2:[/B]
 - pokud je nalezen více než jeden zdroj seriálu, plugin nechá uživatele vybrat
 - opravy chyb, kdy přehrávání vůbec nefungovalo

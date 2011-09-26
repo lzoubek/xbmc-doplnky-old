@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30001">Video není dostupné, zkontrolujte,[CR]zda funguje přehrávání na webu.</string>
+	<string id="30002">Přehrávání tohoto zdroje[CR]zatím není podporováno.</string>
+	<string id="30003">[B]Nejnovější epizody[/B]</string>
+	<string id="30004">Zvolte zdroj</string>
+</strings>

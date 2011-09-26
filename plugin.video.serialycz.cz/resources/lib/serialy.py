@@ -79,7 +79,7 @@ def _get_image(data,local):
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
-	util.add_dir('[B]Nejnovější epizody[/B]',{'newest':'list'},'')
+	util.add_dir(__language__(30003),{'newest':'list'},'')
 	for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
 		image,plot = _get_meta(m.group('name'),m.group('link'))
 		util.add_dir(m.group('name'),{'serie':m.group('link')[len(BASE_URL):]},image,infoLabels={'Plot':plot})
@@ -114,19 +114,21 @@ def play(url):
 		if not streams == None:
 			resolved.extend(streams)
 	if streams == []:
-		xbmcgui.Dialog().ok(__scriptname__,'Video neni dostupne, zkontrolujte,[CR]zda funguje na webu')
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 		return
 	if not resolved == []:
 		stream = resolved[0]
 		if len(resolved) > 1:
 			dialog = xbmcgui.Dialog()
-			ret = dialog.select('Zvolte zdroj', resolved)
+			ret = dialog.select(__language__(30004), resolved)
 			if ret > 0:
 				stream = resolved[ret]
+			if ret < 0:
+				return
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	xbmcgui.Dialog().ok(__scriptname__,'Prehravani vybraneho videa z tohoto zdroje[CR]zatim neni podporovano.')
+	xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
 
 def handle(p):
 	if p=={}:

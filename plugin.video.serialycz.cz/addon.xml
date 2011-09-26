@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.2" />
+    <import addon="script.module.stream.resolver" version="1.0.3" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -16,7 +16,7 @@
     <summary lang="en">serialycz.cz</summary>
     <summary lang="cs">serialycz.cz</summary>
     <description lang="en">Watch online series from serialycz.cz</description>
-    <description lang="cs">Sledujte online ze servru serialycz.cz</description>
+    <description lang="cs">Sledujte online seriály ze servru serialycz.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
