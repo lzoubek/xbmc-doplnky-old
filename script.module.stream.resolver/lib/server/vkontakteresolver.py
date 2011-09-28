@@ -37,9 +37,12 @@ def url(url):
 			url = '%su%s/video/%s' % (host,oid,vtag)
 			if no_flv != '1':
 				return [url+'.flv']
-			if no_flv == '1' and int(hd) >= 0:
+			if no_flv == '1':
+				res=int(hd)
+				if res < 0:
+					res=0
 				resolutions=['240','360','480','720','1080']
-				return [url+'.'+resolutions[int(hd)]+'.mp4']
+				return [url+'.'+resolutions[res]+'.mp4']
 
 def _regex(data):
 	return re.search('http\://(vkontakte.ru|vk.com)/(.+?)', data, re.IGNORECASE | re.DOTALL)
