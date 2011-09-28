@@ -72,7 +72,7 @@ def _create_plugin_url(params):
 	url=[]
 	for key in params.keys():
 		value = decode_html(params[key].replace('&amp;','&').replace('&#038;','&'))
-		url.append(key+'='+value.encode('hex')+'&')	
+		url.append(key+'='+value.encode('utf-8').encode('hex')+'&')
 	return sys.argv[0]+'?'+''.join(url)
 	
 
