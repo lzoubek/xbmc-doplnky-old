@@ -32,10 +32,12 @@ def init_urllib():
 	urllib2.install_opener(opener)
 
 def request(url):
+	debug('request: %s' % url)
 	req = urllib2.Request(url)
 	response = urllib2.urlopen(req)
 	data = response.read()
 	response.close()
+	debug('len(data) %s' % len(data))
 	return data
 
 def post(url,data):

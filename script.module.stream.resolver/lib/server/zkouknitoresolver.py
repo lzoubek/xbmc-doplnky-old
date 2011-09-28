@@ -32,4 +32,4 @@ def url(url):
 		return [re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
 
 def _regex(url):
-	return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)
+	return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)',url,re.IGNORECASE | re.DOTALL)

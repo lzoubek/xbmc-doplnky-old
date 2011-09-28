@@ -109,8 +109,10 @@ def play(url):
 	streams = None
 	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
 	resolved = []
-	for m  in re.finditer('<iframe(.+?)src=[\'\"](?P<url>(.+?))[\'\"]',data,re.IGNORECASE | re.DOTALL ):
-		streams = resolver.resolve(m.group('url'))
+	matches = re.findall('<iframe(.+?)src=[\"\'](.+?)[\'\"]',data,re.IGNORECASE | re.DOTALL )
+	matches.extend(re.findall('<object(.+?)data=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL ))
+	for m in matches:
+		streams = resolver.resolve(m[-1])
 		if not streams == None:
 			resolved.extend(streams)
 	if streams == []:
