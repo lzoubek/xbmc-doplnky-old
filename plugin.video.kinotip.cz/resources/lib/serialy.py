@@ -58,8 +58,7 @@ def _get_meta(name,link):
 		data = util.request(link)
 		_get_image(data,image)
 		_get_plot(data,plot)
-		plot = _load(plot)
-	return image,plot
+	return image,_load(plot)
 
 def _save(data,local):
 	util.info('Saving file %s' % local)
