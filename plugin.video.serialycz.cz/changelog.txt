@@ -1,3 +1,6 @@
+[B]1.0.5:[/B]
+- opraven chyba při listování epizod Hawaii-Five-0
+- opraven zkokuknito resolver
 [B]1.0.4:[/B]
 - lokalizace cs,en
 - zvýšení verze kvůli stream resolveru
