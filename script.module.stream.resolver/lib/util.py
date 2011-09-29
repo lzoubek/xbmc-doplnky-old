@@ -21,7 +21,7 @@
 # */
 import os,re,sys,urllib,urllib2,traceback,cookielib
 import xbmcgui,xbmcplugin,xbmc
-
+from htmlentitydefs import name2codepoint as n2cp
 UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 ##
