@@ -1,3 +1,5 @@
+[B]0.3.0:[/B]
+- přidány serialy.kinotip.cz, nové zdroje megavideo, videozer
 [B]0.2.1:[/B]
 - lokalizace cs,en
 - hledání jsou ukládána, nastavitelný je jejich maximální počet
