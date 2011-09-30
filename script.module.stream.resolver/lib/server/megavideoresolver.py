@@ -30,6 +30,7 @@ def getcode(mega):
 		mega = re.compile('.*/v/(.+?)$').findall(mega)
 		mega = mega[0][0:8]
 	return mega
+
 def supports(url):
 	return url.find('megavideo.com') > 0
 
@@ -65,8 +66,7 @@ def getURL( page_url , premium = False , user="" , password="", video_password="
 
     # Extract vídeo code from page URL
     # http://www.megavideo.com/?v=ABCDEFGH -> ABCDEFGH
-    #megavideo_video_id = extract_video_id(page_url)
-    megavideo_video_id = page_url
+    megavideo_video_id = getcode(page_url)
 
     # Base URL for obtaining Megavideo URL
     url = "http://www.megavideo.com/xml/videolink.php?v="+megavideo_video_id
@@ -82,7 +82,6 @@ def getURL( page_url , premium = False , user="" , password="", video_password="
     print("[megavideo.py] calling Megavideo")
     data = util.request(url)
     
-
     # Search for an SD link
     print("[megavideo.py] SD Link")
     try:
@@ -146,8 +145,8 @@ def extract_video_id( page_url ):
     print("[megavideo.py] extract_video_id(page_url="+page_url+")")
     
     if page_url.startswith('http://www.megavideo.com/?v='):
-        patron = 'http://www.megavideo.com.*\?v\=([A-Z0-9a-z]{8})'
-        matches = re.compile(patron,re.DOTALL).findall(page_url)
+        patron = 'http://www.megavideo.com.*\?v\=([\w\d]{8}).*'
+        matches = re.compile(patron,re.DOTALL|re.IGNORECASE).findall(page_url)
         video_id = matches[0]
     else:
         video_id = page_url
