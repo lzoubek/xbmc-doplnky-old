@@ -21,6 +21,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.re-play.cz"
+       name="re-play.cz"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.4" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">re-play.cz</summary>
+    <summary lang="cs">re-play.cz</summary>
+    <description lang="en">Watch news about games on re-play.cz</description>
+    <description lang="cs">Sledujte video-archív seriálu o nejnovějších hrách</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="script.module.stream.resolver"
        name="stream resolver"
        version="1.0.4"
