@@ -33,7 +33,7 @@ def url(url):
 		data = util.request('http://www.videozer.com/player_control/settings.php?v=%s&em=TRUE&fv=v1.1.12' % m.group('id'))
 		data = eval(data.replace('true','True').replace('false','False').replace('null','None'))		
 		if len(data['cfg']['quality']) > 0:
-			stream = base64.encodestring(data['cfg']['quality'][0]['u'])
+			stream = base64.decodestring(data['cfg']['quality'][0]['u'])
 		for q in data['cfg']['quality']:
 			if q['l'] == 'HQ' and __PREFER_HD__:
 				return [base64.decodestring(q['u'])]
