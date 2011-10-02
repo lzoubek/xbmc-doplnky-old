@@ -111,6 +111,7 @@ def play(url):
 	resolved = []
 	matches = re.findall('<iframe(.+?)src=[\"\'](.+?)[\'\"]',data,re.IGNORECASE | re.DOTALL )
 	matches.extend(re.findall('<object(.+?)data=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL ))
+	matches.extend(re.findall('<embed( )src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL ))
 	for m in matches:
 		streams = resolver.resolve(m[-1])
 		if not streams == None:
