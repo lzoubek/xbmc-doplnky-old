@@ -22,8 +22,8 @@
 
 import re,os,urllib
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
-import util
-
+import util,resolver
+import youtuberesolver as youtube
 __scriptid__   = 'plugin.video.re-play.cz'
 __scriptname__ = 're-play.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
@@ -49,16 +49,15 @@ def list_page(number=-1):
 
 def play(url):
 	data = util.substr(util.request(url),'<div class=\"zoomVideo','</div>')
-	m = re.search('<object(.+?)data=\"http\://www\.youtube\.com/v/(?P<id>[^\&]+)',data,re.IGNORECASE | re.DOTALL)
+	m = re.search('<object(.+?)data=\"(?P<url>http\://www\.youtube\.com/v/[^\&]+)',data,re.IGNORECASE | re.DOTALL)
 	if not m == None:
-		request = urllib.urlencode({'video_id':m.group('id'),'el':'embedded','asv':'3','hl':'en_US','eurl':url})
-		data = util.request('http://www.youtube.com/get_video_info?%s' % request)
-		data = urllib.unquote(util.decode_html(data))
-		stream = re.search('url_encoded_fmt_stream_map=url=(.+?)fallback_host',data,re.IGNORECASE | re.DOTALL).group(1)
-		stream = urllib.unquote(stream)
-		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		youtube.__eurl__ = url
+		streams = resolver.resolve(m.group('url'))
+		if not streams == None and len(streams)>0:
+			stream = streams[0]
+			print 'Sending %s to player' % stream
+			li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
+			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 		
 
 p = util.params()
