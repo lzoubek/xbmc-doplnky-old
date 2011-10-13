@@ -24,7 +24,6 @@ import util,xbmcplugin,xbmcgui,xbmc,os,sys,re,resolver
 import simplejson as json
 
 def play(addon,base_name,base_url,url):
-	print addon
 	if url.find('http') < 0:
 		if url.find('/') == 0:
 			url = url[1:]
@@ -81,7 +80,3 @@ def add_search(addon,server,search):
 	f = open(local,'w')
 	f.write(json.dumps(searches,ensure_ascii=True))
 	f.close()
-	
-
-
-
