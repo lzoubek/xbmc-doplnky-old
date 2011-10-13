@@ -6,7 +6,7 @@
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.4"/>
+    <import addon="script.module.stream.resolver" version="1.0.5"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -24,10 +24,11 @@
 
 <addon id="plugin.video.zapni.tv"
        name="zapni.tv"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.5" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -49,7 +50,7 @@
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.4" />
+    <import addon="script.module.stream.resolver" version="1.0.5" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -65,9 +66,31 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.videacesky.cz"
+       name="videacesky.cz"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.5" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">videacesky.cz</summary>
+    <summary lang="cs">videacasky.cz</summary>
+    <description lang="en">Watch content from videacesky.cz</description>
+    <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -84,11 +107,11 @@
 
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
-       version="0.3.0"
+       version="0.3.1"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.4"/>
+    <import addon="script.module.stream.resolver" version="1.0.5"/>
     <import addon="script.module.simplejson" version="2.0.10" />
   </requires>
   <extension point="xbmc.python.pluginsource"
@@ -111,7 +134,7 @@
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.4" />
+    <import addon="script.module.stream.resolver" version="1.0.5" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
