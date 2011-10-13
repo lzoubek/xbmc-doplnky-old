@@ -1,3 +1,6 @@
+[B]1.0.5:[/B]
+- added novamov, youtube, trivial - special does nothing
+- fixed megavideo and videozer 
 [B]1.0.4:[/B]
 - added megavideo, videozer resolvers
 - fixed zkouknito
