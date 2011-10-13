@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.videacesky.cz"
+       name="videacesky.cz"
+       version="1.0.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.4" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">videacesky.cz</summary>
+    <summary lang="cs">videacasky.cz</summary>
+    <description lang="en">Watch content from videacesky.cz</description>
+    <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
