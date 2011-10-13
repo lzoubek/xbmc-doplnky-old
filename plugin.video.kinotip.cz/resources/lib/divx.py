@@ -90,19 +90,22 @@ def list_search():
 	for what in common.get_searches(__addon__,SERVER):
 		add_dir(what,{'search':what})
 
-def list_movies(data):
+def list_movies(page):
 	pattern = '<div class=\"post\"(.+?)<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<img(.+?)src=\"(?P<img>[^\"]+)[^>]+><br[^>]+>(?P<plot>(.+?))<br[^>]+'
-	for m in re.finditer(pattern,util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"'),re.IGNORECASE | re.DOTALL):
+	data = util.substr(page,'<div class=\"content\"','<div class=\"sidebar\"')
+	if data.find('<hr>') > 0:
+		data = util.substr(data,'<hr>','<div class=\"sidebar\"')
+	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
 		add_dir(m.group('name'),{'movie':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
-	data = util.substr(data,'<div id=\'wp_page_numbers\'>','</div>')
+	data = util.substr(page,'<div id=\'wp_page_numbers\'>','</div>')
 	k = re.search('<li class=\"page_info\">(?P<page>(.+?))</li>',data,re.IGNORECASE | re.DOTALL)
 	if not k == None:
 		n = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&lt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not n == None:
-			add_dir(k.group('page')+' - jít na předchozí',{'cat':n.group('url')})
+			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30010),{'cat':n.group('url')})
 		m = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&gt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			add_dir(k.group('page')+' - jít na další',{'cat':m.group('url')})
+			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30011),{'cat':m.group('url')})
 
 def _server_name_full(url):
 	return re.search('http\://([^/]+)',url,re.IGNORECASE | re.DOTALL).group(1)
