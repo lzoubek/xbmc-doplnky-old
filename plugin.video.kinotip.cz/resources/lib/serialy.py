@@ -105,7 +105,7 @@ def list_episodes(page):
 	if data.find('<hr>') > 0:
 		data = util.substr(data,'<hr>','<div class=\"sidebar\"')
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('name'),{'movie':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
+		add_dir(m.group('name'),{'episode':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
 	data = util.substr(page,'<div id=\'wp_page_numbers\'>','</div>')
 	k = re.search('<li class=\"page_info\">(?P<page>(.+?))</li>',data,re.IGNORECASE | re.DOTALL)
 	if not k == None:
