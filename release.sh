@@ -5,7 +5,14 @@ TOOLS=$(dirname "$0")
 
 BUILD_DIR=repo
 
-for addonFile in $(ls -l | grep "^d" | gawk -F' ' '{print $9}') ; do
+if [ -z $1 ];
+then
+	addons=$(ls -l | grep "^d" | gawk -F' ' '{print $9}')
+else
+	addons=$1
+fi
+
+for addonFile in $addons ; do
     dirname=$addonFile
     if [ ! -f $addonFile/addon.xml ] ; then
 	echo "$addonFile/addon.xml does not exist, skipping"
