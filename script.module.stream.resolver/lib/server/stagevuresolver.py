@@ -26,10 +26,11 @@ def supports(url):
 
 # returns the steam url
 def url(url):
-	m = _regex(url)
-	if not m == None:
+	if supports(url):
 		data = util.substr(util.request(url),'<body>','</script>')
-		return [re.search('url\[[\d]+\] = \'([^\']+)',data,re.IGNORECASE | re.DOTALL).group(1)]
+		m = re.search('url\[[\d]+\] = \'([^\']+)',data,re.IGNORECASE | re.DOTALL)
+		if not m == None:
+			return [m.group(1)]
 
 def _regex(url):
 	return re.search('(www\.)?stagevu.com/(.+?)uid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)
