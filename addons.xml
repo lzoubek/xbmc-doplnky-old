@@ -90,7 +90,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.5"
+       version="1.0.6"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -107,11 +107,11 @@
 
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
-       version="0.3.3"
+       version="0.3.4"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.5"/>
+    <import addon="script.module.stream.resolver" version="1.0.6"/>
     <import addon="script.module.simplejson" version="2.0.10" />
   </requires>
   <extension point="xbmc.python.pluginsource"
