@@ -18,17 +18,21 @@
 # *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
-# */
+# */ based on script.module.dmd-czech.common/lib/videobb.py
 
-import random,util,re,time
+import util,re,base64
 
-def supports(data):
-	return not _regex(data) == None
+def supports(url):
+	return not _regex(url) == None
 
-def url(data):
-	if supports(data):
-		id = re.sub('http://(www\.)?videobb.com/e/','',data)
-		return ['http://s%d.videobb.com/s?v=%s&r=1&t=%d&u=&c=12&start=0' % (random.randint(1,10),id,int(time.time()))]
+def url(url):
+	m = _regex(url)
+	if not m == None:
+		util.init_urllib()
+		data = util.request('http://videobb.com/player_control/settings.php?v=%s&em=TRUE&fv=v1.1.67' % m.group('id'))
+		data = data.replace('false','False').replace('true','True').replace('null','None')
+		json = eval('('+data+')')
+		return [base64.decodestring(json['settings']['res'][-1]['u'])]
 
-def _regex(data):
-	return re.search('http://(www\.)?videobb.com', data, re.IGNORECASE | re.DOTALL)
+def _regex(url):
+	return re.search('http://(www\.)?videobb.com/[\w\d]+/(?P<id>[^$]+)', url, re.IGNORECASE | re.DOTALL)
