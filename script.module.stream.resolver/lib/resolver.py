@@ -18,7 +18,7 @@
 # *
 # */
 
-import sys,os,util
+import sys,os,util,re
 
 sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
 
@@ -60,4 +60,33 @@ def _get_resolver(url):
 # returns true iff we are able to resolve stream by given URL
 def can_resolve(url):
 	return not _get_resolver(url) == None
+##
+# finds streams in given data according to given regexes
+# @param data piece of text (HTML code) to search in
+# @param regexes - array of strings - regular expressions, each MUST define named group called 'url'
+#        which retrieves resolvable URL (that one is passsed to resolve operation)
+# @return array of dictionaries with keys: name,url,quality
+# @return None if at least 1 resoler failed to resolve and nothing else has been found
+# @return [] if no resolvable URLs or no resolvers for URL has been found
+def findstreams(data,regexes):
+	print regexes
+	print data
+	resolved = []
+	error = True
+	for regex in regexes:
+		for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
+			streams = resolve(match.group('url'))
+			print streams
+			if not streams == None:
+				error = False
+				if len(streams) > 0:
+					for stream in streams:
+						item = {}
+						item['name'] = stream
+						item['url'] = stream
+						item['quality'] = 'Unknown'
+						resolved.append(item)
+	if error:
+		return None
+	return resolved
 

@@ -106,30 +106,22 @@ def add_video(name,url,image=''):
 	return util.add_video(name,{'play':url},image)
 
 def play(url):
-	streams = None
 	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
-	resolved = []
-	matches = re.findall('<iframe(.+?)src=[\"\'](.+?)[\'\"]',data,re.IGNORECASE | re.DOTALL )
-	matches.extend(re.findall('<object(.+?)data=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL ))
-	matches.extend(re.findall('<embed( )src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL ))
-	for m in matches:
-		streams = resolver.resolve(m[-1])
-		if not streams == None:
-			resolved.extend(streams)
-	if streams == []:
+	resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
+	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 		return
 	if not resolved == []:
 		stream = resolved[0]
 		if len(resolved) > 1:
 			dialog = xbmcgui.Dialog()
-			ret = dialog.select(__language__(30004), resolved)
+			ret = dialog.select(__language__(30004), [r['name'] for r in resolved])
 			if ret > 0:
 				stream = resolved[ret]
 			if ret < 0:
 				return
-		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
+		print 'Sending %s to player' % stream['url']
+		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 	xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
 
