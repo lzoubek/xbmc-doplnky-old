@@ -119,7 +119,7 @@ def _server_name(url):
 
 def movie(data):
 	data = util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"')
-	pattern = '<embed src=\"(?P<embed>[^\"]+)(.+?)</p>'
+	pattern = '<embed(.+?)src=\"(?P<embed>[^\"]+)(.+?)</p>'
 	source = 1
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
 		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'))
