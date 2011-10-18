@@ -40,5 +40,5 @@ def url(url):
 			return [urllib.unquote(stream)]
 
 def _regex(url):
-	return re.search('http\://www\.youtube\.com/(watch\?v=|v/)(?P<id>.+?)$',url,re.IGNORECASE | re.DOTALL)
+	return re.search('https?\://www\.youtube\.com/(watch\?v=|v/)(?P<id>.+?)$',url,re.IGNORECASE | re.DOTALL)
 
