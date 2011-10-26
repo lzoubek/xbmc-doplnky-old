@@ -66,6 +66,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.movie-library.cz"
+       name="movie-library.cz"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.0.7"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">movie-library.cz</summary>
+    <summary lang="cs">movie-library.cz</summary>
+    <description lang="en">Watch online content from movie-library.cz</description>
+    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!!</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.videacesky.cz"
        name="videacesky.cz"
        version="1.0.0"
@@ -90,16 +112,17 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.6"
-       provider-name="lzoubek">
+       version="1.0.7"
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.simplejson" version="2.0.10" />
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />
   <extension point="xbmc.addon.metadata">
-    <summary>xbmc-czech-repo plugins common python modules mainly for resolving stream URLs</summary>
-    <description>Common python modules pack that is used by xbmc-czech-repo plugins</description>
+    <summary>xbmc-doplnky plugins common python modules mainly for resolving stream URLs</summary>
+    <description>Common python modules pack that is used by xbmc-doplnky plugins</description>
     <license>GNU GPL</license>
     <platform>all</platform>
   </extension>
@@ -107,12 +130,11 @@
 
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
-       version="0.3.4"
+       version="0.3.5"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.6"/>
-    <import addon="script.module.simplejson" version="2.0.10" />
+    <import addon="script.module.stream.resolver" version="1.0.7"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -130,11 +152,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.0.5"
+       version="1.0.6"
        provider-name="lzoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.5" />
+    <import addon="script.module.stream.resolver" version="1.0.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"

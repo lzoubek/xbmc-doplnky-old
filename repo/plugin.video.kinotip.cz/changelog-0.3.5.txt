@@ -1,0 +1,17 @@
+[B]0.3.5:[/B]
+- přidány ikonky
+[B]0.3.3:[/B]
+- serialy: opraveno hledání embedů u některých seriálů
+[B]0.3.2:[/B]
+- opraveno nefunkční zobrazování zdrojů u serialy.kinotip.cz
+[B]0.3.0:[/B]
+- přidány serialy.kinotip.cz, nové zdroje megavideo, videozer
+[B]0.2.1:[/B]
+- lokalizace cs,en
+- hledání jsou ukládána, nastavitelný je jejich maximální počet
+- přidáno zobrazení naposled přidaných filmů
+[B]0.2.0:[/B]
+ - přidány DIVX filmy, podporované zdroje: movshare,divxstage,stagevu
+ - přidáno zobrazování krátkých info o filmech
+[B]0.1.0:[/B]
+Initial version
