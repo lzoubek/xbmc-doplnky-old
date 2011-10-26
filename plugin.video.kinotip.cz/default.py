@@ -27,9 +27,10 @@ __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-import filmy,divx,serialy
+import filmy,divx,serialy,common
 import util
 
+common._addon_ = __addon__
 divx.__addon__ = __addon__
 divx.__language__ = __language__
 filmy.__addon__ = __addon__
@@ -46,9 +47,9 @@ def server(params):
 		return serialy.handle(params)
 
 def root():
-	util.add_dir('Filmy',{'server':'filmy'})
-	util.add_dir('DivX Filmy',{'server':'divx'})
-	util.add_dir('Seriály',{'server':'serialy'})
+	util.add_dir('Filmy',{'server':'filmy'},common.icon('filmy.png'))
+	util.add_dir('DivX Filmy',{'server':'divx'},common.icon('divx.png'))
+	util.add_dir('Seriály',{'server':'serialy'},common.icon('serialy.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 p = util.params()

@@ -27,23 +27,6 @@ import util,common,md5
 SERVER='serialy'
 BASE_URL='http://serialy.kinotip.cz/'
 
-def add_dir(name,params,logo='',infoLabels={}):
-	params['server']=SERVER
-	if not logo == '':
-		if logo.find('http') < 0 and not os.path.exists(logo):
-			if logo[0] == '/':
-				logo = logo[1:]
-			logo = BASE_URL+logo
-     	return util.add_dir(name,params,logo,infoLabels)
-
-def add_stream(name,url,logo='',infoLabels={}):
-	return util.add_video(
-		name=name,
-		params={'server':SERVER,'play':url},
-		logo=logo,
-		infoLabels=infoLabels
-	)
-
 def _get_meta(name,link):
 	# load meta from disk or download it (slow for each serie, thatwhy we cache it)
 	local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -94,10 +77,10 @@ def _get_plot(data,local):
 
 def list_series(data):
 	pattern='<li[^>]+><a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
-	add_dir(__language__(30009),{'latest':''})
+	common.add_dir(__language__(30009),{'latest':''},common.icon('new.png'))
 	for m in re.finditer(pattern, util.substr(data,'<h2>Kategorie seriálů</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
 		image,plot = _get_meta(m.group('cat'),m.group('link'))
-		add_dir(m.group('cat'),{'cat':m.group('link')},image,{'Plot':plot})
+		common.add_dir(m.group('cat'),{'cat':m.group('link')},image,{'Plot':plot})
 
 def list_episodes(page):
 	pattern = '<div class=\"post\"(.+?)<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<img(.+?)src=\"(?P<img>[^\"]+)[^>]+><br[^>]+>(?P<plot>(.+?))<br[^>]+'
@@ -105,34 +88,21 @@ def list_episodes(page):
 	if data.find('<hr>') > 0:
 		data = util.substr(data,'<hr>','<div class=\"sidebar\"')
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('name'),{'episode':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
+		common.add_dir(m.group('name'),{'episode':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
 	data = util.substr(page,'<div id=\'wp_page_numbers\'>','</div>')
 	k = re.search('<li class=\"page_info\">(?P<page>(.+?))</li>',data,re.IGNORECASE | re.DOTALL)
 	if not k == None:
 		n = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&lt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not n == None:
-			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30010),{'cat':n.group('url')})
+			common.add_dir(k.group('page').decode('utf-8')+' - '+__language__(30010),{'cat':n.group('url')},common.icon('prev.png'))
 		m = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&gt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30011),{'cat':m.group('url')})
-
-def _server_name_full(url):
-	return re.search('http\://([^/]+)',url,re.IGNORECASE | re.DOTALL).group(1)
-def _server_name(url):
-	return re.search('/(.+?)\\.php',url,re.IGNORECASE | re.DOTALL).group(1)+'.com'
-
-def episode(data):
-	data = util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"')
-	pattern = '<embed(.+?)src=\"(?P<embed>[^\"]+)[^>]+'
-	source = 1
-	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'))
-		source += 1
-	for m in re.finditer('<a href=\"(?P<embed>(/putlocker|/novamov|/videoweed/shockshare)[^\"]+)',data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name(m.group('embed'))),m.group('embed'))
-		source += 1
+			common.add_dir(k.group('page').decode('utf-8')+' - '+__language__(30011),{'cat':m.group('url')},common.icon('next.png'))
 
 def handle(params):
+	common._addon_ = __addon__
+	common._base_url_ = BASE_URL
+	common._server_ = SERVER
 	if len(params)==1:
 		list_series(util.request(BASE_URL))
 	if 'latest' in params.keys():
@@ -140,8 +110,8 @@ def handle(params):
 	if 'cat' in params.keys():
 		list_episodes(util.request(params['cat']))
 	if 'episode' in params.keys():
-		episode(util.request(params['episode']))
+		common.list_sources(util.request(params['episode']))
 	if 'play' in params.keys():
-		common.play(__addon__,'serialy.kinotip.cz',BASE_URL,params['play'])
+		common.play('serialy.kinotip.cz',params['play'])
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	

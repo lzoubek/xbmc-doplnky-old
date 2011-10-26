@@ -27,29 +27,12 @@ import util,common
 SERVER='filmy'
 BASE_URL='http://filmy.kinotip.cz/'
 
-def add_dir(name,params,logo='',infoLabels={}):
-	params['server']=SERVER
-	if not logo == '':
-		if logo.find('/') == 0:
-			logo = logo[1:]
-		if logo.find('http://') < 0:
-			logo = BASE_URL+logo
-     	return util.add_dir(name,params,logo,infoLabels)
-
-def add_stream(name,url,logo='',infoLabels={}):
-	return util.add_video(
-		name=name,
-		params={'server':SERVER,'play':url},
-		logo=logo,
-		infoLabels=infoLabels
-	)
-
 def root():
-	add_dir(__language__(30005),{'list':'latest'})
-	add_dir(__language__(30006),{'list':'categories'})
-	add_dir(__language__(30007),{'list':'artists'})
-	add_dir(__language__(30008),{'list':'years'})
-	add_dir(__language__(30003),{'list-search':''})
+	common.add_dir(__language__(30005),{'list':'latest'},common.icon('new.png'))
+	common.add_dir(__language__(30006),{'list':'categories'})
+	common.add_dir(__language__(30007),{'list':'artists'})
+	common.add_dir(__language__(30008),{'list':'years'})
+	common.add_dir(__language__(30003),{'list-search':''}, common.icon('search.png'))
 
 
 def listing(param):
@@ -66,17 +49,17 @@ def listing(param):
 def listing_categories(data):
 	pattern='<li[^>]+><a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Kategorie filmů</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),{'cat':m.group('link')})
+		common.add_dir(m.group('cat'),{'cat':m.group('link')})
 
 def listing_artists(data):
 	pattern='<a href=\'(?P<link>[^\']+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle herců</h2>','</li>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),{'cat':m.group('link')})
+		common.add_dir(m.group('cat'),{'cat':m.group('link')})
 
 def listing_years(data):
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle roku</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('cat'),{'cat':m.group('link')})
+		common.add_dir(m.group('cat'),{'cat':m.group('link')})
 
 def search(what):
 	if what == '':
@@ -90,9 +73,9 @@ def search(what):
 		return list_movies(data)
 
 def list_search():
-	add_dir(__language__(30004),{'search':''})
+	common.add_dir(__language__(30004),{'search':''},common.icon('search.png'))
 	for what in common.get_searches(__addon__,SERVER):
-		add_dir(what,{'search':what})
+		common.add_dir(what,{'search':what})
 
 
 def list_movies(page):
@@ -101,34 +84,21 @@ def list_movies(page):
 	if data.find('<hr>') > 0:
 		data = util.substr(data,'<hr>','<div class=\"sidebar\"')
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_dir(m.group('name'),{'movie':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
+		common.add_dir(m.group('name'),{'movie':m.group('url')},m.group('img'),infoLabels={'Plot':m.group('plot')})
 	data = util.substr(page,'<div id=\'wp_page_numbers\'>','</div>')
 	k = re.search('<li class=\"page_info\">(?P<page>(.+?))</li>',data,re.IGNORECASE | re.DOTALL)
 	if not k == None:
 		n = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&lt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not n == None:
-			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30010),{'cat':n.group('url')})
+			common.add_dir(k.group('page').decode('utf-8')+' - '+__language__(30010),{'cat':n.group('url')},common.icon('prev.png'))
 		m = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>\&gt;</a>',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			add_dir(k.group('page').decode('utf-8')+' - '+__language__(30011),{'cat':m.group('url')})
-
-def _server_name_full(url):
-	return re.search('http\://([^/]+)',url,re.IGNORECASE | re.DOTALL).group(1)
-def _server_name(url):
-	return re.search('/(.+?)\\.php',url,re.IGNORECASE | re.DOTALL).group(1)+'.com'
-
-def movie(data):
-	data = util.substr(data,'<div class=\"content\"','<div class=\"sidebar\"')
-	pattern = '<embed(.+?)src=\"(?P<embed>[^\"]+)(.+?)</p>'
-	source = 1
-	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name_full(m.group('embed'))),m.group('embed'))
-		source += 1
-	for m in re.finditer('<a href=\"(?P<embed>(/putlocker|/novamov|/videoweed/shockshare)[^\"]+)',data,re.IGNORECASE | re.DOTALL):
-		add_stream('Zdroj %d - %s' % (source,_server_name(m.group('embed'))),m.group('embed'))
-		source += 1
+			common.add_dir(k.group('page').decode('utf-8')+' - '+__language__(30011),{'cat':m.group('url')},common.icon('next.png'))
 
 def handle(params):
+	common._addon_ = __addon__
+	common._base_url_ = BASE_URL
+	common._server_ = SERVER
 	if len(params)==1:
 		root()
 	if 'list' in params.keys():
@@ -140,8 +110,8 @@ def handle(params):
 	if 'cat' in params.keys():
 		list_movies(util.request(params['cat']))
 	if 'movie' in params.keys():
-		movie(util.request(params['movie']))
+		common.list_sources(util.request(params['movie']))
 	if 'play' in params.keys():
-		common.play(__addon__,'filmy.kinotip.cz',BASE_URL,params['play'])
+		common.play('filmy.kinotip.cz',params['play'])
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	
