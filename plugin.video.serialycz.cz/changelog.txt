@@ -1,3 +1,5 @@
+[B]1.0.7:[/B]
+- migrace na nové API stream.resolver
 [B]1.0.5:[/B]
 - opraven chyba při listování epizod Hawaii-Five-0
 - opraven zkokuknito resolver
