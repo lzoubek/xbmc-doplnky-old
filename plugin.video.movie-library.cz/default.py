@@ -64,6 +64,12 @@ def search(what):
 		else:
 			#single movie was found
 			return parse_item(data)
+def furl(url):
+	if url.startswith('http'):
+		return url
+	if url[0] == '/':
+		url = url[1:]
+	return BASE_URL+url
 
 def search_list():
 	util.add_dir(__language__(30004),{'search':''},icon('search.png'))
@@ -76,7 +82,7 @@ def categories():
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		util.add_dir(m.group('name'),{'cat':BASE_URL+m.group('url')})
+		util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def list_page(url):
@@ -87,7 +93,7 @@ def parse_page(page,url):
 	data = util.substr(page,'<div class=\"sortlist','<div class=\"pagelist')
 	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_dir(m.group('name'),{'item':BASE_URL+m.group('url')},m.group('logo'))
+		util.add_dir(m.group('name'),{'item':furl(m.group('url'))},m.group('logo'))
 	navurl = url
 	index = url.find('?')
 	if index > 0:
@@ -117,7 +123,7 @@ def parse_item(page):
 	data = util.substr(page,'Download:</h3>','<div id=\"login-password-box')
 	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></abbr></div><div[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),{'play':BASE_URL+m.group('url')})
+		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),{'play':furl(m.group('url'))})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
