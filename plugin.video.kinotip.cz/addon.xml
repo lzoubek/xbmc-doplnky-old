@@ -2,7 +2,7 @@
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
        version="0.3.5"
-       provider-name="lzoubek">
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.stream.resolver" version="1.0.7"/>

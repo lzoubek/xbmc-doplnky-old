@@ -2,7 +2,7 @@
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
        version="1.0.6"
-       provider-name="lzoubek">
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.stream.resolver" version="1.0.7" />
