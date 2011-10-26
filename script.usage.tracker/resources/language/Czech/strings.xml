@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">[B]Od autora %s:[/B][CR][CR]%s[CR][CR][B]Obecné:[/B][CR][CR]Povolením anonymních statistik poskytujete jeho autorovi cenné informace o tom jak a kdy je jeho doplněk využíván. Použitím doplňku je myšleno například přehrání online obsahu doplňkem nebo jeho spuštění. Anonymní zasílání dat nijak neovlivní rychlost doplňků. V žádném případě není zasílána identita uživatele, žádné citlivé informace o něm ani jeho systému. Je zasíláno rozlišení obrazovky, verze XBMC a jazykové prostředí a samotný fakt o použití doplňku.</string>
+	<string id="30001">Chcete povolit anonymní zasílání dat</string>
+	<string id="30002">při používání tohoto doplňku?</string>
+	<string id="30003">Pro více informací spusťte program Usage Tracker</string>
+	<string id="30004">Ano</string>
+	<string id="30005">Ne</string>
+	<string id="30006">Chcete povolit zasílání dat doplňku %s?</string>
+	<string id="30007">Chcete zakázat zasílání dat doplňku %s?</string>
+	<string id="200">Detaily zasílaných statistik:</string>
+	<string id="201">Zasílání povoleno:</string>
+	<string id="202">Změnit</string>
+	<string id="203">Seznam doplňků využívajících Usage Tracker</string>
+	<string id="204">Doplněk:</string>
+</strings>
