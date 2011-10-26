@@ -22,6 +22,7 @@
 import os,re,sys,urllib,urllib2,traceback,cookielib
 import xbmcgui,xbmcplugin,xbmc
 from htmlentitydefs import name2codepoint as n2cp
+import simplejson as json
 UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
 ##
@@ -130,3 +131,38 @@ def info(text):
 def error(text):
 	xbmc.log(text,xbmc.LOGERROR)
 
+
+def get_searches(addon,server):
+	local = xbmc.translatePath(addon.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,server)
+	if not os.path.exists(local):
+		return []
+	f = open(local,'r')
+	data = f.read()
+	searches = json.loads(unicode(data.decode('utf-8','ignore')))
+	f.close()
+	return searches
+
+def add_search(addon,server,search,maximum):
+	searches = []
+	local = xbmc.translatePath(addon.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,server)
+	if os.path.exists(local):
+		f = open(local,'r')
+		data = f.read()
+		searches = json.loads(unicode(data.decode('utf-8','ignore')))
+		f.close()
+	if search in searches:
+		searches.remove(search)
+	searches.insert(0,search)
+	remove = len(searches)-maximum
+	if remove>0:
+		for i in range(remove):
+			searches.pop()
+	f = open(local,'w')
+	f.write(json.dumps(searches,ensure_ascii=True))
+	f.close()
