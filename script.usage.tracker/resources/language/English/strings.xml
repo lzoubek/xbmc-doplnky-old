@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">[B]Author of %s:[/B][CR][CR]%s[CR][CR][B]General:[/B][CR][CR]Enabled anonymous usage tracking of an addon provides valuable information when and how is the addon being used. Using addon means simply starting addon or playing online content with it. Anonymous usage tracking does not have effect on addon's performance. In any case no private information about user or system are being sent. Only screen resolution, XBMC version and localization info and a fact, that an addon has been used.</string>
+	<string id="30001">Do you want to enable anonymous usage tracking</string>
+	<string id="30002">when using this addon?</string>
+	<string id="30003">Please run Usage Tracker script for more information</string>
+	<string id="30004">Yes</string>
+	<string id="30005">No</string>
+	<string id="30006">Do you want to enable reporting for addon %s?</string>
+	<string id="30007">Do you want to disable reporting for addon %s?</string>
+	<string id="200">Reporting details:</string>
+	<string id="201">Reporting enabled:</string>
+	<string id="202">Change</string>
+	<string id="203">Addons using Usage Tracker</string>
+	<string id="204">Addon:</string>
+</strings>
