@@ -1,3 +1,8 @@
+[B]1.0.7:[/B]
+- added servertip.cz resolver
+- fixed youtube
+- added api for search history
+- added simplejson dependency
 [B]1.0.6:[/B]
 - added zideo.nl
 - stagevu - do not fail if movie was removed
