@@ -19,11 +19,11 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import os,re,sys,urllib,urllib2,traceback,cookielib
+import os,re,sys,urllib,urllib2,traceback,cookielib,time,socket
 import xbmcgui,xbmcplugin,xbmc
 from htmlentitydefs import name2codepoint as n2cp
 import simplejson as json
-UA='Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+UA='Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 
 ##
 # initializes urllib cookie handler
@@ -62,13 +62,18 @@ def add_dir(name,params,logo='',infoLabels={}):
         liz.setInfo( type='Video', infoLabels=infoLabels )
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
 
-def add_video(name,params={},logo='',infoLabels={}):
+def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
 	url = _create_plugin_url(params)
 	li=xbmcgui.ListItem(name,path=url,iconImage='DefaultVideo.png',thumbnailImage=logo)
         li.setInfo( type='Video', infoLabels=infoLabels )
 	li.setProperty('IsPlayable','true')
+	items = []
+	for mi in menuItems.keys():
+		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
+	if len(items) > 0:
+		li.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
 
 def _create_plugin_url(params):
@@ -166,3 +171,71 @@ def add_search(addon,server,search,maximum):
 	f = open(local,'w')
 	f.write(json.dumps(searches,ensure_ascii=True))
 	f.close()
+
+def download(addon,filename,url,local):
+	icon = os.path.join(addon.getAddonInfo('path'),'icon.png')
+	notify = addon.getSetting('download-notify') == 'true'
+	notifyEvery = addon.getSetting('download-notify-every')
+	notifyPercent = 1
+	if int(notifyEvery) == 0:
+		notifyPercent = 10
+	if int(notifyEvery) == 1:
+		notifyPercent = 5
+	def callback(percent,speed,filename):
+		if percent == 0 and speed == 0:
+			xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(259).encode('utf-8'),filename,icon))
+			return
+		if notify:
+			if percent > 0 and percent % notifyPercent == 0:
+				message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s' %speed
+				xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)'%(message.encode('utf-8'),filename,icon))
+
+	downloader = Downloader(callback)
+	if downloader.download(url,local,filename):
+		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
+	else:
+		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
+
+class Downloader(object):
+	def __init__(self,callback = None):
+		self.init_time = time.time()
+		self.callback = callback
+		self.gran = 50
+		self.percent = -1
+
+	def download(self,remote,local,filename=None):
+		class MyURLopener(urllib.FancyURLopener):
+			def http_error_default(self, url, fp, errcode, errmsg, headers):
+				print 'Downlad failed, error : '+str(errcode)
+				self.error = True
+
+		if not filename:
+			filename = os.path.basename(local)
+		self.filename = filename
+		if self.callback:
+			self.callback(0,0,filename)
+		socket.setdefaulttimeout(10)
+		opener = MyURLopener()
+		try:
+			opener.retrieve(remote,local,reporthook=self.dlProgress)
+			return True
+		except socket.error:
+			errno, errstr = sys.exc_info()[:2]
+			if errno == socket.timeout:
+				print 'Download failed, connection timeout'
+				return False
+		except:
+			traceback.print_exc()
+			return False
+
+	def dlProgress(self,count, blockSize, totalSize):
+		if count % self.gran == 0 and not count == 0:
+			percent = int(count*blockSize*100/totalSize)
+			downloaded = int(count*blockSize)
+			newTime = time.time()
+			diff = newTime - self.init_time
+			self.init_time = newTime
+			speed = int(((1/diff) * blockSize * self.gran )/1024)
+			if self.callback and not self.percent == percent:
+				self.callback(percent,speed,self.filename)
+			self.percent=percent
