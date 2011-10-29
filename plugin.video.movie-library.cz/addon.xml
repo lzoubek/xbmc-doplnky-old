@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.7"/>
+    <import addon="script.module.stream.resolver" version="1.0.8"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -16,7 +16,7 @@
     <summary lang="en">movie-library.cz</summary>
     <summary lang="cs">movie-library.cz</summary>
     <description lang="en">Watch online content from movie-library.cz</description>
-    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!!</description>
+    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!!</description>
     <platform>all</platform>
   </extension>
 </addon>

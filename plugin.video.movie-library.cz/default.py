@@ -64,12 +64,12 @@ def search(what):
 		else:
 			#single movie was found
 			return parse_item(data)
-def furl(url):
+def furl(url,baseUrl=BASE_URL):
 	if url.startswith('http'):
 		return url
 	if url[0] == '/':
 		url = url[1:]
-	return BASE_URL+url
+	return baseUrl+url
 
 def search_list():
 	util.add_dir(__language__(30004),{'search':''},icon('search.png'))
@@ -110,39 +110,73 @@ def parse_page(page,url):
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def list_item(url):
-	return parse_item(util.request(url))
+	return parse_item(util.request(url),url)
 
-def parse_item(page):
+def parse_item(page,url):
 	#search for series items
+	print url
 	data = util.substr(page,'Download:</h3><table>','</table>')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></div></td><td[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),{'play':url+m.group('url')})
+		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
+		{'play':furl(m.group('url'),url)},
+		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':furl(m.group('url'),url)}}
+		)
 
 	# search for movie items
 	data = util.substr(page,'Download:</h3>','<div id=\"login-password-box')
 	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></abbr></div><div[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),{'play':furl(m.group('url'))})
+		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
+		{'play':furl(m.group('url'),url)},
+		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':furl(m.group('url'),url)}}
+		)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
+	stream = resolve(url)
+	if stream:
+		print 'Sending %s to player' % stream
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
+		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+
+def resolve(url):
 	data = util.request(url)
 	# find uloz.to url
 	m = re.search('window\.location=\'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-	if not m == None:
+	if m:
 		stream = ulozto.url(m.group('url'))
-		print stream
 		if stream == -1:
 			xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
 			return
-		if not stream == None:
-			print 'Sending %s to player' % stream
-			li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		if stream == -2:
+			xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
+			return
+		return stream
 	else:
 		# daily maximum of requested movies reached (150)
 		util.error('daily maximum (150) requests for movie was reached, try it tomorrow')
+#		m = re.search('javascript\" src=\"(?P<js>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
+#		if m:
+#			js = util.request(m.group('js'))
+#			challenge = re.search('challenge :[^\']+\'([^\']+)',js,re.IGNORECASE|re.DOTALL).group(1)
+#			dialog = xbmcgui.Dialog()
+#			dialog.ok(__scriptname__,'ahoj','ahoj')
+#			xbmc.executebuiltin('XBMC.Notification(%s,%s,10000,%s)' % (__scriptname__,'','http://www.google.com/recaptcha/api/image?c='+challenge))
+#			kb = xbmc.Keyboard('','opis obrazek',False)
+#			kb.doModal()
+#			if kb.isConfirmed():
+#				code = kb.getText()
+
+def download(url,name):
+	downloads = __addon__.getSetting('downloads')
+	if '' == downloads:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
+		return
+	stream = resolve(url)
+	if stream:
+		localfile = os.path.join(downloads,xbmc.makeLegalFilename(name))
+		util.download(__addon__,name,stream,localfile)
 
 p = util.params()
 if p=={}:
@@ -153,6 +187,8 @@ if 'item' in p.keys():
 	list_item(p['item'])
 if 'play' in p.keys():
 	play(p['play'])
+if 'download' in p.keys():
+	download(p['download'],p['name'])
 if 'search-list' in p.keys():
 	search_list()
 if 'search' in p.keys():

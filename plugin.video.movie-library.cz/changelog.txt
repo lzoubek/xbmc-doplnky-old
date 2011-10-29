@@ -1,2 +1,6 @@
+[B]1.0.1:[/B]
+- přidáno: stahování (nutno nastavit cílovou složku)
+- opraveno: server vrací chybu 503 - nefunguje přehrávání
+- opraveno: není možné zobrazit soubory k seriálu
 [B]1.0.0:[/B]
 Initial version

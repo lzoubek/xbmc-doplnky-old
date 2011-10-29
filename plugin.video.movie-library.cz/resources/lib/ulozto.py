@@ -41,13 +41,18 @@ def url(url):
 			urllib2.install_opener(opener)
 			req = urllib2.Request(m.group('action'),request)
 			req.add_header('User-Agent',util.UA)
-			response = urllib2.urlopen(req)
-			response.close()
-			urllib2.install_opener(urllib2.build_opener(defrhandler))
+			try:
+				resp = urllib2.urlopen(req)
+			except urllib2.HTTPError:
+				pass
 			stream = redirecthandler.location
+			urllib2.install_opener(urllib2.build_opener(defrhandler))
 			if stream.find('full=y') > -1:
 				util.error('[uloz.to] - out of free download slots, use payed account or try later')
 				return -1
+			if stream.find('neexistujici') > -1:
+				util.error('[uloz.to] - movie was not found on server')
+				return -2
 			if stream.find('captcha=no') > -1:
 				util.error('[uloz.to] - error validating captcha, addon needs to be fixed')
 				return
@@ -61,5 +66,5 @@ class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
 	def http_error_302(self, req, fp, code, msg, headers):
 		self.location = headers.getheader('Location')
-		return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
-
+		# this will lead to exception when 302 is recieved
+		# exactly what we want - not to open url that's being redirected to
