@@ -55,7 +55,7 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history',what,maximum)
-		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+'))
+		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+')+orderby())
 		response = urllib2.urlopen(req)
 		data = response.read()
 		response.close()
@@ -85,28 +85,57 @@ def categories():
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def list_page(url):
+	order = orderby()
+	if url.find('?') < 0:
+		order = '?'+order
+	url +=order
 	page = util.request(url)
 	return parse_page(page,url)
 
 def parse_page(page,url):
 	data = util.substr(page,'<div class=\"sortlist','<div class=\"pagelist')
-	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)'
+	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)</a>(?P<data>.+?)/td></tr>'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		util.add_dir(m.group('name'),{'item':furl(m.group('url'))},m.group('logo'))
+		info = m.group('data')
+		year = ''
+		plot = ''
+		genre = ''
+		cz = ''
+		rating = 0
+		if re.search('^<img',info):
+			cz = ' [cz]'
+		s  = re.search('(.*?)<br />(<div(.+?)</div></div>)?(?P<genre>.*?)<br />(?P<year>.*?)<br />(?P<plot>[^<]+)',info)
+		if s:
+			genre = s.group('genre')
+			try:
+				year = int(re.sub(',.*','',s.group('year')))
+			except:
+				pass
+			plot = s.group('plot')
+		r = re.search('<div class=\"ratingval\"(.+?)width:(?P<rating>\d+)px',info)
+		if r:
+			try:
+				rating = float(int(r.group('rating'))/5)
+			except:
+				pass
+		util.add_dir(m.group('name')+cz,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
 	navurl = url
 	index = url.find('?')
 	if index > 0:
 		navurl = url[:index]
 	data = util.substr(page,'setPagePos(\'curpage2\')','</div>')
-	for m in re.finditer('<a(.+?)href=\"(?P<page>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
+	for m in re.finditer('<a(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
 		logo = 'DefaultFolder.png'
 		if m.group('name').find('Další') >= 0:
 			logo = icon('next.png')
 		if m.group('name').find('Předchozí') >= 0:
 			logo = icon('prev.png')
-		util.add_dir(m.group('name'),{'cat':navurl+m.group('page')},logo)
+		util.add_dir(m.group('name'),{'cat':navurl+'?'+m.group('page')},logo)
 
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def orderby():
+	return '&sort=%s' % __addon__.getSetting('order-by')
 
 def list_item(url):
 	return parse_item(util.request(url),url)

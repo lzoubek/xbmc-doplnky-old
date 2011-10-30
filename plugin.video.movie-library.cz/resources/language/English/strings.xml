@@ -5,6 +5,11 @@
 	<string id="30002">Limit of free download slots was reachet[CR]try again later or use premium account</string>
 	<string id="30003">Search</string>
 	<string id="30004">[B]New search[/B]</string>
+	<string id="30005">Ordering</string>
+	<string id="30006">title</string>
+	<string id="30007">year</string>
+	<string id="30008">added date</string>
+	<string id="30009">rating</string>
 	<string id="30030">Downloads</string>
 	<string id="30031">Please setup downloads folder</string>
 	<string id="30032">Notify when downloading</string>

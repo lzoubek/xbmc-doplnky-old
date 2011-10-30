@@ -5,6 +5,11 @@
 	<string id="30002">Byl překročen limit volných slotů na stahování[CR]zkuste to později nebo použijte placený účet</string>
 	<string id="30003">Vyhledat</string>
 	<string id="30004">[B]Nové hledání[/B]</string>
+	<string id="30005">Řadit dle</string>
+	<string id="30006">názvu</string>
+	<string id="30007">roku</string>
+	<string id="30008">data přidání</string>
+	<string id="30009">hodnocení</string>
 	<string id="30030">Složka pro stahování</string>
 	<string id="30031">Nastavte prosím složku pro stahování</string>
 	<string id="30032">Zobrazovat stav stahování</string>
