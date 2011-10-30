@@ -64,12 +64,11 @@ def search(what):
 		else:
 			#single movie was found
 			return parse_item(data)
-def furl(url,baseUrl=BASE_URL):
+def furl(url):
 	if url.startswith('http'):
 		return url
-	if url[0] == '/':
-		url = url[1:]
-	return baseUrl+url
+	url = url.lstrip('./')
+	return BASE_URL+url
 
 def search_list():
 	util.add_dir(__language__(30004),{'search':''},icon('search.png'))
@@ -118,18 +117,20 @@ def parse_item(page,url):
 	data = util.substr(page,'Download:</h3><table>','</table>')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></div></td><td[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+		iurl = furl(m.group('url'))
 		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
-		{'play':furl(m.group('url'),url)},
-		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':furl(m.group('url'),url)}}
+		{'play':iurl},
+		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 		)
 
 	# search for movie items
 	data = util.substr(page,'Download:</h3>','<div id=\"login-password-box')
 	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></abbr></div><div[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+		iurl = furl(m.group('url'))
 		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
-		{'play':furl(m.group('url'),url)},
-		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':furl(m.group('url'),url)}}
+		{'play':iurl},
+		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 		)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
