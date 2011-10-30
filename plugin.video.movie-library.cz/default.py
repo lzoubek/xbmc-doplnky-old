@@ -81,9 +81,18 @@ def categories():
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
+		if m.group('url').find('staty') > 0:
+			util.add_dir(m.group('name'),{'countries':furl(m.group('url'))})
+		else:
+			util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+def countries(url):
+	data = util.substr(util.request(url),'Filmy podle států</h2>','<div id=\"footertext\">')
+	pattern = '<a(.+?)href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
+		util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 def list_page(url):
 	order = orderby()
 	if url.find('?') < 0:
@@ -213,6 +222,8 @@ if p=={}:
 	categories()
 if 'cat' in p.keys():
 	list_page(p['cat'])
+if 'countries' in p.keys():
+	countries(p['countries'])
 if 'item' in p.keys():
 	list_item(p['item'])
 if 'play' in p.keys():
