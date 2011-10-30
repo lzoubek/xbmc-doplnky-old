@@ -1,5 +1,8 @@
 [B]1.0.1:[/B]
-- přidáno: stahování (nutno nastavit cílovou složku)
+- přidáno: možnost stahování (nutno nastavit cílovou složku)
+- přidáno: funguje kategorie "Filmy podle států"
+- přidáno: informace o filmu - rok, žánr, popis, hodnocení, jazyk dabingu
+- přidáno: možnost nastavení výchozího třídění (název, rok, hodnocení, přidání) 
 - opraveno: server vrací chybu 503 - nefunguje přehrávání
 - opraveno: není možné zobrazit soubory k seriálu
 [B]1.0.0:[/B]
