@@ -115,7 +115,7 @@ def parse_page(page,url):
 		r = re.search('<div class=\"ratingval\"(.+?)width:(?P<rating>\d+)px',info)
 		if r:
 			try:
-				rating = float(int(r.group('rating'))/5)
+				rating = float(r.group('rating'))/5
 			except:
 				pass
 		util.add_dir(m.group('name')+cz,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
