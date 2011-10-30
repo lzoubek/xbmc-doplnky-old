@@ -109,10 +109,10 @@ def parse_page(page,url):
 		year = ''
 		plot = ''
 		genre = ''
-		cz = ''
+		lang = ''
 		rating = 0
-		if re.search('^<img',info):
-			cz = ' [cz]'
+		for q in re.finditer('<img src=\"(.+?)flags/(?P<lang>[^\.]+)\.png\"',info):
+			lang += ' [%s]' % q.group('lang')
 		s  = re.search('(.*?)<br />(<div(.+?)</div></div>)?(?P<genre>.*?)<br />(?P<year>.*?)<br />(?P<plot>[^<]+)',info)
 		if s:
 			genre = s.group('genre')
@@ -127,7 +127,7 @@ def parse_page(page,url):
 				rating = float(r.group('rating'))/5
 			except:
 				pass
-		util.add_dir(m.group('name')+cz,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
+		util.add_dir(m.group('name')+lang,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
 	navurl = url
 	index = url.find('?')
 	if index > 0:
