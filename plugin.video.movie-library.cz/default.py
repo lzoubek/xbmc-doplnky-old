@@ -147,11 +147,10 @@ def orderby():
 	return '&sort=%s' % __addon__.getSetting('order-by')
 
 def list_item(url):
-	return parse_item(util.request(url),url)
+	return parse_item(util.request(url))
 
-def parse_item(page,url):
+def parse_item(page):
 	#search for series items
-	print url
 	data = util.substr(page,'Download:</h3><table>','</table>')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></div></td><td[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
