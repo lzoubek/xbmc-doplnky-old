@@ -62,6 +62,13 @@ def add_dir(name,params,logo='',infoLabels={}):
         liz.setInfo( type='Video', infoLabels=infoLabels )
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
 
+def add_local_dir(name,url,logo='',infoLabels={}):
+	name = decode_html(name)
+	infoLabels['Title'] = name
+	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
+        liz.setInfo( type='Video', infoLabels=infoLabels )
+        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=True)
+
 def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
