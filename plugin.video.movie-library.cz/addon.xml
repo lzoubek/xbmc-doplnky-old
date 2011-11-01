@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.0.1"
+       version="1.1.0"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -16,7 +16,7 @@
     <summary lang="en">movie-library.cz</summary>
     <summary lang="cs">movie-library.cz</summary>
     <description lang="en">Watch online content from movie-library.cz</description>
-    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!!</description>
+    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!! Dále je možné vyhledávat videa jak na movie-library.cz tak přímo na ulozto.cz</description>
     <platform>all</platform>
   </extension>
 </addon>

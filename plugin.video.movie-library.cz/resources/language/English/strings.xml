@@ -10,6 +10,9 @@
 	<string id="30007">year</string>
 	<string id="30008">added date</string>
 	<string id="30009">rating</string>
+	<string id="30010">Search ulozto.cz for movies</string>
+	<string id="30011">Previous</string>
+	<string id="30012">Next</string>
 	<string id="30030">Downloads</string>
 	<string id="30031">Please setup downloads folder</string>
 	<string id="30032">Notify when downloading</string>
@@ -17,4 +20,5 @@
 	<string id="30034">10%</string>
 	<string id="30035">5%</string>
 	<string id="30036">1%</string>
+	<string id="30037">Downloads</string>
 </strings>

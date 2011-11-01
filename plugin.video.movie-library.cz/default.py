@@ -32,6 +32,9 @@ sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib
 
 import util,ulozto
 
+ulozto.__addon__ = __addon__
+ulozto.__language__ = __language__
+
 BASE_URL='http://movie-library.cz/'
 
 def icon(icon):
@@ -78,6 +81,8 @@ def search_list():
 
 def categories():
 	util.add_dir(__language__(30003),{'search-list':''},icon('search.png'))
+	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
+	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),icon('download.png'))
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
@@ -179,21 +184,18 @@ def play(url):
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 
 def resolve(url):
-	data = util.request(url)
-	# find uloz.to url
-	m = re.search('window\.location=\'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-	if m:
-		stream = ulozto.url(m.group('url'))
-		if stream == -1:
-			xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
-			return
-		if stream == -2:
-			xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
-			return
-		return stream
+	if ulozto.supports(url):
+		uloztourl = url
 	else:
-		# daily maximum of requested movies reached (150)
-		util.error('daily maximum (150) requests for movie was reached, try it tomorrow')
+		data = util.request(url)
+		# find uloz.to url
+		m = re.search('window\.location=\'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+		if m:
+			uloztourl = m.group('url')
+		else:
+			# daily maximum of requested movies reached (150)
+			util.error('daily maximum (150) requests for movie was reached, try it tomorrow')
+			return
 #		m = re.search('javascript\" src=\"(?P<js>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
 #		if m:
 #			js = util.request(m.group('js'))
@@ -205,6 +207,14 @@ def resolve(url):
 #			kb.doModal()
 #			if kb.isConfirmed():
 #				code = kb.getText()
+	stream = ulozto.url(uloztourl)
+	if stream == -1:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
+		return
+	if stream == -2:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
+		return
+	return stream
 
 def download(url,name):
 	downloads = __addon__.getSetting('downloads')
@@ -233,3 +243,9 @@ if 'search-list' in p.keys():
 	search_list()
 if 'search' in p.keys():
 	search(p['search'])
+if 'search-ulozto-list' in p.keys():
+	ulozto.search_list()
+if 'search-ulozto' in p.keys():
+	ulozto.search(p['search-ulozto'])
+if 'list-ulozto' in p.keys():
+	ulozto.list_page(p['list-ulozto'])
