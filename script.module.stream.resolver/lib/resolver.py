@@ -72,20 +72,26 @@ def findstreams(data,regexes):
 	print regexes
 	print data
 	resolved = []
-	error = True
+	# keep list of found urls to aviod having duplicates
+	urls = []
+	error = False
 	for regex in regexes:
 		for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
+			print 'Found resolvable %s ' % match.group('url')
 			streams = resolve(match.group('url'))
 			print streams
+			if streams == []:
+				error = True
 			if not streams == None:
-				error = False
 				if len(streams) > 0:
 					for stream in streams:
-						item = {}
-						item['name'] = stream
-						item['url'] = stream
-						item['quality'] = 'Unknown'
-						resolved.append(item)
+						if not stream in urls:
+							item = {}
+							item['name'] = stream
+							item['url'] = stream
+							item['quality'] = 'Unknown'
+							resolved.append(item)
+							urls.append(stream)
 	if error:
 		return None
 	return resolved
