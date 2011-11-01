@@ -31,10 +31,10 @@ def url(url):
 		url = re.sub('.*player.swf\?','',url)
 		data = util.request('http://www.zideo.nl/player/config?'+url)
 		try:
-			link = re.search('<file([^<]+)',data).group(1)
-			hd = re.search('<hd\.state>([^<]+)',data).group(1)
-			if hd == 'true':
-				link = re.search('<hd\.file>([^<]+)',data).group(1)
+			link = re.search('<file>([^<]+)',data).group(1)
+		#	hd = re.search('<hd\.state>([^<]+)',data).group(1)
+		#	if hd == 'true':
+		#		link = re.search('<hd\.file>([^<]+)',data).group(1)
 			return [link]
 		except:
 			pass
