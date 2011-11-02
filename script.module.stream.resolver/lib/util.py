@@ -32,9 +32,9 @@ def init_urllib():
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 	urllib2.install_opener(opener)
 
-def request(url):
+def request(url,headers={}):
 	debug('request: %s' % url)
-	req = urllib2.Request(url)
+	req = urllib2.Request(url,headers=headers)
 	response = urllib2.urlopen(req)
 	data = response.read()
 	response.close()
@@ -129,7 +129,7 @@ def _substitute_entity(match):
 def decode_html(data):
 	try:
 		entity_re = re.compile(r'&(#?)(x?)(\w+);')
-    		return entity_re.subn(_substitute_entity, data.decode('utf-8'))[0]
+    		return entity_re.subn(_substitute_entity, data.encode('utf-8'))[0]
 	except:
 		traceback.print_exc()
 		return data
@@ -198,10 +198,12 @@ def download(addon,filename,url,local):
 				xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)'%(message.encode('utf-8'),filename,icon))
 
 	downloader = Downloader(callback)
-	if downloader.download(url,local,filename):
+	result = downloader.download(url,local,filename)
+	if result == True:
 		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
 	else:
 		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
+		xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
 
 class Downloader(object):
 	def __init__(self,callback = None):
@@ -213,8 +215,7 @@ class Downloader(object):
 	def download(self,remote,local,filename=None):
 		class MyURLopener(urllib.FancyURLopener):
 			def http_error_default(self, url, fp, errcode, errmsg, headers):
-				print 'Downlad failed, error : '+str(errcode)
-				self.error = True
+				self.error_msg = 'Downlad failed, error : '+str(errcode)
 
 		if not filename:
 			filename = os.path.basename(local)
@@ -225,15 +226,17 @@ class Downloader(object):
 		opener = MyURLopener()
 		try:
 			opener.retrieve(remote,local,reporthook=self.dlProgress)
+			if opener.error_msg:
+				return opener.error_msg
 			return True
 		except socket.error:
 			errno, errstr = sys.exc_info()[:2]
 			if errno == socket.timeout:
-				print 'Download failed, connection timeout'
-				return False
+				return 'Download failed, connection timeout'
 		except:
 			traceback.print_exc()
-			return False
+			errno, errstr = sys.exc_info()[:2]
+			return str(errstr)
 
 	def dlProgress(self,count, blockSize, totalSize):
 		if count % self.gran == 0 and not count == 0:
