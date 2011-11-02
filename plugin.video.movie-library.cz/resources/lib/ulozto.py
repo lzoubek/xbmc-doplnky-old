@@ -60,7 +60,7 @@ def url(url):
 			return stream
 
 def _regex(url):
-	return re.search('ulozto\.cz',url,re.IGNORECASE | re.DOTALL)
+	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
 
 class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
