@@ -7,5 +7,6 @@
 - přidáno: možnost procházet stažená videa
 - opraveno: server vrací chybu 503 - nefunguje přehrávání
 - opraveno: není možné zobrazit soubory k seriálu
+- opraveno: nefunkční přehrávání - nyní je třeba jednou za čas opsat kontrolní obrázek
 [B]1.0.0:[/B]
 Initial version

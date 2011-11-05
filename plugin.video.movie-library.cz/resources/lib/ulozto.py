@@ -20,9 +20,47 @@
 # *
 # */
 import re,urllib,urllib2,random,util,sys,os
-import xbmc,xbmcplugin
+import xbmc,xbmcplugin,xbmcgui
 def supports(url):
 	return not _regex(url) == None
+
+def _get_file_url(post_url):
+	request = urllib.urlencode({'captcha_nb':__addon__.getSetting('captcha-id'),'captcha_user':__addon__.getSetting('captcha-key')})
+	defrhandler = urllib2.HTTPRedirectHandler
+	redirecthandler = MyHTTPRedirectHandler()
+	opener = urllib2.build_opener(redirecthandler)
+	urllib2.install_opener(opener)
+	req = urllib2.Request(post_url,request)
+	req.add_header('User-Agent',util.UA)
+	try:
+		resp = urllib2.urlopen(req)
+	except urllib2.HTTPError:
+		pass
+	stream = redirecthandler.location
+	urllib2.install_opener(urllib2.build_opener(defrhandler))
+	if stream.find('full=y') > -1:
+		util.error('[uloz.to] - out of free download slots, use payed account or try later')
+		return -1
+	if stream.find('neexistujici') > -1:
+		util.error('[uloz.to] - movie was not found on server')
+		return -2
+	if stream.find('captcha=no') > -1:
+		cd = CaptchaDialog('captcha-dialog.xml',__addon__.getAddonInfo('path'),'default','0')
+		captcha_id = str(random.randint(1,10000))
+		cd.image = 'http://img.uloz.to/captcha/%s.png' % captcha_id
+		cd.doModal()
+		del cd
+		kb = xbmc.Keyboard('',__addon__.getLocalizedString(200),False)
+		kb.doModal()
+		if kb.isConfirmed():
+			code = kb.getText()
+			__addon__.setSetting('captcha-id',captcha_id)
+			__addon__.setSetting('captcha-key',code)
+			return _get_file_url(post_url)
+		else:
+			return
+	#return stream only when captcha was accepted and there
+	return stream
 
 # returns the steam url
 def url(url):
@@ -32,32 +70,7 @@ def url(url):
 		data = util.substr(page,'<h3>Omezené stahování</h3>','<script')
 		m = re.search('<form(.+?)action=\"(?P<action>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			captchas = {'4009':'zfpv','1987':'jllj','8743':'mubr','6188':'ggtc','6881':'lzhm','2160':'lnqe','594':'uhcd'}
-			random_captcha = captchas.keys()[random.randint(0,len(captchas)-1)]
-			request = urllib.urlencode({'captcha_nb':random_captcha,'captcha_user':captchas[random_captcha]})
-			defrhandler = urllib2.HTTPRedirectHandler
-			redirecthandler = MyHTTPRedirectHandler()
-			opener = urllib2.build_opener(redirecthandler)
-			urllib2.install_opener(opener)
-			req = urllib2.Request(m.group('action'),request)
-			req.add_header('User-Agent',util.UA)
-			try:
-				resp = urllib2.urlopen(req)
-			except urllib2.HTTPError:
-				pass
-			stream = redirecthandler.location
-			urllib2.install_opener(urllib2.build_opener(defrhandler))
-			if stream.find('full=y') > -1:
-				util.error('[uloz.to] - out of free download slots, use payed account or try later')
-				return -1
-			if stream.find('neexistujici') > -1:
-				util.error('[uloz.to] - movie was not found on server')
-				return -2
-			if stream.find('captcha=no') > -1:
-				util.error('[uloz.to] - error validating captcha, addon needs to be fixed')
-				return
-			#return stream only when captcha was accepted and there
-			return stream
+			return _get_file_url(m.group('action'))
 
 def _regex(url):
 	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
@@ -121,3 +134,23 @@ def list_page(url):
 	if mnext:
 		util.add_dir(__language__(30012),{'list-ulozto':base_url+mnext.group('url')},icon('next.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
+
+	def __init__(self,*args,**kwargs):
+		super(xbmcgui.WindowXMLDialog, self).__init__(args,kwargs)
+		self.image = 'http://img.uloz.to/captcha/38470.png'
+
+	def onFocus (self,controlId ):
+		self.controlId = controlId
+
+	def onInit (self ):
+		self.getControl(101).setImage(self.image)
+
+	def onAction(self, action):
+		if action.getId() in [9,10]:
+			self.close()
+
+	def onClick( self, controlId ):
+		if controlId == 102:
+			self.close()

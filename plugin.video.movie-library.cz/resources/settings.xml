@@ -5,4 +5,6 @@
 	<setting label="30005" id="order-by" type="enum" lvalues="30006|30007|30008|30009" default="2" />
 	<setting label="30032" id="download-notify" type="bool" default="true" />
 	<setting label="30033" id="download-notify-every" type="enum" lvalues="30034|30035|30036" default="0" visible="eq(-1,true)" />
+	<setting label="30033" id="captcha-id" type="text"  default="38470" visible="false" />
+	<setting label="30033" id="captcha-key" type="text"  default="sfrp" visible="false" />
 </settings>
