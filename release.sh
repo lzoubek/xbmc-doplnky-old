@@ -43,7 +43,7 @@ for addonFile in $addons ; do
     if [ -e "$package" ] ; then
         rm "$package"
     fi
-    zip -FS -r "$package" "$dirname" -x "*.py[oc]" ".*"
+    zip -FS -r "$package" "$dirname" -x "*.py[oc] *.sw[onp]" ".*"
 
     # copy changelog file
     changelog=$(ls "$dirname"/[Cc]hangelog.txt)
