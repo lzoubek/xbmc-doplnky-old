@@ -1,3 +1,7 @@
+[B]1.0.8:[/B]
+- added new API for downloading, browsing local folders
+- fixed string encoding issues
+- fixed zideo resolver
 [B]1.0.7:[/B]
 - added servertip.cz resolver
 - fixed youtube
