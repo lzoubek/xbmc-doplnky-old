@@ -68,11 +68,11 @@
 
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.0.0"
+       version="1.1.0"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.7"/>
+    <import addon="script.module.stream.resolver" version="1.0.8"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -83,7 +83,7 @@
     <summary lang="en">movie-library.cz</summary>
     <summary lang="cs">movie-library.cz</summary>
     <description lang="en">Watch online content from movie-library.cz</description>
-    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!!</description>
+    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo opisovat kontrolní kód!! Dále je možné vyhledávat videa jak na movie-library.cz tak přímo na ulozto.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -112,7 +112,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -131,7 +131,7 @@
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
        version="0.3.5"
-       provider-name="lzoubek">
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.stream.resolver" version="1.0.7"/>
@@ -153,7 +153,7 @@
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
        version="1.0.6"
-       provider-name="lzoubek">
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.stream.resolver" version="1.0.7" />
