@@ -226,7 +226,7 @@ class Downloader(object):
 		self.filename = filename
 		if self.callback:
 			self.callback(0,0,filename)
-		socket.setdefaulttimeout(10)
+		socket.setdefaulttimeout(60)
 		opener = MyURLopener()
 		try:
 			opener.retrieve(remote,local,reporthook=self.dlProgress)
