@@ -204,9 +204,9 @@ def download(addon,filename,url,local):
 	downloader = Downloader(callback)
 	result = downloader.download(url,local,filename)
 	if result == True:
-		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
+		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
 	else:
-		xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
+		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
 		xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
 
 class Downloader(object):
@@ -230,7 +230,7 @@ class Downloader(object):
 		opener = MyURLopener()
 		try:
 			opener.retrieve(remote,local,reporthook=self.dlProgress)
-			if opener.error_msg:
+			if hasattr(opener,'error_msg'):
 				return opener.error_msg
 			return True
 		except socket.error:
