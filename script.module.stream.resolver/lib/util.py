@@ -86,9 +86,9 @@ def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 def _create_plugin_url(params):
 	url=[]
 	for key in params.keys():
-		value = decode_html(params[key].replace('&amp;','&').replace('&#038;','&'))
-		print value
-		url.append(key+'='+value.decode('ascii','ignore').encode('hex',)+'&')
+		value = decode_html(params[key])
+		value = value.encode('ascii','ignore')
+		url.append(key+'='+value.encode('hex',)+'&')
 	return sys.argv[0]+'?'+''.join(url)
 	
 
@@ -129,10 +129,13 @@ def _substitute_entity(match):
 
 def decode_html(data):
 	try:
+		if not type(data) == unicode:
+			data = unicode(data,'utf-8',errors='ignore')
 		entity_re = re.compile(r'&(#?)(x?)(\w+);')
-    		return entity_re.subn(_substitute_entity, data.encode('utf-8'))[0]
+    		return entity_re.subn(_substitute_entity,data)[0]
 	except:
 		traceback.print_exc()
+		print [data]
 		return data
 
 def debug(text):
