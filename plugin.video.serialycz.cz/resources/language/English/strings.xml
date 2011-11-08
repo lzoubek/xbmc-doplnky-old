@@ -5,4 +5,12 @@
 	<string id="30003">[B]Latest episodes[/B]</string>
 	<string id="30004">Choose video source</string>
 
+	<string id="30030">Downloads</string>
+	<string id="30031">Please setup downloads folder</string>
+	<string id="30032">Notify when downloading</string>
+	<string id="30033"> - display notification every</string>
+	<string id="30034">10%</string>
+	<string id="30035">5%</string>
+	<string id="30036">1%</string>
+	<string id="30037">Downloads</string>
 </strings>

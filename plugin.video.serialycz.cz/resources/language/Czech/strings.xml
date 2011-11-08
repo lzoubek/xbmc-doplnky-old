@@ -4,4 +4,13 @@
 	<string id="30002">Přehrávání tohoto zdroje[CR]zatím není podporováno.</string>
 	<string id="30003">[B]Nejnovější epizody[/B]</string>
 	<string id="30004">Zvolte zdroj</string>
+
+	<string id="30030">Složka pro stahování</string>
+	<string id="30031">Nastavte prosím složku pro stahování</string>
+	<string id="30032">Zobrazovat stav stahování</string>
+	<string id="30033"> - zobrazit stav každých</string>
+	<string id="30034">10%</string>
+	<string id="30035">5%</string>
+	<string id="30036">1%</string>
+	<string id="30037">Stažené soubory</string>
 </strings>

@@ -1,3 +1,7 @@
+[B]1.1.0:[/B]
+- přidaná podpora stahování
+- přidány ikonky
+- opraveny chyby při přerhávání viedí z jiné domény než serialycz.cz
 [B]1.0.7:[/B]
 - migrace na nové API stream.resolver
 [B]1.0.5:[/B]

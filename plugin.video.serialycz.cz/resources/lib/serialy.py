@@ -79,7 +79,8 @@ def _get_image(data,local):
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
 	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
-	util.add_dir(__language__(30003),{'newest':'list'},'')
+	util.add_dir(__language__(30003),{'newest':'list'},util.icon('new.png'))
+	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
 		image,plot = _get_meta(m.group('name'),m.group('link'))
 		util.add_dir(m.group('name'),{'serie':m.group('link')[len(BASE_URL):]},image,infoLabels={'Plot':plot})
@@ -92,21 +93,23 @@ def list_episodes(url):
 	if not m == None:
 		data = util.request(m.group('url'))
 		for m in re.finditer('<a href=\"(?P<link>[^\"]+)(.+?)(<strong>|<b>)(?P<name>[^<]+)', util.substr(data,'<div class=\"entry-content','</div>'), re.IGNORECASE | re.DOTALL):
-			add_video(m.group('name'),m.group('link')[len(BASE_URL):])
+			add_video(m.group('name'),m.group('link'))
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def newest_episodes():
 	data = util.substr(util.request(BASE_URL+'category/new-episode/'),'<div id=\"archive-posts\"','</ul>')
 	pattern='<img(.+?)src=\"(?P<img>[^\"]+)(.+?)<a href=\"(?P<link>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		add_video(m.group('name'),m.group('link')[len(BASE_URL):],m.group('img'))	
+		add_video(m.group('name'),m.group('link'),m.group('img'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def add_video(name,url,image=''):
-	return util.add_video(name,{'play':url},image)
+	return util.add_video(name,{'play':url},image,menuItems={xbmc.getLocalizedString(33003):{'name':name+'.mp4','download':url}})
 
-def play(url):
-	data = util.substr(util.request(BASE_URL+url),'<div id=\"content\"','<div id=\"sidebar')
+def resolve(url):
+	if not url.startswith('http'):
+		url = BASE_URL+url
+	data = util.substr(util.request(url),'<div id=\"content\"','#content')
 	resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
 	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
@@ -120,10 +123,25 @@ def play(url):
 				stream = resolved[ret]
 			if ret < 0:
 				return
-		print 'Sending %s to player' % stream['url']
-		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		return stream['url']
 	xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
+
+def play(url):
+	stream = resolve(url)
+	if stream:
+		print 'Sending %s to player' % stream
+		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+
+def download(url,name):
+	downloads = __addon__.getSetting('downloads')
+	if '' == downloads:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
+		return
+	stream = resolve(url)
+	if stream:
+		localfile = os.path.join(downloads,xbmc.makeLegalFilename(name))
+		util.download(__addon__,name,stream,localfile)
 
 def handle(p):
 	if p=={}:
@@ -134,3 +152,5 @@ def handle(p):
 		list_episodes(p['serie'])
 	if 'play' in p.keys():
 		play(p['play'])
+	if 'download' in p.keys():
+		download(p['download'],p['name'])
