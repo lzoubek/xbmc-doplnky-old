@@ -130,7 +130,7 @@ def play(url):
 	stream = resolve(url)
 	if stream:
 		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 
 def download(url,name):
