@@ -204,7 +204,10 @@ def download(addon,filename,url,local):
 	downloader = Downloader(callback)
 	result = downloader.download(url,local,filename)
 	if result == True:
-		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
+		if xbmc.Player().isPlaying():
+			xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
+		else:
+			xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
 	else:
 		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
 		xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
