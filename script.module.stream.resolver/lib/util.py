@@ -50,6 +50,9 @@ def post(url,data):
 	response.close()
 	return data
 
+def icon(name):
+	return 'https://github.com/lzoubek/xbmc-doplnky/raw/dharma/icons/'+name
+
 def substr(data,start,end):
 	i1 = data.find(start)
 	i2 = data.find(end,i1)
