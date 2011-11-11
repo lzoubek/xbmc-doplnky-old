@@ -187,6 +187,7 @@ def add_search(addon,server,search,maximum):
 	f.close()
 
 def download(addon,filename,url,local):
+	local = xbmc.makeLegalFilename(local)
 	icon = os.path.join(addon.getAddonInfo('path'),'icon.png')
 	notify = addon.getSetting('download-notify') == 'true'
 	notifyEvery = addon.getSetting('download-notify-every')
