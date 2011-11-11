@@ -1,3 +1,5 @@
+[B]1.1.2:[/B]
+- oprava nefunkčního stahování na windows
 [B]1.1.1:[/B]
 - oprava kriticke chyby - nefuknční přehrávání
 [B]1.1.0:[/B]

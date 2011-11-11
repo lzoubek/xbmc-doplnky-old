@@ -140,8 +140,7 @@ def download(url,name):
 		return
 	stream = resolve(url)
 	if stream:
-		localfile = os.path.join(downloads,xbmc.makeLegalFilename(name))
-		util.download(__addon__,name,stream,localfile)
+		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 def handle(p):
 	if p=={}:
