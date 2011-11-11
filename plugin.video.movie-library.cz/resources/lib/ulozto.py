@@ -67,6 +67,9 @@ def url(url):
 	if supports(url):
 		util.init_urllib()
 		page = util.request(url)
+		if page.find('Stránka nenalezena!') > 0:
+			util.error('[uloz.to] - page with movie was not found on server')
+			return -2
 		data = util.substr(page,'<h3>Omezené stahování</h3>','<script')
 		m = re.search('<form(.+?)action=\"(?P<action>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
@@ -82,14 +85,8 @@ class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 		# this will lead to exception when 302 is recieved
 		# exactly what we want - not to open url that's being redirected to
 
-def icon(icon):
-	icon_file = os.path.join(__addon__.getAddonInfo('path'),'resources','icons',icon)
-	if not os.path.isfile(icon_file):
-		return 'DefaultFolder.png'
-	return icon_file
-
 def search_list():
-	util.add_dir(__language__(30004),{'search-ulozto':''},icon('search.png'))
+	util.add_dir(__language__(30004),{'search-ulozto':''},util.icon('search.png'))
 	for what in util.get_searches(__addon__,'search_history_ulozto'):
 		util.add_dir(what,{'search-ulozto':what})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -129,10 +126,10 @@ def list_page(url):
 	data = util.substr(page,'<div class=\"paginator','</div')
 	mprev = re.search('<a class=\"prev(.+?)href=\"(?P<url>[^\"]+)',data)
 	if mprev:
-		util.add_dir(__language__(30011),{'list-ulozto':base_url+mprev.group('url')},icon('prev.png'))
+		util.add_dir(__language__(30011),{'list-ulozto':base_url+mprev.group('url')},util.icon('prev.png'))
 	mnext = re.search('<a class=\"next(.+?)href=\"(?P<url>[^\"]+)',data)
 	if mnext:
-		util.add_dir(__language__(30012),{'list-ulozto':base_url+mnext.group('url')},icon('next.png'))
+		util.add_dir(__language__(30012),{'list-ulozto':base_url+mnext.group('url')},util.icon('next.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
