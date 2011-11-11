@@ -74,15 +74,15 @@ def furl(url):
 	return BASE_URL+url
 
 def search_list():
-	util.add_dir(__language__(30004),{'search':''},icon('search.png'))
+	util.add_dir(__language__(30004),{'search':''},util.icon('search.png'))
 	for what in util.get_searches(__addon__,'search_history'):
 		util.add_dir(what,{'search':what})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def categories():
-	util.add_dir(__language__(30003),{'search-list':''},icon('search.png'))
+	util.add_dir(__language__(30003),{'search-list':''},util.icon('search.png'))
 	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
-	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),icon('download.png'))
+	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
@@ -141,9 +141,9 @@ def parse_page(page,url):
 	for m in re.finditer('<a(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
 		logo = 'DefaultFolder.png'
 		if m.group('name').find('Další') >= 0:
-			logo = icon('next.png')
+			logo = util.icon('next.png')
 		if m.group('name').find('Předchozí') >= 0:
-			logo = icon('prev.png')
+			logo = util.icon('prev.png')
 		util.add_dir(m.group('name'),{'cat':navurl+'?'+m.group('page')},logo)
 
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
