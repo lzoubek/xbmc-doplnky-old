@@ -198,12 +198,12 @@ def download(addon,filename,url,local):
 		notifyPercent = 5
 	def callback(percent,speed,filename):
 		if percent == 0 and speed == 0:
-			xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(259).encode('utf-8'),filename,icon))
+			xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(13413).encode('utf-8'),filename,icon))
 			return
 		if notify:
 			if percent > 0 and percent % notifyPercent == 0:
 				message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s' %speed
-				xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)'%(message.encode('utf-8'),filename,icon))
+				xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)'%(message.encode('utf-8'),filename,icon))
 
 	downloader = Downloader(callback)
 	result = downloader.download(url,local,filename)
