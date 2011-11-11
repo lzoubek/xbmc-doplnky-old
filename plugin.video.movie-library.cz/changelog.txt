@@ -1,3 +1,7 @@
+[B]1.1.1:[/B]
+- opraveno nefunkční stahování na windows
+- opraveno: je zobrazena chyba v případě kdy movie-library odkazuje na
+neexistující soubor na uloz.to
 [B]1.1.0:[/B]
 - přidáno: možnost stahování (nutno nastavit cílovou složku)
 - přidáno: funguje kategorie "Filmy podle států"
