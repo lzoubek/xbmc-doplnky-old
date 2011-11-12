@@ -68,11 +68,11 @@
 
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.1.0"
+       version="1.1.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.8"/>
+    <import addon="script.module.stream.resolver" version="1.1.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -112,7 +112,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.1.0"
+       version="1.1.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -152,11 +152,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.1"
+       version="1.1.2"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.0" />
+    <import addon="script.module.stream.resolver" version="1.1.1" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"

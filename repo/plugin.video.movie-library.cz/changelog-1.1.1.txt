@@ -1,0 +1,16 @@
+[B]1.1.1:[/B]
+- opraveno nefunkční stahování na windows
+- opraveno: je zobrazena chyba v případě kdy movie-library odkazuje na
+neexistující soubor na uloz.to
+[B]1.1.0:[/B]
+- přidáno: možnost stahování (nutno nastavit cílovou složku)
+- přidáno: funguje kategorie "Filmy podle států"
+- přidáno: informace o filmu - rok, žánr, popis, hodnocení, jazyk dabingu
+- přidáno: možnost nastavení výchozího třídění (název, rok, hodnocení, přidání)
+- přidáno: vyhledávání na ulozto.cz
+- přidáno: možnost procházet stažená videa
+- opraveno: server vrací chybu 503 - nefunguje přehrávání
+- opraveno: není možné zobrazit soubory k seriálu
+- opraveno: nefunkční přehrávání - nyní je třeba jednou za čas opsat kontrolní obrázek
+[B]1.0.0:[/B]
+Initial version
