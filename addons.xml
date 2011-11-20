@@ -88,6 +88,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.koukni.cz"
+       name="koukni.cz"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">koukni.cz</summary>
+    <summary lang="cs">koukni.cz</summary>
+    <description lang="en">Watch online HD content from koukni.cz</description>
+    <description lang="cs">Sledujte online HD obsah ze servru koukni.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.videacesky.cz"
        name="videacesky.cz"
        version="1.0.0"
@@ -112,7 +134,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.1.1"
+       version="1.1.2"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
