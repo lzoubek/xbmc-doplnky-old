@@ -58,18 +58,30 @@ def substr(data,start,end):
 	i2 = data.find(end,i1)
 	return data[i1:i2]
 
-def add_dir(name,params,logo='',infoLabels={}):
+def add_dir(name,params,logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
 	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
         liz.setInfo( type='Video', infoLabels=infoLabels )
+	items = []
+	for mi in menuItems.keys():
+		print menuItems[mi]
+		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
+	if len(items) > 0:
+		liz.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
 
-def add_local_dir(name,url,logo='',infoLabels={}):
+def add_local_dir(name,url,logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
 	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
         liz.setInfo( type='Video', infoLabels=infoLabels )
+	items = []
+	for mi in menuItems.keys():
+		print menuItems[mi]
+		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
+	if len(items) > 0:
+		liz.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=True)
 
 def add_video(name,params={},logo='',infoLabels={},menuItems={}):
@@ -185,6 +197,21 @@ def add_search(addon,server,search,maximum):
 	f = open(local,'w')
 	f.write(json.dumps(searches,ensure_ascii=True))
 	f.close()
+
+def remove_search(addon,server,search):
+	local = xbmc.translatePath(addon.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		return
+	local = os.path.join(local,server)
+	if os.path.exists(local):
+		f = open(local,'r')
+		data = f.read()
+		searches = json.loads(unicode(data.decode('utf-8','ignore')))
+		f.close()
+		searches.remove(search)
+		f = open(local,'w')
+		f.write(json.dumps(searches,ensure_ascii=True))
+		f.close()
 
 def download(addon,filename,url,local):
 	local = xbmc.makeLegalFilename(local)
