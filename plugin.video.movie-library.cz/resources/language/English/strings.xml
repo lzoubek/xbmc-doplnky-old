@@ -13,6 +13,8 @@
 	<string id="30010">Search ulozto.cz for movies</string>
 	<string id="30011">Previous</string>
 	<string id="30012">Next</string>
+	<string id="30013">Filter languages - comma-separated e.g.: cz,sk</string>
+	<string id="30014">Include movies without language when filtering</string>
 	<string id="30030">Downloads</string>
 	<string id="30031">Please setup downloads folder</string>
 	<string id="30032">Notify when downloading</string>

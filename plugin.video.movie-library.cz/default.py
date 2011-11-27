@@ -107,6 +107,11 @@ def list_page(url):
 	return parse_page(page,url)
 
 def parse_page(page,url):
+	lang_filter = __addon__.getSetting('lang-filter').split(',')
+	lang_filter_inc  = __addon__.getSetting('lang-filter-include') == 'true'
+	# set as empty list when split returns nothing
+	if len(lang_filter) == 1 and lang_filter[0] == '':
+		lang_filter = []
 	data = util.substr(page,'<div class=\"sortlist','<div class=\"pagelist')
 	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)</a>(?P<data>.+?)/td></tr>'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
@@ -116,8 +121,21 @@ def parse_page(page,url):
 		genre = ''
 		lang = ''
 		rating = 0
+		lang_list = []
 		for q in re.finditer('<img src=\"(.+?)flags/(?P<lang>[^\.]+)\.png\"',info):
 			lang += ' [%s]' % q.group('lang')
+			lang_list.append(q.group('lang'))
+		if not lang_filter == []:
+			filtered = True
+			if len(lang_list) > 0:
+				for l in lang_list:
+					if l in lang_filter:
+						filtered = False
+			elif lang_filter_inc:
+				filtered = False
+			if filtered:
+				continue
+
 		s  = re.search('<div style=\"color[^<]+</div>(?P<genre>.*?)<br[^>]*>(?P<year>.*?)<',info)
 		if s:
 			genre = s.group('genre')
@@ -139,7 +157,7 @@ def parse_page(page,url):
 	index = url.find('?')
 	if index > 0:
 		navurl = url[:index]
-	data = util.substr(page,'setPagePos(\'curpage2\')','</div>')
+	data = util.substr(page,'<div class=\"pagelist\"','<div id=\"footertext\">')
 	for m in re.finditer('<a(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
 		logo = 'DefaultFolder.png'
 		if m.group('name').find('Další') >= 0:
