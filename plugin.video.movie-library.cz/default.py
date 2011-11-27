@@ -58,11 +58,13 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history',what,maximum)
-		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+')+orderby())
+		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+'))
 		response = urllib2.urlopen(req)
 		data = response.read()
 		response.close()
 		if response.geturl().find('search.php') > -1:
+			if data.find('tagy:</h2>') > 0:
+				parse_tag_page(data)
 			return parse_page(data,response.geturl())
 		else:
 			#single movie was found
@@ -98,6 +100,7 @@ def countries(url):
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 		util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 def list_page(url):
 	order = orderby()
 	if url.find('?') < 0:
@@ -105,6 +108,11 @@ def list_page(url):
 	url +=order
 	page = util.request(url)
 	return parse_page(page,url)
+
+def parse_tag_page(page):
+	data = util.substr(page,'<h2>Nalezené tagy:</h2>','</ul>')
+	for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE|re.DOTALL):
+		util.add_dir('[tag] '+ m.group('name'),{'cat':furl(m.group('url'))})
 
 def parse_page(page,url):
 	lang_filter = __addon__.getSetting('lang-filter').split(',')
@@ -153,19 +161,14 @@ def parse_page(page,url):
 		if t:
 			plot = t.group('plot')
 		util.add_dir(m.group('name')+lang,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
-	navurl = url
-	index = url.find('?')
-	if index > 0:
-		navurl = url[:index]
 	data = util.substr(page,'<div class=\"pagelist\"','<div id=\"footertext\">')
-	for m in re.finditer('<a(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
+	for m in re.finditer('<a style=\"float:(right|left)(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
 		logo = 'DefaultFolder.png'
 		if m.group('name').find('Další') >= 0:
 			logo = util.icon('next.png')
 		if m.group('name').find('Předchozí') >= 0:
 			logo = util.icon('prev.png')
-		util.add_dir(m.group('name'),{'cat':navurl+'?'+m.group('page')},logo)
-
+		util.add_dir(m.group('name'),{'cat':url+'&'+m.group('page')},logo)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def orderby():
