@@ -64,7 +64,7 @@ def root():
 	tags = util.get_searches(__addon__,'tags')
 	if tags == []:
 		# add default/known tags
-		tags = ['simpsons','serialz','znovy','zoufalky','vypravej','topgear','COWCOOSH']
+		tags = ['clipz','simpsons','serialz','znovy','zoufalky','vypravej','topgear','COWCOOSH']
 		for t in tags:
 			util.add_search(__addon__,'tags',t,9999)
 	tags.sort()
