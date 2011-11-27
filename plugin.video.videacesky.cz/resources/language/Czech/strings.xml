@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30000">Počet zapamatovaných hledání</string>
+	<string id="30001">Nejnovější položky</string>
 	<string id="30011">Předchozí</string>
 	<string id="30012">Další</string>
 	<string id="30030">Složka pro stahování</string>

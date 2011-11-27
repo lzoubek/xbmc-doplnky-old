@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30000">Size of search history</string>
+	<string id="30001">Latest items</string>
 	<string id="30011">Previous</string>
 	<string id="30012">Next</string>
 	<string id="30030">Downloads</string>

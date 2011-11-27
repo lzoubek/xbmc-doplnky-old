@@ -33,12 +33,24 @@ __language__   = __addon__.getLocalizedString
 BASE_URL='http://www.videacesky.cz'
 
 def categories():
+	util.add_dir(__addon__.getLocalizedString(30001),{'top':BASE_URL+'/videozebricky/poslednich-50-videi'},util.icon('new.png'))
+	util.add_dir('Top 200',{'top':BASE_URL+'/videozebricky/top-100'},util.icon('top.png'))
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	data = util.request(BASE_URL)
 	data = util.substr(data,'<ul id=\"headerMenu2\">','</ul>')
 	pattern = '<a href=\"(?P<url>[^\"]+)(.+?)>(?P<name>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
 		util.add_dir(m.group('name'),{'cat':m.group('url')})
+
+def list_top(page):
+	data = util.substr(page,'<div class=\"postContent','</ul>')
+	pattern = '<li>[^<]*<a href="(?P<url>[^\"]+)[^>]*>(?P<name>[^<]+)'
+	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
+		util.add_video(
+			m.group('name'),
+			{'play':m.group('url')},
+			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':m.group('url')}}
+		)
 
 def list_content(page):
 	data = util.substr(page,'<div class=\"contentArea','<div class=\"pagination\">')
@@ -73,7 +85,7 @@ def play(url):
 	stream = resolve(url)
 	if stream:
 		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 
 def download(url,name):
@@ -89,6 +101,9 @@ def download(url,name):
 p = util.params()
 if p=={}:
 	categories()
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+if 'top' in p.keys():
+	list_top(util.request(p['top']))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 if 'cat' in p.keys():
 	list_content(util.request(p['cat']))
