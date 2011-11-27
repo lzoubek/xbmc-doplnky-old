@@ -88,8 +88,12 @@ class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 def search_list():
 	util.add_dir(__language__(30004),{'search-ulozto':''},util.icon('search.png'))
 	for what in util.get_searches(__addon__,'search_history_ulozto'):
-		util.add_dir(what,{'search-ulozto':what})
+		util.add_dir(what,{'search-ulozto':what},menuItems={xbmc.getLocalizedString(117):{'search-ulozto-remove':what}})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def search_remove(search):
+	util.remove_search(__addon__,'search_history_ulozto',search)
+	xbmc.executebuiltin('Container.Refresh')
 
 def search(what):
 	if what == '':

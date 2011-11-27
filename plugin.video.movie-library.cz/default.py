@@ -78,8 +78,12 @@ def furl(url):
 def search_list():
 	util.add_dir(__language__(30004),{'search':''},util.icon('search.png'))
 	for what in util.get_searches(__addon__,'search_history'):
-		util.add_dir(what,{'search':what})
+		util.add_dir(what,{'search':what},menuItems={xbmc.getLocalizedString(117):{'search-remove':what}})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def search_remove(search):
+	util.remove_search(__addon__,'search_history',search)
+	xbmc.executebuiltin('Container.Refresh')
 
 def categories():
 	util.add_dir(__language__(30003),{'search-list':''},util.icon('search.png'))
@@ -265,9 +269,13 @@ if 'search-list' in p.keys():
 	search_list()
 if 'search' in p.keys():
 	search(p['search'])
+if 'search-remove' in p.keys():
+	search_remove(p['search-remove'])
 if 'search-ulozto-list' in p.keys():
 	ulozto.search_list()
 if 'search-ulozto' in p.keys():
 	ulozto.search(p['search-ulozto'])
 if 'list-ulozto' in p.keys():
 	ulozto.list_page(p['list-ulozto'])
+if 'search-ulozto-remove' in p.keys():
+	ulozto.search_remove(p['search-ulozto-remove'])
