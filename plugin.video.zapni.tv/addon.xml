@@ -18,5 +18,6 @@
     <description lang="en">Watch online content from zapnitv.biz</description>
     <description lang="cs">Sledujte online obsah ze servru zapnitv.biz</description>
     <platform>all</platform>
+    <broken>Dopněk nepřehrává většinu videí a jeho vývoj a údržba je náročná a bez podpory provozovatele zapni.tv komplikovaná. Doplněk bude odstraněn.</broken>
   </extension>
 </addon>
