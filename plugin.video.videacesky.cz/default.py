@@ -54,12 +54,14 @@ def list_top(page):
 
 def list_content(page):
 	data = util.substr(page,'<div class=\"contentArea','<div class=\"pagination\">')
-	pattern = '<h\d class=\"postTitle\"><a href=\"(?P<url>[^\"]+)(.+?)<span>(?P<name>[^<]+)</span></a>(.+?)<div class=\"postContent\">[^<]+<a[^>]+[^<]+<img src=\"(?P<img>[^\"]+)'
+	pattern = '<h\d class=\"postTitle\"><a href=\"(?P<url>[^\"]+)(.+?)<span>(?P<name>[^<]+)</span></a>(.+?)<div class=\"postContent\">[^<]+<a[^>]+[^<]+<img src=\"(?P<img>[^\"]+)[^<]+</a>[^<]*<div class=\"obs\">[^>]+>(?P<plot>(.+?))</p>'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
+		plot = re.sub('<br[^>]*>','',m.group('plot'))
 		util.add_video(
 			m.group('name'),
 			{'play':m.group('url')},
 			m.group('img'),
+			infoLabels={'plot':plot},
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':m.group('url')}}
 		)
 	data = util.substr(page,'<div class=\"pagination\">','</div>')
