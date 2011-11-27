@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<string id="30000">Size of search history</string>
+	<string id="30011">Previous</string>
+	<string id="30012">Next</string>
+	<string id="30030">Downloads</string>
+	<string id="30031">Please setup downloads folder</string>
+	<string id="30032">Notify when downloading</string>
+	<string id="30033"> - display notification every</string>
+	<string id="30034">10%</string>
+	<string id="30035">5%</string>
+	<string id="30036">1%</string>
+</strings>

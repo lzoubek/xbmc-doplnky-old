@@ -33,6 +33,7 @@ __language__   = __addon__.getLocalizedString
 BASE_URL='http://www.videacesky.cz'
 
 def categories():
+	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	data = util.request(BASE_URL)
 	data = util.substr(data,'<ul id=\"headerMenu2\">','</ul>')
 	pattern = '<a href=\"(?P<url>[^\"]+)(.+?)>(?P<name>[^<]+)'
@@ -43,7 +44,12 @@ def list_content(page):
 	data = util.substr(page,'<div class=\"contentArea','<div class=\"pagination\">')
 	pattern = '<h\d class=\"postTitle\"><a href=\"(?P<url>[^\"]+)(.+?)<span>(?P<name>[^<]+)</span></a>(.+?)<div class=\"postContent\">[^<]+<a[^>]+[^<]+<img src=\"(?P<img>[^\"]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
-		util.add_video(m.group('name'),{'play':m.group('url')},m.group('img'))
+		util.add_video(
+			m.group('name'),
+			{'play':m.group('url')},
+			m.group('img'),
+			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':m.group('url')}}
+		)
 	data = util.substr(page,'<div class=\"pagination\">','</div>')
 	m = re.search('<li class=\"info\"><span>([^<]+)',data)
 	n = re.search('<li class=\"prev\"[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)',data)
@@ -54,19 +60,31 @@ def list_content(page):
 		if not k == None:
 			util.add_dir('%s - %s' % (m.group(1),k.group('name')),{'cat':k.group('url')})
 	
-def play(url):
+def resolve(url):
 	data = util.substr(util.request(url),'<div class=\"postContent\"','</div>')
 	m = re.search('file=(?P<url>[^\&]+)',data,re.IGNORECASE | re.DOTALL)
 	if not m == None:
 		youtube.__eurl__ = 'http://www.videacesky.cz/wp-content/plugins/jw-player-plugin-for-wordpress/player.swf'
 		streams = resolver.resolve(m.group('url'))
 		if not streams == None and len(streams)>0:
-			stream = streams[0]
-			print 'Sending %s to player' % stream
-			li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	print 'not resolved'
-		
+			return streams[0]
+
+def play(url):
+	stream = resolve(url)
+	if stream:
+		print 'Sending %s to player' % stream
+		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+
+def download(url,name):
+	downloads = __addon__.getSetting('downloads')
+	if '' == downloads:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
+		return
+	stream = resolve(url)
+	if stream:
+		name+='.flv'
+		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
@@ -77,3 +95,5 @@ if 'cat' in p.keys():
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 if 'play' in p.keys():
 	play(p['play'])
+if 'download' in p.keys():
+	download(p['download'],p['name'])
