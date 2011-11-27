@@ -45,8 +45,7 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history',what,maximum)
-		data = util.post(BASE_URL+'hledej',{'hledej':what})
-		return list_page(data)
+		return list(BASE_URL+'hledej?hledej='+urllib.quote(what))
 def furl(url):
 	if url.startswith('http'):
 		return url
@@ -89,9 +88,10 @@ def tag_add():
 			xbmc.executebuiltin('Container.Refresh')
 
 def list(url):
-	return list_page(util.request(url))
+	print url
+	return list_page(util.request(url),url)
 
-def list_page(data):
+def list_page(data,url):
 	for m in re.finditer('<div class=\"row\"(.+?)<a href=\"(?P<url>[^\"]+)(.+?)src=\"(?P<logo>[^\"]+)(.+?)<h1>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
 		iurl = furl(m.group('url'))
 		util.add_video(m.group('name'),
@@ -99,6 +99,18 @@ def list_page(data):
 			logo=furl(m.group('logo')),
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
+	prev = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/old_videa.png',data,re.IGNORECASE | re.DOTALL )
+	navurl = url
+	index = url.find('?')
+	if index > 0:
+		navurl = url[:index]
+	if prev:
+		print prev.group('url')
+		util.add_dir(__addon__.getLocalizedString(30007),{'list':navurl+prev.group('url')},util.icon('prev.png'))
+	next = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/new_videa.png',data,re.IGNORECASE | re.DOTALL )
+	if next:
+		print next.group('url')
+		util.add_dir(__addon__.getLocalizedString(30008),{'list':navurl+next.group('url')},util.icon('next.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
