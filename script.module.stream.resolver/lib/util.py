@@ -65,7 +65,6 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
         liz.setInfo( type='Video', infoLabels=infoLabels )
 	items = []
 	for mi in menuItems.keys():
-		print menuItems[mi]
 		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
 	if len(items) > 0:
 		liz.addContextMenuItems(items)
@@ -78,7 +77,6 @@ def add_local_dir(name,url,logo='',infoLabels={},menuItems={}):
         liz.setInfo( type='Video', infoLabels=infoLabels )
 	items = []
 	for mi in menuItems.keys():
-		print menuItems[mi]
 		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
 	if len(items) > 0:
 		liz.addContextMenuItems(items)
@@ -223,13 +221,16 @@ def download(addon,filename,url,local):
 		notifyPercent = 10
 	if int(notifyEvery) == 1:
 		notifyPercent = 5
-	def callback(percent,speed,filename):
+	def callback(percent,speed,est,filename):
 		if percent == 0 and speed == 0:
 			xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(13413).encode('utf-8'),filename,icon))
 			return
 		if notify:
 			if percent > 0 and percent % notifyPercent == 0:
-				message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s' %speed
+				esTime = '%ss' % est
+				if est>60:
+					esTime = '%sm' % int(est/60)
+				message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s %s' % (speed,esTime)
 				xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)'%(message.encode('utf-8'),filename,icon))
 
 	downloader = Downloader(callback)
@@ -259,7 +260,7 @@ class Downloader(object):
 			filename = os.path.basename(local)
 		self.filename = filename
 		if self.callback:
-			self.callback(0,0,filename)
+			self.callback(0,0,0,filename)
 		socket.setdefaulttimeout(60)
 		opener = MyURLopener()
 		try:
@@ -279,11 +280,11 @@ class Downloader(object):
 	def dlProgress(self,count, blockSize, totalSize):
 		if count % self.gran == 0 and not count == 0:
 			percent = int(count*blockSize*100/totalSize)
-			downloaded = int(count*blockSize)
 			newTime = time.time()
 			diff = newTime - self.init_time
 			self.init_time = newTime
 			speed = int(((1/diff) * blockSize * self.gran )/1024)
+			est = int((totalSize - int(count*blockSize))/1024/speed)
 			if self.callback and not self.percent == percent:
-				self.callback(percent,speed,self.filename)
+				self.callback(percent,speed,est,self.filename)
 			self.percent=percent
