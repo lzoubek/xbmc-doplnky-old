@@ -1,3 +1,9 @@
+[B]1.1.2:[/B]
+- opraveno načítání metadat o filmech
+- opravena chyba doplňku při listování určitých filmů
+- přidáno vyhledávání a listování nad tagy [tag]
+- opraveno stránkování
+- přidána možnost mazat v historii hledání
 [B]1.1.1:[/B]
 - opraveno nefunkční stahování na windows
 - opraveno: je zobrazena chyba v případě kdy movie-library odkazuje na
