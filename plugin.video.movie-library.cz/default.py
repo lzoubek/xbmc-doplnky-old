@@ -111,27 +111,29 @@ def parse_page(page,url):
 	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)</a>(?P<data>.+?)/td></tr>'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
 		info = m.group('data')
-		year = ''
+		year = 0
 		plot = ''
 		genre = ''
 		lang = ''
 		rating = 0
 		for q in re.finditer('<img src=\"(.+?)flags/(?P<lang>[^\.]+)\.png\"',info):
 			lang += ' [%s]' % q.group('lang')
-		s  = re.search('(.*?)<br />(<div(.+?)</div></div>)?(?P<genre>.*?)<br />(?P<year>.*?)<br />(?P<plot>[^<]+)',info)
+		s  = re.search('<div style=\"color[^<]+</div>(?P<genre>.*?)<br[^>]*>(?P<year>.*?)<',info)
 		if s:
 			genre = s.group('genre')
 			try:
 				year = int(re.sub(',.*','',s.group('year')))
 			except:
 				pass
-			plot = s.group('plot')
 		r = re.search('<div class=\"ratingval\"(.+?)width:(?P<rating>\d+)px',info)
 		if r:
 			try:
 				rating = float(r.group('rating'))/5
 			except:
 				pass
+		t = re.search('<div style=\"margin-top:5px\">(?P<plot>[^<]+)',info)
+		if t:
+			plot = t.group('plot')
 		util.add_dir(m.group('name')+lang,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
 	navurl = url
 	index = url.find('?')
