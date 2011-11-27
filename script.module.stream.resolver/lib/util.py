@@ -62,7 +62,10 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
 	infoLabels['Title'] = name
 	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
-        liz.setInfo( type='Video', infoLabels=infoLabels )
+        try:
+		liz.setInfo( type='Video', infoLabels=infoLabels )
+	except:
+		trackeback.print_exc()
 	items = []
 	for mi in menuItems.keys():
 		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
