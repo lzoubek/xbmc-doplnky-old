@@ -1,3 +1,5 @@
+[B]1.1.3:[/B]
+- opraveno listování videí u filmů #36
 [B]1.1.2:[/B]
 - opraveno načítání metadat o filmech
 - opravena chyba doplňku při listování určitých filmů

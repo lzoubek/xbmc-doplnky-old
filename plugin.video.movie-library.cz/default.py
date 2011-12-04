@@ -194,7 +194,7 @@ def parse_item(page):
 
 	# search for movie items
 	data = util.substr(page,'Download:</h3>','<div id=\"login-password-box')
-	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></abbr></div><div[^>]+>(?P<size>[^<]+)'
+	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<abbr[^>]*>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
 		iurl = furl(m.group('url'))
 		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
