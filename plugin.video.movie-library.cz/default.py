@@ -34,6 +34,7 @@ import util,ulozto
 
 ulozto.__addon__ = __addon__
 ulozto.__language__ = __language__
+ulozto.__scriptid__ = __scriptid__
 
 BASE_URL='http://movie-library.cz/'
 
@@ -58,6 +59,7 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history',what,maximum)
+		util.reportUsage(__scriptid__,__scriptid__+'/search')
 		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+'))
 		response = urllib2.urlopen(req)
 		data = response.read()
@@ -206,6 +208,7 @@ def parse_item(page):
 def play(url):
 	stream = resolve(url)
 	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
@@ -250,10 +253,12 @@ def download(url,name):
 		return
 	stream = resolve(url)
 	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	categories()
 if 'cat' in p.keys():
 	list_page(p['cat'])
