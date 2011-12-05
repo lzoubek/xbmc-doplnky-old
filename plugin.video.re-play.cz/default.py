@@ -54,6 +54,7 @@ def play(url):
 		youtube.__eurl__ = url
 		streams = resolver.resolve(m.group('url'))
 		if not streams == None and len(streams)>0:
+			util.reportUsage(__scriptid__,__scriptid__+'/play')
 			stream = streams[0]
 			print 'Sending %s to player' % stream
 			li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
@@ -62,6 +63,7 @@ def play(url):
 
 p = util.params()
 if p=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&id=%s)' % __scriptid__)
 	list_page()
 if 'page' in p.keys():
 	list_page(p['page'])
