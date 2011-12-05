@@ -30,4 +30,5 @@ __language__   = __addon__.getLocalizedString
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
 
 import serialy
+serialy.__scriptid__ = __scriptid__
 serialy.handle(util.params())
