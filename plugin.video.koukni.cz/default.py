@@ -116,6 +116,7 @@ def list_page(data,url):
 def play(url):
 	stream = resolve(url)
 	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
@@ -140,10 +141,12 @@ def download(url,name):
 	stream = resolve(url)
 	if stream:
 		name+='.mp4'
+		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	root()
 if 'list' in p.keys():
 	list(p['list'])
