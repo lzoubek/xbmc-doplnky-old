@@ -38,7 +38,7 @@ def _request(url,info):
 	req.add_header('User-Agent',info['useragent'])
 	response = urllib2.urlopen(req)
 	data = response.read()
-	if 200 == response.getcode():
+	if 200 == response.code:
 		print '[google] Usage has been submitted'
 	response.close()
 
