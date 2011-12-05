@@ -88,6 +88,7 @@ def play(base_name,url):
 		xbmcgui.Dialog().ok(base_name,_addon_.getLocalizedString(30001))
 		return
 	if not streams == None:
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % streams
 		li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)

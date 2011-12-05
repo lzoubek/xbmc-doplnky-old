@@ -31,6 +31,7 @@ import filmy,divx,serialy,common
 import util
 
 common._addon_ = __addon__
+common.__scriptid__ = __scriptid__
 divx.__addon__ = __addon__
 divx.__language__ = __language__
 filmy.__addon__ = __addon__
@@ -54,9 +55,7 @@ def root():
 
 p = util.params()
 if p=={}:
-	host = 'jezzovo.net'
-	tc = 'UA-3971432-1'
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s/start)' % (__scriptid__,host,tc,__scriptid__))
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	root()
 if 'server' in p.keys():
 	server(p)
