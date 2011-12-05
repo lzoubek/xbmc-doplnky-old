@@ -107,6 +107,10 @@ def _create_plugin_url(params):
 		url.append(key+'='+value.encode('hex',)+'&')
 	return sys.argv[0]+'?'+''.join(url)
 	
+def reportUsage(addonid,action):
+	host = 'xbmc-doplnky.googlecode.com'
+	tc = 'UA-3971432-4'
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (addonid,host,tc,action))
 
 def params():
         param={}
