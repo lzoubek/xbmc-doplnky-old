@@ -20,7 +20,7 @@
 # *
 # */
 import simplejson as json
-import xbmc,os,random,sys
+import xbmc,os,random,sys,traceback
 
 import google
 class TrackerSettings(object):
@@ -98,26 +98,27 @@ class TrackerInfo(object):
 
 	def getSystemInfo(self):
 		# some stupid defaults
-		info = {'resolution':'640x480','language':'en','useragent':self._getUserAgent('Unknown','en')}
+		info = {'colordepth':'24-bit','resolution':'640x480','language':'en','useragent':self._getUserAgent('Unknown','en')}
 		
 		# get info via JSON RPC, try to be compatible with both dharma & eden APIs
 		try:
-			data = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "System.GetInfoLabels", "id":1,"params": ["System.BuildVersion","System.ScreenHeight","System.ScreenWidth","System.KenrelVersion","System.AddonTitle(script.mpdc)"]}')
+			data = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "System.GetInfoLabels", "id":1,"params": ["System.BuildVersion","System.ScreenHeight","System.ScreenWidth","System.KenrelVersion","System.Language"]}')
+			data = json.loads(data)
 		except:
 			pass
-		try:	
-			data = xbmc.executeJSONRPC('{"jsonrpc" : "2.0", "method": "XBMC.GetInfoLabels", "id" :1, "params": {"labels" : ["System.BuildVersion","System.ScreenHeight","System.ScreenWidth","System.KenrelVersion","System.AddonTitle(script.mpdc)","System.Language"]}}')
+		try:
+			if not 'result' in data:
+				data = xbmc.executeJSONRPC('{"jsonrpc" : "2.0", "method": "XBMC.GetInfoLabels", "id" :1, "params": {"labels" : ["System.BuildVersion","System.ScreenHeight","System.ScreenWidth","System.KenrelVersion","System.Language"]}}')
+				data = json.loads(data)
 		except:
 			pass
 		# process results
 		try:
-			data = json.loads(data)
 			info['resolution'] = '%sx%s' %(data['result']['System.ScreenWidth'],data['result']['System.ScreenHeight'])
 			info['language'] = getLanguageCode(data['result']['System.Language'])
 			info['useragent'] = self._getUserAgent(data['result']['System.BuildVersion'],info['language'])
-			info['colordepth'] = '24-bit'
 		except:
-			pass
+			traceback.print_exc()
 		return info
 
 
