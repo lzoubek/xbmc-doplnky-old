@@ -86,6 +86,7 @@ def resolve(url):
 def play(url):
 	stream = resolve(url)
 	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
@@ -97,11 +98,13 @@ def download(url,name):
 		return
 	stream = resolve(url)
 	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		name+='.flv'
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	categories()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 if 'top' in p.keys():
