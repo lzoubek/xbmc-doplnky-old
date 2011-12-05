@@ -82,7 +82,7 @@ def register(params):
 		sett.addAddon(params['id'],canReport,params['cond'])
 		sett.save()
 		print '[%s] addon %s registered with usage tracker' % (__scriptid__,params['id'])
-		return canReport
+	return canReport
 
 def params():
         param={}
