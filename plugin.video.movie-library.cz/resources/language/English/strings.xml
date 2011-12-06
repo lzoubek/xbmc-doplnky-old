@@ -25,5 +25,5 @@
 	<string id="30037">Downloads</string>
 
 	<string id="200">Captcha requested</string>
-	<string id="31000">Usage of plugin is tracked whenever you play or download video or search (both using movie-library or ulozto). We do NOT track what has been searched or played</string>
+	<string id="31000">Usage of plugin is tracked whenever you play or download video. We do NOT track what has been played</string>
 </strings>

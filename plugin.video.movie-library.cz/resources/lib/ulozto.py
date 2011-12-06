@@ -110,7 +110,6 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history_ulozto',what,maximum)
-		util.reportUsage(__scriptid__,__scriptid__+'/ulozto/search')
 		return list_page('http://www.ulozto.cz/hledej/?disclaimer=0&media=video&q='+urllib.quote(what))
 
 def list_page(url):

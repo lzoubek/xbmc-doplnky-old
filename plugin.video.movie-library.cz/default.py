@@ -59,7 +59,6 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history',what,maximum)
-		util.reportUsage(__scriptid__,__scriptid__+'/search')
 		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+'))
 		response = urllib2.urlopen(req)
 		data = response.read()
