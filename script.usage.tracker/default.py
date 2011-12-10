@@ -61,7 +61,15 @@ def trackUsage(params):
 		print '[%s] Unable to create addon instance for %s, invalid addon ID?!' % (__scriptid__,params['id'])
 		return
 	
+	if __addon__.getSetting('enabled') == 'false':
+		print '[%s] globally disabled by user settings' % __scriptid__
+		return
 	if register(params):
+		if __addon__.getSetting('ask-tracking') == 'true':
+			ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),__(30001),__(30002),__(30003))
+			if ret == 0:
+				print '[%s] reporting for %s disabled by user' % (__scriptid__,params['id'])
+				return
 		print '[%s] Tracking usage ...' % __scriptid__
 		sett = tracker.TrackerSettings(__addon__)
 		info = tracker.TrackerInfo().getSystemInfo()
@@ -75,9 +83,14 @@ def register(params):
 	sett = tracker.TrackerSettings(__addon__)
 	canReport = sett.canDoReport(params['id'])
 	if canReport == None:
-		# we ask user
-		ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),__(30001),__(30002),__(30003))
-		canReport = ret == 1	
+		ask = __addon__.getSetting('ask') == 'true'
+		if ask:
+			# we ask user
+			ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),__(30001),__(30002),__(30003))
+			canReport = ret == 1
+		else:
+			canReport = __addon__.getSetting('auto-answer') == '0'
+		
 		# register addon with result
 		sett.addAddon(params['id'],canReport,params['cond'])
 		sett.save()

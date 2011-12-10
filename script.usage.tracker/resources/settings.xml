@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<setting label="30050" type="bool" id="enabled" default="true" />
-	<setting label="30052" type="bool" id="task" default="true" visible="eq(-1,true)" />
+	<setting label="30052" type="bool" id="ask" default="true" visible="eq(-1,true)" />
 	<setting label="30053" type="enum" id="auto-answer"  lvalues="30004|30005" default="0" visible="eq(-1,false)" />
 	<setting label="30054" type="bool" id="ask-tracking"  default="false" visible="eq(-3,true)" />
 </settings>
