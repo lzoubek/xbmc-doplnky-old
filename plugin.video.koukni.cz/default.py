@@ -130,6 +130,8 @@ def play(url):
 					player.setSubtitles(subs)
 
 def getSubtitles(data):
+	if __addon__.getSetting('subtitles') == 'false':
+		return ''
 	data = util.substr(data,'$f(\"a.player\",','</script>')
 	m = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
 	if m:
