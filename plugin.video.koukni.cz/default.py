@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2
+import re,os,urllib,urllib2,shutil,traceback
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util
 
 __scriptid__   = 'plugin.video.koukni.cz'
@@ -114,11 +114,41 @@ def list_page(data,url):
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def play(url):
-	stream = resolve(url)
+	stream,subs = resolve(url)
 	if stream:
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		if not subs == '':
+			player = xbmc.Player()
+			count = 0
+			max_count = 99
+			while not player.isPlaying() and count < max_count:
+				xbmc.sleep(200)
+				count+=1
+				if count < max_count:
+					player.setSubtitles(subs)
+
+def getSubtitles(data):
+	data = util.substr(data,'$f(\"a.player\",','</script>')
+	m = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+	if m:
+		subs = util.request(m.group('url'))
+		local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+		if not os.path.exists(local):
+			os.makedirs(local)
+		local = os.path.join(local,'subtitles.srt')
+		try:
+			f = open(local,'w')
+			f.write(util.request(m.group('url')))
+			f.close()
+		except:
+			traceback.print_exc()
+			return ''
+		return local
+	return ''
+
+
 
 def resolve(url):
 	util.init_urllib()
@@ -129,7 +159,7 @@ def resolve(url):
 		req.add_header('User-Agent',util.UA)
 		response = urllib2.urlopen(req)
 		response.close()
-		return response.geturl()
+		return (response.geturl(),getSubtitles(data))
 	xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 
 def download(url,name):
@@ -137,8 +167,10 @@ def download(url,name):
 	if '' == downloads:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
 		return
-	stream = resolve(url)
+	stream,subs = resolve(url)
 	if stream:
+		if not subs == '':
+			shutil.copyfile(subs,os.path.join(downloads,name+'.srt'))
 		name+='.mp4'
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
