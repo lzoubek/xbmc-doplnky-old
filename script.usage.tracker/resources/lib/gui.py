@@ -97,6 +97,8 @@ class MainWindow ( xbmcgui.WindowXMLDialog ) :
 				self.trSettings.save()
 				self._refresh_addons()
 				self.getControl(ADDONS).selectItem(selected_index)
+		elif controlId == 1000:
+			__addon__.openSettings()
 #		if str(controlId) in CLICK_ACTIONS:
 #			command = CLICK_ACTIONS[str(controlId)]
 #			print 'click action: '+command

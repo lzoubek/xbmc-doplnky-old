@@ -13,13 +13,25 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<texture border="40">ContentPanel.png</texture>
+			<texture>fanart.jpg</texture>
 		</control>
-        	<control type="label" id="1000">
+		<control type="button" id="1000">
+			<posx>1100</posx>
+			<posy>30</posy>
+			<width>150</width>
+			<height>40</height>
+			<align>center</align>
+			<onleft>1002</onleft>
+			<ondown>1003</ondown>
+			<texturenofocus>button-nofocus.png</texturenofocus>
+			<texturefocus>button-focus.png</texturefocus>
+			<label>5</label>
+		</control>
+        	<control type="label">
 			<description>textarea</description>
 			<posx>35</posx>
 			<posy>50</posy>
-			<width>700</width>
+			<width>1000</width>
 			<height>30</height>
 			<align>left</align>
 			<textcolor>white</textcolor>       
@@ -30,18 +42,31 @@
 			<posy>100</posy>
 			<width>550</width>
 			<height>650</height>
+			<control type="image">
+				<posx>-20</posx>
+				<posy>-20</posy>
+				<width>600</width>
+				<height>630</height>
+				<texture border="10">ContentPanel.png</texture>
+			</control>
 			<control type="list" id="1001">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>550</width>
 				<height>600</height>
 				<onright>1002</onright>
-				<onup>1000</onup>
-				<onleft>1000</onleft>
+				<onup>1001</onup>
 				<viewtype>list</viewtype>
 				<pagecontrol>1002</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="32">
+					  <control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>550</width>
+						<height>32</height>
+						<texture>MenuItemNF.png</texture>
+			 		 </control>
 					<control type="image">
 						<posx>500</posx>
 						<posy>0</posy>
@@ -80,7 +105,7 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>550</width>
-						<height>20</height>
+						<height>32</height>
 						<texture>MenuItemNF.png</texture>
 			 		 </control>
 			</itemlayout>
@@ -154,22 +179,29 @@
 		  
 	  </control>
 	  <control type="group">
-	  	<posx>610</posx>
-		<posy>60</posy>
+	  	<posx>630</posx>
+		<posy>100</posy>
 			<width>700</width>
 			<height>650</height>
 
 		<control type="image">
+			<posx>-20</posx>
+			<posy>-20</posy>
+			<width>660</width>
+			<height>200</height>
+			<texture border="10">ContentPanel.png</texture>
+		</control>
+		<control type="image">
 			<posx>0</posx>
-			<posy>40</posy>
-			<width>256</width>
-			<height>256</height>
+			<posy>0</posy>
+			<width>160</width>
+			<height>160</height>
 			<texture>$INFO[Container(1001).ListItem.Icon]</texture>
 		</control>
 		
 		<control type="label">
-			<posx>450</posx>
-			<posy>40</posy>
+			<posx>350</posx>
+			<posy>0</posy>
 			<width>360</width>
 			<height>30</height>
 			<align>right</align>
@@ -177,8 +209,8 @@
 			<label>SCRIPT204</label>
 		</control>
         	<control type="label">
-			<posx>460</posx>
-			<posy>40</posy>
+			<posx>360</posx>
+			<posy>0</posy>
 			<width>360</width>
 			<height>30</height>
 			<align>left</align>
@@ -187,8 +219,8 @@
 		</control>
         	
 		<control type="label">
-			<posx>450</posx>
-			<posy>70</posy>
+			<posx>350</posx>
+			<posy>30</posy>
 			<width>360</width>
 			<height>30</height>
 			<align>right</align>
@@ -196,8 +228,8 @@
 			<label>SCRIPT201</label>
 		</control>
         	<control type="label">
-			<posx>460</posx>
-			<posy>70</posy>
+			<posx>360</posx>
+			<posy>30</posy>
 			<width>360</width>
 			<height>30</height>
 			<align>left</align>
@@ -206,11 +238,12 @@
 		</control>
         	
 		<control type="button" id="1003">
-			<posx>375</posx>
-			<posy>110</posy>
+			<posx>285</posx>
+			<posy>70</posy>
 			<width>150</width>
 			<height>40</height>
 			<align>center</align>
+			<onup>1000</onup>
 			<onleft>1002</onleft>
 			<ondown>2002</ondown>
 			<texturenofocus>button-nofocus.png</texturenofocus>
@@ -218,11 +251,18 @@
 			<label>SCRIPT202</label>
 		</control>
 
+		<control type="image">
+			<posx>-20</posx>
+			<posy>240</posy>
+			<width>660</width>
+			<height>370</height>
+			<texture border="10">ContentPanel.png</texture>
+		</control>
 
         	<control type="label">
 			<description>textarea</description>
 			<posx>0</posx>
-			<posy>305</posy>
+			<posy>250</posy>
 			<width>360</width>
 			<height>30</height>
 			<align>left</align>
@@ -230,9 +270,8 @@
 			<label>SCRIPT200</label>
 		</control>
 		<control type="textbox" id="2001">
-			<description>My first text box control</description>
 			<posx>30</posx>
-			<posy>330</posy>
+			<posy>290</posy>
 			<width>580</width>
 			<height>300</height>
 			<pagecontrol>2002</pagecontrol>
@@ -241,7 +280,7 @@
 		<control type="scrollbar" id="2002">
 			<description>scroll bar indicator for lists</description>
 			<posx>610</posx>
-			<posy>330</posy>
+			<posy>290</posy>
 			<width>24</width>
 			<height>300</height>
 			<onleft>1002</onleft>

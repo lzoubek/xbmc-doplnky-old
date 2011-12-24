@@ -9,9 +9,9 @@
 	<string id="30006">Do you want to enable reporting for addon %s?</string>
 	<string id="30007">Do you want to disable reporting for addon %s?</string>
 	<string id="30050">Global: enable usage reporting and integration with other addons</string>
-	<string id="30052">Ask for confimation of usage reporting?</string>
-	<string id="30053"> - Automatic answer: enable usage reporting for addon?</string>
-	<string id="30054">Ask everytime addon attemts to report usage?</string>
+	<string id="30052">Ask for confimation of usage reporting</string>
+	<string id="30053"> - Enable usage reporting for addon automatically</string>
+	<string id="30054">Ask anytime addon attemts to report usage</string>
 	<string id="200">Reporting details:</string>
 	<string id="201">Reporting enabled:</string>
 	<string id="202">Change</string>
