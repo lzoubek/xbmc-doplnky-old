@@ -27,7 +27,8 @@ def supports(url):
 def _get_file_url(post_url):
 	request = urllib.urlencode({'captcha_nb':__addon__.getSetting('captcha-id'),'captcha_user':__addon__.getSetting('captcha-key')})
 	defrhandler = urllib2.HTTPRedirectHandler
-	redirecthandler = MyHTTPRedirectHandler()
+	redirecthandler = UloztoHTTPRedirectHandler()
+	redirecthandler.location = None
 	opener = urllib2.build_opener(redirecthandler)
 	urllib2.install_opener(opener)
 	req = urllib2.Request(post_url,request)
@@ -38,6 +39,12 @@ def _get_file_url(post_url):
 		pass
 	stream = redirecthandler.location
 	urllib2.install_opener(urllib2.build_opener(defrhandler))
+	if stream == None:
+		util.error('[uloz.to] cannot resolve stream url, server did not redirected us')
+		util.info('[uloz.to] POST url:'+post_url)
+		util.info('[uloz.to] final url:'+resp.geturl())
+		util.info('[uloz.to] trying to pass final url to player ..')
+		return [resp.geturl()]
 	if stream.find('full=y') > -1:
 		util.error('[uloz.to] - out of free download slots, use payed account or try later')
 		return -1
@@ -78,12 +85,13 @@ def url(url):
 def _regex(url):
 	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
 
-class MyHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
+class UloztoHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
 	def http_error_302(self, req, fp, code, msg, headers):
 		self.location = headers.getheader('Location')
 		# this will lead to exception when 302 is recieved
 		# exactly what we want - not to open url that's being redirected to
+	http_error_301 = http_error_303 = http_error_307 = http_error_302
 
 def search_list():
 	util.add_dir(__language__(30004),{'search-ulozto':''},util.icon('search.png'))
