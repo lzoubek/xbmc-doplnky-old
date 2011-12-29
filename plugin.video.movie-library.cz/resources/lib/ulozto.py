@@ -19,7 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,urllib,urllib2,random,util,sys,os
+import re,urllib,urllib2,random,util,sys,os,traceback
 import xbmc,xbmcplugin,xbmcgui
 def supports(url):
 	return not _regex(url) == None
@@ -35,16 +35,17 @@ def _get_file_url(post_url):
 	req.add_header('User-Agent',util.UA)
 	try:
 		resp = urllib2.urlopen(req)
-	except urllib2.HTTPError:
+	except RedirectionException:
+		# this is what we need, our redirect handler raises this
 		pass
-	stream = redirecthandler.location
-	urllib2.install_opener(urllib2.build_opener(defrhandler))
-	if stream == None:
+	except urllib2.HTTPError:
+		# this is not OK, something went wrong
+		traceback.print_exc()
 		util.error('[uloz.to] cannot resolve stream url, server did not redirected us')
 		util.info('[uloz.to] POST url:'+post_url)
-		util.info('[uloz.to] final url:'+resp.geturl())
-		util.info('[uloz.to] trying to pass final url to player ..')
-		return [resp.geturl()]
+		return
+	stream = redirecthandler.location
+	urllib2.install_opener(urllib2.build_opener(defrhandler))
 	if stream.find('full=y') > -1:
 		util.error('[uloz.to] - out of free download slots, use payed account or try later')
 		return -1
@@ -89,9 +90,13 @@ class UloztoHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
 	def http_error_302(self, req, fp, code, msg, headers):
 		self.location = headers.getheader('Location')
+		raise RedirectionException()
 		# this will lead to exception when 302 is recieved
 		# exactly what we want - not to open url that's being redirected to
 	http_error_301 = http_error_303 = http_error_307 = http_error_302
+
+class RedirectionException(Exception):
+	pass
 
 def search_list():
 	util.add_dir(__language__(30004),{'search-ulozto':''},util.icon('search.png'))
