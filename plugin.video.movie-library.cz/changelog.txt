@@ -1,3 +1,7 @@
+[B]1.1.5:[/B]
+- oprava kriticke chyby, kdy se plugin diky neopsání kódu obrázku stane
+nefunkčním
+- přidán Usage Tracking
 [B]1.1.3:[/B]
 - opraveno listování videí u filmů #36
 [B]1.1.2:[/B]
