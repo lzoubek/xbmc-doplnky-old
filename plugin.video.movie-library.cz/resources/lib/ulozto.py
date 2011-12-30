@@ -25,7 +25,11 @@ def supports(url):
 	return not _regex(url) == None
 
 def _get_file_url(post_url):
-	request = urllib.urlencode({'captcha_nb':__addon__.getSetting('captcha-id'),'captcha_user':__addon__.getSetting('captcha-key')})
+	code = __addon__.getSetting('captcha-key')
+	if len(code) < 1:
+		# empty code in settings? set something to query user for beeter code
+		code = 'abcd'
+	request = urllib.urlencode({'captcha_nb':__addon__.getSetting('captcha-id'),'captcha_user':code})
 	defrhandler = urllib2.HTTPRedirectHandler
 	redirecthandler = UloztoHTTPRedirectHandler()
 	redirecthandler.location = None
