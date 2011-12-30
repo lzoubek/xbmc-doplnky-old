@@ -30,6 +30,16 @@
 				<align>center</align>
 				<label>SCRIPT200</label>
 			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>100</posy>
+				<width>300</width>
+				<height>80</height>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<align>center</align>
+				<label>SCRIPT201</label>
+			</control>
 
 			<control type="image" id="101">
 				<posx>50</posx>
