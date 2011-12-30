@@ -60,6 +60,8 @@ def search_list():
 
 def root():
 	util.add_dir(__language__(30003),{'search-list':''},util.icon('search.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
+	util.add_dir(__language__(30010),{'list':furl('new')},util.icon('new.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
+	util.add_dir(__language__(30011),{'list':furl('nej')},util.icon('top.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	tags = util.get_searches(__addon__,'tags')
 	if tags == []:
