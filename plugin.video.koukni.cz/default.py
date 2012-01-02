@@ -21,7 +21,7 @@
 # */
 
 import re,os,urllib,urllib2,shutil,traceback
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util
+import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util,search
 
 __scriptid__   = 'plugin.video.koukni.cz'
 __scriptname__ = 'koukni.cz'
@@ -30,36 +30,17 @@ __language__   = __addon__.getLocalizedString
 
 BASE_URL='http://koukni.cz/'
 
-def search(what):
-	if what == '':
-		kb = xbmc.Keyboard('',__language__(30003),False)
-		kb.doModal()
-		if kb.isConfirmed():
-			what = kb.getText()
-	if not what == '':
-		maximum = 20
-		try:
-			maximum = int(__addon__.getSetting('keep-searches'))
-		except:
-			util.error('Unable to parse convert addon setting to number')
-			pass
+def _search_cb(what):
+	return list(BASE_URL+'hledej?hledej='+urllib.quote(what))
 
-		util.add_search(__addon__,'search_history',what,maximum)
-		return list(BASE_URL+'hledej?hledej='+urllib.quote(what))
 def furl(url):
 	if url.startswith('http'):
 		return url
 	url = url.lstrip('./')
 	return BASE_URL+url
 
-def search_list():
-	util.add_dir(__language__(30004),{'search':''},util.icon('search.png'))
-	for what in util.get_searches(__addon__,'search_history'):
-		util.add_dir(what,{'search':what})
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
 def root():
-	util.add_dir(__language__(30003),{'search-list':''},util.icon('search.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
+	search.item()
 	util.add_dir(__language__(30010),{'list':furl('new')},util.icon('new.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	util.add_dir(__language__(30011),{'list':furl('nej')},util.icon('top.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
@@ -90,7 +71,6 @@ def tag_add():
 			xbmc.executebuiltin('Container.Refresh')
 
 def list(url):
-	print url
 	return list_page(util.request(url),url)
 
 def list_page(data,url):
@@ -190,11 +170,8 @@ if 'play' in p.keys():
 	play(p['play'])
 if 'download' in p.keys():
 	download(p['download'],p['name'])
-if 'search' in p.keys():
-	search(p['search'])
-if 'search-list' in p.keys():
-	search_list()
 if 'tag-remove' in p.keys():
 	tag_remove(p['tag-remove'])
 if 'tag-add' in p.keys():
 	tag_add()
+search.main(__addon__,'search_history',p,_search_cb)

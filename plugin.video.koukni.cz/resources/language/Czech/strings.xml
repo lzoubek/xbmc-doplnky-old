@@ -2,8 +2,6 @@
 <strings>
 	<string id="30000">Počet zapamatovaných hledání</string>
 	<string id="30001">Video není dostupné, zkontrolujte,[CR]zda funguje přehrávání na webu.</string>
-	<string id="30003">[B]Vyhledat[/B]</string>
-	<string id="30004">[B]Nové hledání[/B]</string>
 	<string id="30005">Přidat tag</string>
 	<string id="30006">Odebrat tag</string>
 	<string id="30007">Předchozí</string>
