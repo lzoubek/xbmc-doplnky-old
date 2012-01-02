@@ -103,7 +103,7 @@ class RedirectionException(Exception):
 	pass
 
 def search_list():
-	util.add_dir(__language__(30004),{'search-ulozto':''},util.icon('search.png'))
+	util.add_dir(util.__lang__(30004),{'search-ulozto':''},util.icon('search.png'))
 	for what in util.get_searches(__addon__,'search_history_ulozto'):
 		util.add_dir(what,{'search-ulozto':what},menuItems={xbmc.getLocalizedString(117):{'search-ulozto-remove':what}})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -114,7 +114,7 @@ def search_remove(search):
 
 def search(what):
 	if what == '':
-		kb = xbmc.Keyboard('',__language__(30003),False)
+		kb = xbmc.Keyboard('',util.__lang__(30003),False)
 		kb.doModal()
 		if kb.isConfirmed():
 			what = kb.getText()

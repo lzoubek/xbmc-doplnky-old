@@ -30,7 +30,7 @@ __language__   = __addon__.getLocalizedString
 
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
 
-import util,ulozto
+import util,ulozto,search
 
 ulozto.__addon__ = __addon__
 ulozto.__language__ = __language__
@@ -44,21 +44,7 @@ def icon(icon):
 		return 'DefaultFolder.png'
 	return icon_file
 
-def search(what):
-	if what == '':
-		kb = xbmc.Keyboard('',__language__(30003),False)
-		kb.doModal()
-		if kb.isConfirmed():
-			what = kb.getText()
-	if not what == '':
-		maximum = 20
-		try:
-			maximum = int(__addon__.getSetting('keep-searches'))
-		except:
-			util.error('Unable to parse convert addon setting to number')
-			pass
-
-		util.add_search(__addon__,'search_history',what,maximum)
+def _search_cb(what):
 		req = urllib2.Request(BASE_URL+'search.php?q='+what.replace(' ','+'))
 		response = urllib2.urlopen(req)
 		data = response.read()
@@ -76,18 +62,8 @@ def furl(url):
 	url = url.lstrip('./')
 	return BASE_URL+url
 
-def search_list():
-	util.add_dir(__language__(30004),{'search':''},util.icon('search.png'))
-	for what in util.get_searches(__addon__,'search_history'):
-		util.add_dir(what,{'search':what},menuItems={xbmc.getLocalizedString(117):{'search-remove':what}})
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def search_remove(search):
-	util.remove_search(__addon__,'search_history',search)
-	xbmc.executebuiltin('Container.Refresh')
-
 def categories():
-	util.add_dir(__language__(30003),{'search-list':''},util.icon('search.png'))
+	search.item()
 	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
@@ -269,12 +245,6 @@ if 'play' in p.keys():
 	play(p['play'])
 if 'download' in p.keys():
 	download(p['download'],p['name'])
-if 'search-list' in p.keys():
-	search_list()
-if 'search' in p.keys():
-	search(p['search'])
-if 'search-remove' in p.keys():
-	search_remove(p['search-remove'])
 if 'search-ulozto-list' in p.keys():
 	ulozto.search_list()
 if 'search-ulozto' in p.keys():
@@ -283,3 +253,4 @@ if 'list-ulozto' in p.keys():
 	ulozto.list_page(p['list-ulozto'])
 if 'search-ulozto-remove' in p.keys():
 	ulozto.search_remove(p['search-ulozto-remove'])
+search.main(__addon__,'search_history',p,_search_cb)
