@@ -33,12 +33,12 @@ def url(url):
 		request = urllib.urlencode({'video_id':m.group('id'),'el':'embedded','asv':'3','hl':'en_US','eurl':__eurl__})
 		data = util.request('http://www.youtube.com/get_video_info?%s' % request)
 		data = urllib.unquote(util.decode_html(data))
-		if data.find('status=fail') > 0:
-			util.error('youtube resolver failed:'+data)
+		if data.find('status=fail') > -1:
+			util.error('youtube resolver failed: '+data+' videoid:'+m.group('id'))
 		else:
-			stream = re.search('url_encoded_fmt_stream_map=url=(.+?)fallback_host',data,re.IGNORECASE | re.DOTALL).group(1)
+			stream = re.search('url_encoded_fmt_stream_map=url=(.+?)fallback_host',data,re.IGNORECASE | re.DOTALL).group(1)			
 			return [urllib.unquote(stream)]
 
 def _regex(url):
-	return re.search('https?\://www\.youtube\.com/(watch\?v=|v/|embed/)(?P<id>.+?)$',url,re.IGNORECASE | re.DOTALL)
+	return re.search('https?\://www\.youtube\.com/(watch\?v=|v/|embed/)(?P<id>.+?)($|&)',url,re.IGNORECASE | re.DOTALL)
 
