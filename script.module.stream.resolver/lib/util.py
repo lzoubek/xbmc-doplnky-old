@@ -25,7 +25,7 @@ from htmlentitydefs import name2codepoint as n2cp
 import simplejson as json
 UA='Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 
-__addon__      = xbmcaddon.Addon(id='script.module.urlresolver')
+__addon__      = xbmcaddon.Addon(id='script.module.stream.resolver')
 __lang__   = __addon__.getLocalizedString
 ##
 # initializes urllib cookie handler
