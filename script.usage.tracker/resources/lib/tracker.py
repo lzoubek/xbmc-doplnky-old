@@ -87,10 +87,10 @@ class TrackerInfo(object):
 			version = version[:sp]
 		if platform.startswith('linux'):
 			return 'XBMC/%s (X11; U; Linux i686; %s)' % (version,language)
-		if platform.startswith('Win'):
+		if platform.startswith('win'):
 			return 'XBMC/%s (Windows; U; Windows NT; %s)' % (version,language)
 		if platform.startswith('darwin'):
-			return 'XBMC/%s (Macintosh; U; Intel Mac OS X; %s)' % (version,language)
+			return 'XBMC/%s (Mac; U; Intel Mac OS X; %s)' % (version,language)
 		else:
 			print '[script.usage.tracker] Unknown platform %s, please report a bug, plugin needs to be fixed' % sys.platform
 			return 'XBMC/%s (X11; U; Linux i686; %s)' % (version,language)
