@@ -1,2 +1,4 @@
-[B]1.0.0:[/B]
+[B]0.9.1:[/B]
+- fixed detecting windows platform
+[B]0.9.0:[/B]
 Initial version
