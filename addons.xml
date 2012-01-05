@@ -2,11 +2,11 @@
 <addons>
 <addon id="plugin.video.zkouknito.cz"
        name="zkouknito.cz"
-       version="1.0.0"
-       provider-name="lzoubek">
+       version="1.0.1"
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.0.5"/>
+    <import addon="script.module.stream.resolver" version="1.1.5"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -42,6 +42,28 @@
     <description lang="cs">Sledujte online obsah ze servru zapnitv.biz</description>
     <platform>all</platform>
     <broken>Dopněk nepřehrává většinu videí a jeho vývoj a údržba je náročná a bez podpory provozovatele zapni.tv komplikovaná. Doplněk bude odstraněn.</broken>
+  </extension>
+</addon>
+
+<addon id="plugin.video.pohadkar.cz"
+       name="pohadkar.cz"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.5"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">pohadkar.cz</summary>
+    <summary lang="cs">pohadkar.cz</summary>
+    <description lang="en">Watch online tales mostly in czech language on pohadkar.cz</description>
+    <description lang="cs">Sledujte online pohádky ze servru pohádkář.cz. Ideální pro zabavení dětí.</description>
+    <platform>all</platform>
   </extension>
 </addon>
 
@@ -91,8 +113,8 @@
 
 <addon id="script.usage.tracker"
        name="Usage Tracker"
-       version="0.9.0"
-       provider-name="lzoubek">
+       version="0.9.1"
+       provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
@@ -152,12 +174,12 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.1.4"
+       version="1.1.5"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
     <import addon="script.module.simplejson" version="2.0.10" />
-    <import addon="script.usage.tracker" version="0.9.0" />
+    <import addon="script.usage.tracker" version="0.9.1" />
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />
