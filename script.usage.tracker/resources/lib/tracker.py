@@ -199,7 +199,7 @@ def getLanguageCode( id ):
     "portuguese-br"              : "pb",
     "all"                        : "all"
   }
-  id = id.lowercase()
+  id = id.lower()
   if id in languages:
 	return languages[ id ]
   print '[script.usage.tracker] Cannot detect language code from language: %s, please report a bug, plugin needs to be fixed' % id
