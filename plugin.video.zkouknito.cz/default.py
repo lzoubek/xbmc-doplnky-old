@@ -69,6 +69,13 @@ def list_category(url):
 		util.add_dir(name,{'cat':url+m.group('url')})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+def reportUsage():
+	host = 'zkounito.cz'
+	tc = 'UA-1904592-29'
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (__scriptid__,host,tc,__scriptid__+'/play'))
+	util.reportUsage(__scriptid__,__scriptid__+'/play')
+
+
 def play(url):
 	data = util.request(url)
 	data = util.substr(data,'<div class=\"player\"','</div>')
@@ -79,16 +86,19 @@ def play(url):
 			return 	xbmcgui.Dialog().ok(__scriptname__,__language__(30000))
 		if len(streams) > 0:
 			print 'Sending %s to player' % streams[0]
+			reportUsage()
 			li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
 			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 	n = re.search('<param name=\"url\" value=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
 	if not n == None:
 		print 'Sending %s to player' % n.group('url')
+		reportUsage()
 		li = xbmcgui.ListItem(path=n.group('url'),iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 	
 params=util.params()
 if params=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	list_categories()
 if 'cat' in params.keys():
 	list_category(params['cat'])
