@@ -86,18 +86,6 @@ def url(url):
 
 		return [stream_url]
 
-
-def get_url(host, media_id):
-	return 'http://www.videobb.com/video/%s' % media_id
-
-def get_host_and_id(url):
-	r = re.search('//(.+?)/(?:e/|video/|watch_video.php\?v=)([0-9a-zA-Z]+)',url)
-	if r:
-		return r.groups()
-	else:
-		return False
-
-
 def __decrypt(str, k1, k2, p4 = 11, p5 = 77213, p6 = 81371, p7 = 17, p8 = 92717, p9 = 192811):
 	tobin = hex2bin(str,len(str)*4)
 	tobin_lenght = len(tobin)
