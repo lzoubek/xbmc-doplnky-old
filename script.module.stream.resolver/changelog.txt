@@ -1,3 +1,6 @@
+[B]1.1.6:[/B]
+- another small fix of youtuberesolver
+- fixed videobb and videozer resovlers, thanks to Lynx187
 [B]1.1.5:[/B]
 - added higher level searching API
 - fixed youtuberesolver
