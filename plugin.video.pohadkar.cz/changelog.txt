@@ -1,2 +1,4 @@
+[B]1.0.1:[/B]
+- přidaná podpora přehrávání a stahování pohádek rozdělených na více videí
 [B]1.0.0:[/B]
 Initial version
