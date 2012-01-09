@@ -142,7 +142,13 @@ def play(url):
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		if len(stream) > 1:
+			playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+			playlist.clear()
+			for st in stream:
+				li = xbmcgui.ListItem(path=st,iconImage='DefaultVideo.png')
+				playlist.add(st,li)
+		li = xbmcgui.ListItem(path=stream[0],iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 
 def resolve(url):
@@ -154,7 +160,7 @@ def resolve(url):
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 		return
 	if not resolved == []:
-		return resolved[0]['url']
+		return [r['url'] for r in resolved]
 
 def download(url,name):
 	downloads = __addon__.getSetting('downloads')
@@ -164,7 +170,17 @@ def download(url,name):
 	stream = resolve(url)
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/download')
-		util.download(__addon__,name,stream,os.path.join(downloads,name+'.mp4'))
+		if len(stream) > 1:
+			index=0
+			for st in stream:
+				index+=1
+				filename = name+'_part'+str(index)
+				if index == len(stream)-1:
+					util.download(__addon__,filename,st,os.path.join(downloads,filename+'.mp4'))
+				else:
+					util.download(__addon__,filename,st,os.path.join(downloads,filename+'.mp4'),notifyFinishDialog=False)
+		else:
+			util.download(__addon__,name,stream[0],os.path.join(downloads,name+'.mp4'))
 
 p = util.params()
 if p=={}:
