@@ -220,7 +220,7 @@ def remove_search(addon,server,search):
 		f.write(json.dumps(searches,ensure_ascii=True))
 		f.close()
 
-def download(addon,filename,url,local):
+def download(addon,filename,url,local,notifyFinishDialog=True):
 	local = xbmc.makeLegalFilename(local)
 	icon = os.path.join(addon.getAddonInfo('path'),'icon.png')
 	notify = addon.getSetting('download-notify') == 'true'
@@ -248,7 +248,10 @@ def download(addon,filename,url,local):
 		if xbmc.Player().isPlaying():
 			xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
 		else:
-			xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
+			if notifyFinishDialog:
+				xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
+			else:
+				xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
 	else:
 		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
 		xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
