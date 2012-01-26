@@ -172,6 +172,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.csfd-trailers"
+       name="ČSFD Trailery"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.6"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">ČSFD Trailery</summary>
+    <summary lang="cs">ČSFD Trailery</summary>
+    <description lang="cs">Tento doplněk Vám spřístupní přehled premiér z kin a filmů vycházejících na DVD a Blue-ray ze servru csfd.cz. Je možné přehrávat trailery a další videa, ale je zde také integrace s doplňkem movie-library.cz pro možnost vybraný film ihned přehrávat.</description>
+    <description lang="en">This addon provides trailers and related videos to movies listed in csfd.cz. There is an integration with movie-library.cz addon supporting convenient way to watch movie listed by this addon.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="script.module.stream.resolver"
        name="stream resolver"
        version="1.1.7"
@@ -215,7 +237,7 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.3"
+       version="1.1.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
