@@ -37,7 +37,7 @@ def _get_meta(name,link):
 		os.makedirs(local)
 	m = md5.new()
 	m.update(name)
-	image = os.path.join(local,m.hexdigest()+'_img.png')
+	image = os.path.join(local,m.hexdigest()+'_img.url')
 	plot = os.path.join(local,m.hexdigest()+'_plot.txt')
 	if not os.path.exists(image):
 		data = util.request(link)
@@ -47,7 +47,7 @@ def _get_meta(name,link):
 			data = util.request(m.group('url'))
 			_get_image(data,image)
 			_get_plot(data,plot)
-	return image,_load(plot)
+	return _load(image).strip(),_load(plot)
 	
 
 def _save(data,local):
@@ -73,8 +73,7 @@ def _get_image(data,local):
  		data = util.substr(data,'<div class=\"entry-photo\"','</div>')
 		m = re.search('<img(.+?)src=\"(?P<img>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			print ' Downloading %s' % m.group('img')
-			_save(util.request(m.group('img')),local)
+			_save(m.group('img'),local)
 	
 def list_series():
 	data = util.substr(util.request(BASE_URL),'<div id=\"primary\"','</div>')
