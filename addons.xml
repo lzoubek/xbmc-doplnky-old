@@ -91,7 +91,7 @@
 
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.1.5"
+       version="1.1.6"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
