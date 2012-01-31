@@ -1,3 +1,5 @@
+[B]1.1.6:[/B]
+- oprava totalní nefuknčnosti přehrávání
 [B]1.1.5:[/B]
 - oprava kriticke chyby, kdy se plugin diky neopsání kódu obrázku stane
 nefunkčním
