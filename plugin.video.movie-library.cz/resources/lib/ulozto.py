@@ -24,12 +24,17 @@ import xbmc,xbmcplugin,xbmcgui
 def supports(url):
 	return not _regex(url) == None
 
+def full_url(url):
+	if url.startswith('http'):
+		return url
+	return 'http://www.ulozto.cz/'+url.lstrip('/')
+
 def _get_file_url(post_url):
 	code = __addon__.getSetting('captcha-key')
 	if len(code) < 1:
 		# empty code in settings? set something to query user for beeter code
 		code = 'abcd'
-	request = urllib.urlencode({'captcha_nb':__addon__.getSetting('captcha-id'),'captcha_user':code})
+	request = urllib.urlencode({'captcha[id]':__addon__.getSetting('captcha-id'),'captcha[text]':code,'freeDownload':'Stáhnout'})
 	defrhandler = urllib2.HTTPRedirectHandler
 	redirecthandler = UloztoHTTPRedirectHandler()
 	redirecthandler.location = None
@@ -50,13 +55,8 @@ def _get_file_url(post_url):
 		return
 	stream = redirecthandler.location
 	urllib2.install_opener(urllib2.build_opener(defrhandler))
-	if stream.find('full=y') > -1:
-		util.error('[uloz.to] - out of free download slots, use payed account or try later')
-		return -1
-	if stream.find('neexistujici') > -1:
-		util.error('[uloz.to] - movie was not found on server')
-		return -2
-	if stream.find('captcha=no') > -1:
+	# we did not get 302 but 200
+	if stream == None:
 		cd = CaptchaDialog('captcha-dialog.xml',__addon__.getAddonInfo('path'),'default','0')
 		captcha_id = str(random.randint(1,10000))
 		cd.image = 'http://img.uloz.to/captcha/%s.png' % captcha_id
@@ -71,6 +71,12 @@ def _get_file_url(post_url):
 			return _get_file_url(post_url)
 		else:
 			return
+	if stream.find('full=y') > -1:
+		util.error('[uloz.to] - out of free download slots, use payed account or try later')
+		return -1
+	if stream.find('neexistujici') > -1:
+		util.error('[uloz.to] - movie was not found on server')
+		return -2
 	#return stream only when captcha was accepted and there
 	return stream
 
@@ -85,7 +91,7 @@ def url(url):
 		data = util.substr(page,'<h3>Omezené stahování</h3>','<script')
 		m = re.search('<form(.+?)action=\"(?P<action>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			return _get_file_url(m.group('action'))
+			return _get_file_url(full_url(m.group('action')))
 
 def _regex(url):
 	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
