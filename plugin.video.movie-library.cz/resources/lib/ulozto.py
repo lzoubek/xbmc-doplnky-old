@@ -133,30 +133,27 @@ def search(what):
 			pass
 
 		util.add_search(__addon__,'search_history_ulozto',what,maximum)
-		return list_page('http://www.ulozto.cz/hledej/?disclaimer=0&media=video&q='+urllib.quote(what))
+		return list_page('http://www.ulozto.cz/hledej/?media=video&q='+urllib.quote(what))
 
 def list_page(url):
-	base_url = 'http://www.ulozto.cz'
 	util.init_urllib()
-	data = util.request(url+'&do=ajaxSearch',headers={'X-Requested-With':'XMLHttpRequest'})
-	data = data.replace('null','None')
-	page = eval(data)['snippets']['snippet--mainSearch'].replace('\\','')
-	data = util.substr(page,'<ul class=\"thumbs','</ul>') 
-	for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"rght[^>]+>(?P<size>[^<]+)',data, re.IGNORECASE|re.DOTALL):
-		iurl=base_url+m.group('url')
-		util.add_video('%s (%s)' % (m.group('name'),m.group('size')),
+	page = util.request(url)
+	data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
+	for m in re.finditer('<li>.+?<a href=\"(?P<url>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
+		iurl=full_url(m.group('url'))
+		util.add_video('%s (%s | %s)' % (m.group('name'),m.group('size').strip(),m.group('time')),
 			{'play':iurl},
-			m.group('logo'),
+			full_url(m.group('logo')),
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
 	# page naviagation
 	data = util.substr(page,'<div class=\"paginator','</div')
-	mprev = re.search('<a class=\"prev(.+?)href=\"(?P<url>[^\"]+)',data)
+	mprev = re.search('<a href=\"(?P<url>[^\"]+)\" class=\"prev',data)
 	if mprev:
-		util.add_dir(__language__(30011),{'list-ulozto':base_url+mprev.group('url')},util.icon('prev.png'))
-	mnext = re.search('<a class=\"next(.+?)href=\"(?P<url>[^\"]+)',data)
+		util.add_dir(__language__(30011),{'list-ulozto':full_url(mprev.group('url'))},util.icon('prev.png'))
+	mnext = re.search('<a href=\"(?P<url>[^\"]+)\" class="next',data)
 	if mnext:
-		util.add_dir(__language__(30012),{'list-ulozto':base_url+mnext.group('url')},util.icon('next.png'))
+		util.add_dir(__language__(30012),{'list-ulozto':full_url(mnext.group('url'))},util.icon('next.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
