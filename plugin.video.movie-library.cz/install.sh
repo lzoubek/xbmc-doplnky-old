@@ -1,6 +1,6 @@
 #/bin/sh
 # do NOT use this script from XBMC addons directory, it is intented for development only
-DESTDIR=~/.xbmc/addons/plugin.video.media-library.cz
+DESTDIR=~/.xbmc/addons/plugin.video.movie-library.cz
 
 rm -rf ${DESTDIR}
 mkdir -p ${DESTDIR}
