@@ -39,27 +39,46 @@ def list_page(number=-1):
 	data = util.substr(page,'<div id=\"archive','end #archive')
 	pattern = '<div class=\"cover\"><a href=\"(?P<url>[^\"]+)(.+?)title=\"(?P<name>[^\"]+)(.+?)<img src=\"(?P<logo>[^\"]+)(.+?)<p class=\"postmetadata\">(?P<fired>[^<]+)(.+?)<p>(?P<plot>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		name = '%s - %s' % (m.group('name'),m.group('fired').replace('/','')) 
-		util.add_video(name,{'play':m.group('url')},m.group('logo'),{'Plot':m.group('plot')})
+		name = ('%s - %s' % (m.group('name'),m.group('fired').replace('/',''))).strip()
+		util.add_video(
+			name,
+			{'play':m.group('url')},
+			m.group('logo'),
+			{'Plot':m.group('plot')},
+			menuItems={xbmc.getLocalizedString(33003):{'name':name+'.mp4','download':m.group('url')}}
+		)
 	data = util.substr(page,'<div class=\"navigation\">','</div>')
 	for m in re.finditer('<a href=\"(.+?)/page/(?P<page>[\d]+)',data,re.IGNORECASE | re.DOTALL):
 		name = 'Na stranu %s' % m.group('page')
 		util.add_dir(name,{'page':m.group('page')})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-def play(url):
+def resolve(url):
 	data = util.substr(util.request(url),'<div class=\"zoomVideo','</div>')
-	m = re.search('<object(.+?)data=\"(?P<url>http\://www\.youtube\.com/v/[^\&]+)',data,re.IGNORECASE | re.DOTALL)
-	if not m == None:
-		youtube.__eurl__ = url
-		streams = resolver.resolve(m.group('url'))
-		if not streams == None and len(streams)>0:
-			util.reportUsage(__scriptid__,__scriptid__+'/play')
-			stream = streams[0]
-			print 'Sending %s to player' % stream
-			li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-		
+	resolved = resolver.findstreams(__addon__,data,['<object(.+?)data=\"(?P<url>http\://www\.youtube\.com/v/[^\&]+)'])
+	if resolved == None:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
+		return
+	if not resolved == {}:
+		return resolved['url']
+
+def play(url):
+	stream = resolve(url)
+	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
+		print 'Sending %s to player' % stream
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
+		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+
+def download(url,name):
+	downloads = __addon__.getSetting('downloads')
+	if '' == downloads:
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
+		return
+	stream = resolve(url)
+	if stream:
+		util.reportUsage(__scriptid__,__scriptid__+'/download')
+		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
@@ -69,3 +88,5 @@ if 'page' in p.keys():
 	list_page(p['page'])
 if 'play' in p.keys():
 	play(p['play'])
+if 'download' in p.keys():
+	download(p['download'],p['name'])
