@@ -47,11 +47,11 @@
 
 <addon id="plugin.video.pohadkar.cz"
        name="pohadkar.cz"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.6"/>
+    <import addon="script.module.stream.resolver" version="1.1.7"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -69,11 +69,11 @@
 
 <addon id="plugin.video.re-play.cz"
        name="re-play.cz"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.4" />
+    <import addon="script.module.stream.resolver" version="1.1.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -196,7 +196,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.1.7"
+       version="1.1.8"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -237,11 +237,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.4"
+       version="1.1.5"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.4" />
+    <import addon="script.module.stream.resolver" version="1.1.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
