@@ -18,7 +18,7 @@
 # *
 # */
 import util,re
-
+__name__ = 'novamov'
 def supports(url):
 	return not _regex(url) == None
 

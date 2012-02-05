@@ -14,7 +14,7 @@
 # *
 # */
 import re,util
-
+__name__ = 'putlocker'
 def supports(url):
 	return not _regex(url) == None
 

@@ -20,7 +20,7 @@
 # *
 # */
 import re,util
-
+__name__ = 'videoweed'
 def supports(data):
 	return not _regex(data) == None
 

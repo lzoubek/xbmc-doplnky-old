@@ -18,6 +18,8 @@ import util
 
 DEBUG = False
 
+__name__ = 'megavideo'
+
 __PREFER_HD__=True
 
 def getcode(mega):

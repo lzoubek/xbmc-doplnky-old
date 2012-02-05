@@ -21,6 +21,7 @@
 # */
 import re,util,urllib2,traceback
 
+__name__ = 'mixturecloud'
 
 def supports(url):
 	return not _regex(url) == None

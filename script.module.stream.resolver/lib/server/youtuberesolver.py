@@ -20,12 +20,63 @@
 # *
 # */
 import re,util,urllib
-
+__name__ = 'youtube'
 __eurl__ = ''
+fmt_value = {
+        '5': '240p',
+        '18': '360p',
+        '22': '720p',
+        '26': '???',
+        '33': '???',
+        '34': '360p',
+        '35': '480p',
+        '37': '1080p',
+        '38': '720p',
+        '43': '360p',
+        '44': '480p',
+        '45': '720p',
+        '46': '520p',
+        '59': '480p',
+        '78': '400p',
+        '82': '360p',
+        '83': '240p',
+        '84': '720p',
+        '85': '520p',
+        '100': '360p',
+        '101': '480p',
+        '102': '720p'
+        }
+
 
 def supports(url):
 	return not _regex(url) == None
 
+def resolve(url):
+	m = _regex(url)
+	if not m == None:
+		request = urllib.urlencode({'video_id':m.group('id'),'el':'embedded','asv':'3','hl':'en_US','eurl':__eurl__})
+		data = util.request('http://www.youtube.com/get_video_info?%s' % request)
+		data = urllib.unquote(util.decode_html(data))
+		
+		if data.find('status=fail') > -1:
+			util.error('youtube resolver failed: '+data+' videoid:'+m.group('id'))
+		else:
+			# to avoid returning more than 1 url of same quality
+			qualities = []
+			resolved = []
+			for n in re.finditer('(=|,|\|)url=(?P<url>.+?)(,|\||fallback_host).+?itag=(?P<q>\d+)',data):
+				stream = urllib.unquote(n.group('url'))
+				quality = fmt_value[n.group('q')]
+				if not quality in qualities:
+					item = {}
+					item['name'] = __name__
+					item['url'] = stream
+					item['quality'] = quality
+					item['surl'] = url
+					qualities.append(quality)
+					resolved.append(item)
+			return resolved
+		
 # returns the steam url
 def url(url):
 	m = _regex(url)
@@ -33,6 +84,7 @@ def url(url):
 		request = urllib.urlencode({'video_id':m.group('id'),'el':'embedded','asv':'3','hl':'en_US','eurl':__eurl__})
 		data = util.request('http://www.youtube.com/get_video_info?%s' % request)
 		data = urllib.unquote(util.decode_html(data))
+		
 		if data.find('status=fail') > -1:
 			util.error('youtube resolver failed: '+data+' videoid:'+m.group('id'))
 		else:

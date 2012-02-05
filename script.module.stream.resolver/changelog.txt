@@ -1,3 +1,7 @@
+[B]1.1.7:[/B]
+- new API for stream resolving - quality aware API
+- youtube and vkontakte now implement quality aware API, others have dummy
+impl only
 [B]1.1.6:[/B]
 - another small fix of youtuberesolver
 - fixed videobb and videozer resovlers, thanks to Lynx187

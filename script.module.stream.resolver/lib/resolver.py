@@ -19,6 +19,23 @@
 # */
 
 import sys,os,util,re
+import xbmcgui,xbmc
+
+# dummy implementation of 2nd generation of resolving
+# this will be injected to each resolver, that does not have this method yet
+def _resolve(link):
+	resolved = []
+	streams = resolve(link)
+	if streams == None:
+		return None
+	for stream in streams:
+		item = {}
+		item['name'] = stream
+		item['url'] = stream
+		item['quality'] = '???'
+		item['surl'] = link
+		resolved.append(item)
+	return resolved
 
 sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
 
@@ -29,10 +46,16 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
 		continue
 	module = module[:-3]
 	exec 'import %s' % module
-	util.debug('found %s %s' % (eval(module),dir(eval(module))))
-	RESOLVERS.append(eval(module))
+	resolver = eval(module)
+	util.debug('found %s %s' % (resolver,dir(resolver)))
+	if not hasattr(resolver,'resolve'):
+		util.debug('inject resolve func')
+		resolver.resolve = _resolve
+	RESOLVERS.append(resolver)
 del module
 util.debug('done')
+
+
 ##
 # resolves given URL to list of streams 
 # @param url
@@ -45,30 +68,43 @@ def resolve(url):
 	resolver = _get_resolver(url)
 	if resolver == None:
 		return None
-	value = resolver(url)
+	value = resolver.url(url)
 	if value == None:
 		return []
 	return value
+
+def resolve2(url):
+	url = util.decode_html(url)
+	util.info('Resolving '+url)
+	resolver = _get_resolver(url)
+	if resolver == None:
+		return None
+	value = resolver.resolve(url)
+	if value == None:
+		return []
+	return sorted(value,key=lambda i:i['quality'])
+
 
 def _get_resolver(url):
 	util.debug('Get resolver for '+url)
 	for r in RESOLVERS:
 		util.debug(' querying %s' % r)
 		if r.supports(url):
-			return r.url
+			return r
 
 # returns true iff we are able to resolve stream by given URL
 def can_resolve(url):
 	return not _get_resolver(url) == None
 ##
 # finds streams in given data according to given regexes
+# respects caller addon's setting about quality, asks user if needed
 # @param data piece of text (HTML code) to search in
 # @param regexes - array of strings - regular expressions, each MUST define named group called 'url'
 #        which retrieves resolvable URL (that one is passsed to resolve operation)
-# @return array of dictionaries with keys: name,url,quality
+# @return exactly 1 dictionary with keys: name,url,quality,surl
 # @return None if at least 1 resoler failed to resolve and nothing else has been found
 # @return [] if no resolvable URLs or no resolvers for URL has been found
-def findstreams(data,regexes):
+def findstreams(addon,data,regexes):
 	resolved = []
 	# keep list of found urls to aviod having duplicates
 	urls = []
@@ -76,20 +112,115 @@ def findstreams(data,regexes):
 	for regex in regexes:
 		for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
 			print 'Found resolvable %s ' % match.group('url')
-			streams = resolve(match.group('url'))
+			streams = resolve2(match.group('url'))
 			if streams == []:
+				util.debug('There was an error resolving '+match.group('url'))
 				error = True
 			if not streams == None:
 				if len(streams) > 0:
 					for stream in streams:
-						if not stream in urls:
-							item = {}
-							item['name'] = stream
-							item['url'] = stream
-							item['quality'] = 'Unknown'
-							resolved.append(item)
-							urls.append(stream)
-	if error:
+						resolved.append(stream)
+	if error and len(resolved) == 0:
 		return None
-	return resolved
+	if len(resolved) == 0:
+		return {}
+	resolved = _filter_by_quality(sorted(resolved,key=lambda i:i['quality']),addon.getSetting('quality') or '0')
+	resolved.reverse()
+	if len(resolved) > 1:
+				dialog = xbmcgui.Dialog()
+				ret = dialog.select(util.__lang__(30005), ['%s [%s]'%(r['name'],r['quality']) for r in resolved])
+				if ret >= 0:
+					return resolved[ret]
+				else:	
+					return {}
+	return resolved[0]
 
+q_map = {'3':'720p','4':'480p','5':'360p'}
+
+def _filter_by_quality(resolved,q):
+	util.info('filtering by quality setting '+q)
+	if q == '0':
+		# ask user to select
+		return resolved
+	sources = {}
+	ret = []
+	for item in resolved:
+		if item['name'] in sources.keys():
+			sources[item['surl']].append(item)
+		else:
+			sources[item['surl']] = [item]
+	if q == '1':
+		# always return best quality from each source
+		for key in sources.keys():
+			ret.append(sources[key][-1])
+	elif q == '2':
+		#always return worse quality from each source
+		for key in sources.keys():
+			ret.append(sources[key][0])
+	else:
+		quality = q_map[q]
+		# 3,4,5 are 720,480,360
+		for key in sources.keys():
+			added = False
+			for item in sources[key]:
+				if quality == item['quality']:
+					ret.append(item)
+					added = True
+			if not added:
+				# stream of desired quality was not found - we add best quality anyway
+				util.debug('Desired quality %s not found, adding best found'%quality)
+				ret.append(sources[key][-1])
+	return ret
+
+
+##
+# finds streams in given data according to given regexes
+# respects caller addon's setting about desired quality, asks user if needed
+# assumes, that all resolvables need to be returned, but in particular quality
+# @param data piece of text (HTML code) to search in
+# @param regexes - array of strings - regular expressions, each MUST define named group called 'url'
+#        which retrieves resolvable URL (that one is passsed to resolve operation)
+# @return array of dictionaries with keys: name,url,quality,surl
+# @return None if at least 1 resoler failed to resolve and nothing else has been found
+# @return [] if no resolvable URLs or no resolvers for URL has been found
+def findstreams_multi(addon,data,regexes):
+	resolved = []
+	# keep list of found urls to aviod having duplicates
+	urls = []
+	error = False
+	for regex in regexes:
+		for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
+			print 'Found resolvable %s ' % match.group('url')
+			streams = resolve2(match.group('url'))
+			if streams == []:
+				util.debug('There was an error resolving '+match.group('url'))
+				error = True
+			if not streams == None:
+				if len(streams) > 0:
+					for stream in streams:
+						resolved.append(stream)
+	if error and len(resolved) == 0:
+		return None
+	if len(resolved) == 0:
+		return []
+	resolved2 = _filter_by_quality(sorted(resolved,key=lambda i:i['quality']),addon.getSetting('quality') or '0')
+	resolved2.reverse()
+	qualities = {}
+	for item in resolved2:
+		if item['quality'] in qualities.keys():
+			qualities[item['quality']].append(item)
+		else:
+			qualities[item['quality']] = [item]
+	# now .. we must sort items to be in same order as they were found on page
+	for q in qualities.keys():
+		qualities[q] = sorted(qualities[q],key=lambda i:resolved.index(i))
+	if len(qualities) > 1:
+				dialog = xbmcgui.Dialog()
+				ret = dialog.select(util.__lang__(30005), ['%s (%s)'%(q,xbmc.getLocalizedString(282) % len(qualities[q])) for q in qualities.keys()])
+				if ret >= 0:
+					for index,key in enumerate(qualities.keys()):
+						if index == ret:
+							return qualities[key]
+				else:	
+					return []
+	return qualities[qualities.keys()[0]]

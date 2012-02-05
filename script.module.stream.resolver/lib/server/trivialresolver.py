@@ -7,7 +7,7 @@
 # *
 # */
 import re
-
+__name__='simple'
 def supports(url):
 	return not _regex(url) == None
 

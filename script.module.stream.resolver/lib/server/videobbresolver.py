@@ -23,7 +23,7 @@ import util,re,base64
 
 from base64 import b64decode
 from binascii import unhexlify
-
+__name__ = 'videobb'
 def supports(url):
 	return not _regex(url) == None
 

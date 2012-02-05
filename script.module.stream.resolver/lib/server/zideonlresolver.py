@@ -21,7 +21,7 @@
 # */
 
 import util,re
-
+__name__ = 'zideo'
 def supports(url):
 	return not _regex(url) == None
 

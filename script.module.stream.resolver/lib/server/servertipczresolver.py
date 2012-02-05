@@ -20,7 +20,7 @@
 # *
 # */
 import re,util,urllib
-
+__name__ = 'servertip'
 def supports(url):
 	return not _regex(url) == None
 

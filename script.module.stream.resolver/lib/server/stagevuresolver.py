@@ -20,7 +20,7 @@
 # *
 # */
 import re,util
-
+__name__ = 'stagevu'
 def supports(url):
 	return not _regex(url) == None
 
