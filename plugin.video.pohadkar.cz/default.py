@@ -155,7 +155,7 @@ def resolve(url):
 	page = util.request(url)
 	data = util.substr(page,'<div id=\"video','<div id=\"controller')
 	youtube.__eurl__ = url
-	resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=\"(?P<url>[^\"]+)'])
+	resolved = resolver.findstreams_multi(__addon__,data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=\"(?P<url>[^\"]+)'])
 	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 		return

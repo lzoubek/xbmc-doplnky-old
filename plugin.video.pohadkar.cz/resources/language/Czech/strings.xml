@@ -12,5 +12,12 @@
 	<string id="30036">1%</string>
 	<string id="30037">[B]Stažené soubory[/B]</string>
 
+	<string id="30050">Kvalita videa</string>
+	<string id="30051">Zeptat se</string>
+	<string id="30052">Nejlepší</string>
+	<string id="30053">Nejhorší</string>
+	<string id="30054">720p</string>
+	<string id="30055">480p</string>
+	<string id="30056">360p</string>
 	<string id="31000">Data o použití jsou zaslána v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem. Není odesílána informace o tom, co přehráváte.</string>
 </strings>
