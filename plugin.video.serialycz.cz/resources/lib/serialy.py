@@ -109,21 +109,12 @@ def resolve(url):
 	if not url.startswith('http'):
 		url = BASE_URL+url
 	data = util.substr(util.request(url),'<div id=\"content\"','#content')
-	resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
+	resolved = resolver.findstreams(__addon__,data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
 	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 		return
-	if not resolved == []:
-		stream = resolved[0]
-		if len(resolved) > 1:
-			dialog = xbmcgui.Dialog()
-			ret = dialog.select(__language__(30004), [r['name'] for r in resolved])
-			if ret > 0:
-				stream = resolved[ret]
-			if ret < 0:
-				return
-		return stream['url']
-	xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
+	if not resolved == {}:
+		return resolved['url']
 
 def play(url):
 	stream = resolve(url)
