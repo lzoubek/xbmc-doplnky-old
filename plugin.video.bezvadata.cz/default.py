@@ -94,7 +94,7 @@ def play(url):
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream+'&',iconImage='DefaulVideo.png')
+		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
 
 def resolve(url):
