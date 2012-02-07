@@ -244,17 +244,20 @@ def download(addon,filename,url,local,notifyFinishDialog=True):
 
 	downloader = Downloader(callback)
 	result = downloader.download(url,local,filename)
-	if result == True:
-		if xbmc.Player().isPlaying():
-			xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
-		else:
-			if notifyFinishDialog:
-				xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
+	try:
+		if result == True:
+			if xbmc.Player().isPlaying():
+				xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
 			else:
-				xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
-	else:
-		xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
-		xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
+				if notifyFinishDialog:
+					xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
+				else:
+					xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
+		else:
+			xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
+			xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
+	except:
+		traceback.print_exc()
 
 class Downloader(object):
 	def __init__(self,callback = None):
@@ -295,6 +298,8 @@ class Downloader(object):
 			newTime = time.time()
 			diff = newTime - self.init_time
 			self.init_time = newTime
+			if diff <=0:
+				diff = 1
 			speed = int(((1/diff) * blockSize * self.gran )/1024)
 			est = int((totalSize - int(count*blockSize))/1024/speed)
 			if self.callback and not self.percent == percent:
