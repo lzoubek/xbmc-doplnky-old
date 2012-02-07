@@ -14,5 +14,6 @@
 	<string id="30037">Downloads</string>
 
 	<string id="30050">Show adult only content</string>
+	<string id="30051">Do not show files with extensions</string>
 	<string id="31000">Usage of plugin is tracked whenever you play or download video. We do NOT track what has been played</string>
 </strings>

@@ -40,27 +40,28 @@ def _search_cb(what):
 	return parse_page(page)
 
 def parse_page(page):
-	
+	ext_filter = create_filter()
 	ad = re.search('<a href=\"(?P<url>/vyhledavani/souhlas-zavadny-obsah[^\"]+)',page,re.IGNORECASE|re.DOTALL)
 	if ad and __addon__.getSetting('18+content') == 'true':
 		page = util.request(furl(ad.group('url')))
 	data = util.substr(page,'<div class=\"content','<div class=\"stats')
 	pattern = '<section class=\"img[^<]+<a href=\"(?P<url>[^\"]+)(.+?)<img src=\"(?P<img>[^\"]+)\" alt=\"(?P<name>[^\"]+)(.+?)<b>velikost:</b>(?P<size>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		iurl = furl(m.group('url'))
-		name = '%s (%s)' %(m.group('name'),m.group('size').strip())
-		util.add_video(
-			name,
-			{'play':iurl},m.group('img'),
-			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
-		)
+		if can_show(ext_filter,m.group('name')):
+			iurl = furl(m.group('url'))
+			name = '%s (%s)' %(m.group('name'),m.group('size').strip())
+			util.add_video(
+				name,
+				{'play':iurl},m.group('img'),
+				menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
+			)
 	data = util.substr(page,'<div class=\"pagination','</div>')
 	m = re.search('<li class=\"previous[^<]+<a href=\"(?P<url>[^\"]+)',data,re.DOTALL|re.IGNORECASE)
 	if m:
-		util.add_dir(__language__(30011),{'list':furl(m.group('url'))})
+		util.add_dir(__language__(30011),{'list':furl(m.group('url'))},util.icon('prev.png'))
 	n = re.search('<li class=\"next[^<]+<a href=\"(?P<url>[^\"]+)',data,re.DOTALL|re.IGNORECASE)
 	if n:
-		util.add_dir(__language__(30012),{'list':furl(n.group('url'))})
+		util.add_dir(__language__(30012),{'list':furl(n.group('url'))},util.icon('next.png'))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def furl(url):
@@ -78,14 +79,28 @@ def categories():
 		util.add_dir(m.group('name'),{'stats':m.group('section')})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+def can_show(ext_filter,item):
+	extension = os.path.splitext(item)[1]
+	if extension in ext_filter:
+		return False
+	return True
+
+def create_filter():
+	ext_filter = __addon__.getSetting('ext-filter').split(',')
+	return ['.'+f.strip() for f in ext_filter]
 
 def stats(section):
 	data = util.substr(util.request(BASE_URL),'section class=\"'+section+'\"','</section')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+	ext_filter = create_filter()
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		iurl = furl(m.group('url'))
-		print iurl
-		util.add_video(m.group('name'),{'play':iurl})
+		if can_show(ext_filter,m.group('name')):
+			iurl = furl(m.group('url'))
+			util.add_video(
+				m.group('name'),
+				{'play':iurl},			
+				menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
+			)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
