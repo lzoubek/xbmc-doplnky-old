@@ -67,7 +67,7 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
         try:
 		liz.setInfo( type='Video', infoLabels=infoLabels )
 	except:
-		trackeback.print_exc()
+		traceback.print_exc()
 	items = []
 	for mi in menuItems.keys():
 		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
@@ -89,7 +89,8 @@ def add_local_dir(name,url,logo='',infoLabels={},menuItems={}):
 
 def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
-	infoLabels['Title'] = name
+	if not 'Title' in infoLabels:
+		infoLabels['Title'] = name
 	url = _create_plugin_url(params)
 	li=xbmcgui.ListItem(name,path=url,iconImage='DefaultVideo.png',thumbnailImage=logo)
         li.setInfo( type='Video', infoLabels=infoLabels )
@@ -101,13 +102,13 @@ def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 		li.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
 
-def _create_plugin_url(params):
+def _create_plugin_url(params,plugin=sys.argv[0]):
 	url=[]
 	for key in params.keys():
 		value = decode_html(params[key])
 		value = value.encode('ascii','ignore')
 		url.append(key+'='+value.encode('hex',)+'&')
-	return sys.argv[0]+'?'+''.join(url)
+	return plugin+'?'+''.join(url)
 	
 def reportUsage(addonid,action):
 	host = 'xbmc-doplnky.googlecode.com'
@@ -305,3 +306,31 @@ class Downloader(object):
 			if self.callback and not self.percent == percent:
 				self.callback(percent,speed,est,self.filename)
 			self.percent=percent
+
+_diacritic_replace= {u'\u00f3':'o',
+u'\u0213':'-',
+u'\u00e1':'a',
+u'\u010d':'c',
+u'\u010c':'C',
+u'\u010f':'d',
+u'\u010e':'D',
+u'\u00e9':'e',
+u'\u011b':'e',
+u'\u00ed':'i',
+u'\u0148':'n',
+u'\u0159':'r',
+u'\u0161':'s',
+u'\u0165':'t',
+u'\u016f':'u',
+u'\u00fd':'y',
+u'\u017e':'z'
+}
+
+def replace_diacritic(string):
+	ret = []
+	for char in string:
+		if char in _diacritic_replace:
+			ret.append(_diacritic_replace[char])
+		else:
+			ret.append(char)
+	return ''.join(ret)
