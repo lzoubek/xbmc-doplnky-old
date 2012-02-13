@@ -70,7 +70,11 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
 		traceback.print_exc()
 	items = []
 	for mi in menuItems.keys():
-		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
+		action = menuItems[mi]
+		if action[0] == '#':
+			items.append((mi,action.lstrip('#')))
+		else:
+			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
 	if len(items) > 0:
 		liz.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
@@ -97,7 +101,11 @@ def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 	li.setProperty('IsPlayable','true')
 	items = []
 	for mi in menuItems.keys():
-		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
+		action = menuItems[mi]
+		if action[0] == '#':
+			items.append((mi,action.lstrip('#')))
+		else:
+			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
 	if len(items) > 0:
 		li.addContextMenuItems(items)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
