@@ -90,7 +90,8 @@ def download(url,name):
 		print 'downloading...'
 
 def root():
-	util.add_dir('Kino',{'kino':'s'})
+	util.add_dir('Kino',{'kino':''})
+	util.add_dir('Žebříčky',{'top':''})
 	#util.add_dir('Blue-ray',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/'})
 	#util.add_dir('Premiova DVD',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/?format=dvd_retail'})
 	#util.add_dir('Levna DVD',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/?format=dvd_lite'})
@@ -99,7 +100,10 @@ def root():
 
 def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
-	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
+	if use_cache:
+		util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
+	else:
+		util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info)
 
 def kino(params):
 	if 'kino-year' in params.keys() and 'kino-country' in params.keys():
@@ -175,6 +179,31 @@ def add_plugin_call(name,plugin,params,logo='',infoLabels={}):
 	plugurl = util._create_plugin_url(params,plugin)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=plugurl,listitem=liz,isFolder=True)
 
+def top(params):
+	if 'top-select' in params.keys():
+		page = util.request(furl(params['top-select']+'?show=complete'))
+		data = util.substr(page,'<table class=\"content','</table>')
+		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			print m.group('name')
+			if use_cache:
+				info = scrapper.get_info(furl(m.group('url')))
+				add_item(m.group('name'),info)
+			else:
+				info = scrapper._empty_info()
+				info['url'] = m.group('url')
+				name = m.group('name')
+				#name = '%s %s %s' % (m.group('date'),m.group('name'),m.group('year'))
+				add_item(name,info)
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+	else:
+		page = util.request(furl('zebricky/'))
+		data = util.substr(page,'<div class=\"navigation','</div>')
+		util.add_dir('Nejlepší filmy',{'top':'','top-select':'zebricky/nejlepsi-filmy/'})
+		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			util.add_dir(m.group('name'),{'top':'','top-select':m.group('url')})
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 p = util.params()
 use_cache= __addon__.getSetting('cache-meta') == 'true'
 if p=={}:
@@ -182,6 +211,8 @@ if p=={}:
 	root()
 if 'kino' in p.keys():
 	kino(p)
+if 'top' in p.keys():
+	top(p)
 if 'search-plugin' in p.keys():
 	search_plugin(p['search-plugin'],p['url'],p['action'])
 if 'item' in p.keys():
