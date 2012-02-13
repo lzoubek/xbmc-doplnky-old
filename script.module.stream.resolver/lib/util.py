@@ -71,8 +71,8 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
 	items = []
 	for mi in menuItems.keys():
 		action = menuItems[mi]
-		if action[0] == '#':
-			items.append((mi,action.lstrip('#')))
+		if not type(action) == type({}):
+			items.append((mi,action))
 		else:
 			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
 	if len(items) > 0:
@@ -102,8 +102,8 @@ def add_video(name,params={},logo='',infoLabels={},menuItems={}):
 	items = []
 	for mi in menuItems.keys():
 		action = menuItems[mi]
-		if action[0] == '#':
-			items.append((mi,action.lstrip('#')))
+		if not type(action) == type({}):
+			items.append((mi,action))
 		else:
 			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
 	if len(items) > 0:
