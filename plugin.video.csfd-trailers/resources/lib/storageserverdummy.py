@@ -3,13 +3,20 @@
      Version: 1.0
 '''
 import xbmc
+import os
 try:
     import hashlib
 except:
     import md5
 
-import xbmcvfs
-import os
+try:
+	import xbmcvfs
+	def pathexists(path):
+		return xbmcvfs.exists(path)
+except:
+	def pathexists(path):
+		return os.path.exists(path)
+
 import time
 import sys
 
@@ -24,7 +31,7 @@ class StorageServer:
         self.table = table
         if settings:
             temporary_path = xbmc.translatePath(settings.getAddonInfo("profile"))
-            if not xbmcvfs.exists(temporary_path):
+            if not pathexists(temporary_path):
                 os.makedirs(temporary_path)
 
         return None
@@ -62,7 +69,7 @@ class StorageServer:
             name += "-" + keyhash.hexdigest() + ".cache"
 
             path = os.path.join(xbmc.translatePath(settings.getAddonInfo("profile")).decode("utf-8"), name)
-            if xbmcvfs.exists(path) and os.path.getmtime(path) > time.time() - 3600:
+            if pathexists(path) and os.path.getmtime(path) > time.time() - 3600:
                 print "Getting cache : " + repr(path)
                 temp = open(path)
                 result = eval(temp.read())
