@@ -99,7 +99,7 @@ def root():
 
 def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
-	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info)
+	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'#Action(info)'})
 
 
 def kino(params):
@@ -123,7 +123,7 @@ def item(params):
 	xbmc_info = scrapper.xbmc_info(info)
 	page = util.request(info['url']+'/videa')
 	data = util.substr(page,'<label for=\"frmfilterSelectForm-filter\">','</select>')
-	util.add_dir(__language__(30007),params,infoLabels=xbmc_info)
+	util.add_dir(__language__(30007),params,infoLabels=xbmc_info,menuItems={__language__(30007):'#Action(info)'})
 	if __addon__.getSetting('search-integration') == 'true':
 		if __addon__.getSetting('search-integration-movie-library') == 'true':
 			util.add_dir(__language__(30006),{'search-plugin':'plugin://plugin.video.movie-library.cz','url':info['url'],'action':'search'})
@@ -136,7 +136,7 @@ def item(params):
 	for m in re.finditer('<option value=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 		url  = info['url']+'/videa/-filtr-'+m.group('url')
 		xbmc_info['Title'] = '%s - %s' %(info['title'],m.group('name'))
-		util.add_video(m.group('name'),{'play':url}, infoLabels=xbmc_info)
+		util.add_video(m.group('name'),{'play':url},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'#Action(info)'})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def search_plugin(plugin,url,action):
