@@ -27,7 +27,7 @@ else:
 
 
 class StorageServer:
-    def __init__(self, table=False):
+    def __init__(self, table=False,cacheTime=0):
         self.table = table
         if settings:
             temporary_path = xbmc.translatePath(settings.getAddonInfo("profile"))
