@@ -100,10 +100,7 @@ def root():
 
 def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
-	if use_cache:
-		util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
-	else:
-		util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info)
+	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 
 def kino(params):
 	if 'kino-year' in params.keys() and 'kino-country' in params.keys():
@@ -124,12 +121,11 @@ def kino(params):
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def kino_list(url):
-	use_cache= __addon__.getSetting('cache-meta') == 'true'
 	page = util.request(furl(url))
 	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
 	for m in re.finditer('<td class=\"date\">(?P<date>[^<]+).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)',data,re.IGNORECASE|re.DOTALL):
-		if use_cache:
-			info = scrapper.get_info(furl(m.group('url')))
+		info = scrapper.get_cached_info(furl(m.group('url')))
+		if info:
 			name = '%s %s %s %s' % (m.group('date'),m.group('name'),m.group('year'),info['percent'])
 			add_item(name,info)
 		else:
@@ -184,9 +180,8 @@ def top(params):
 		page = util.request(furl(params['top-select']+'?show=complete'))
 		data = util.substr(page,'<table class=\"content','</table>')
 		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-			print m.group('name')
-			if use_cache:
-				info = scrapper.get_info(furl(m.group('url')))
+			info = scrapper.get_cached_info(furl(m.group('url')))
+			if info:
 				add_item(m.group('name'),info)
 			else:
 				info = scrapper._empty_info()

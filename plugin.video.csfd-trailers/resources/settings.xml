@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<setting label="30001" id="cache-meta" type="bool" default="true" />
 	<setting label="30020" id="search-integration" type="bool" default="true" />
 	<setting label="30021" id="search-integration-movie-library" type="bool" default="true" visible="eq(-1,true)" />
 	<setting label="30022" id="search-integration-ulozto" type="bool" default="false" visible="eq(-2,true)" />

@@ -42,6 +42,11 @@ def get_info(url):
 	else:
 		return eval(cached)
 
+def get_cached_info(url):
+	info = __cache__.get(url)
+	if not '' == info:
+		return eval(info)
+
 def xbmc_info(info):
 	ret  = {}
 	ret['Plot'] = info['plot']
