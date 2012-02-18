@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2,md5,traceback
+import re,os,urllib,urllib2,traceback
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 __scriptid__   = 'plugin.video.csfd-trailers'
 __scriptname__ = 'ČSFD Trailery'
@@ -150,8 +150,13 @@ def item(params):
 			util.add_dir(__language__(30004),{'search-plugin':'plugin://plugin.video.bezvadata.cz','url':info['url'],'action':'search'})
 		if __addon__.getSetting('search-integration-kinotip') == 'true':
 			util.add_dir(__language__(30005),{'search-plugin':'plugin://plugin.video.kinotip.cz','url':info['url'],'action':'search'})
+	def_trailer = None
 	for m in re.finditer('<option value=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 		url  = info['url']+'/videa/-filtr-'+m.group('url')
+		trailer = util._create_plugin_url({'play':url})
+		if def_trailer == None:
+			info['trailer'] = trailer
+			scrapper.set_info(info)
 		xbmc_info['Title'] = '%s - %s' %(info['title'],m.group('name'))
 		util.add_video(m.group('name'),{'play':url},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -160,7 +165,7 @@ def search_plugin(plugin,url,action):
 	info = scrapper.get_info(url)
 	titles = info['search-title']
 	for title in info['search-title']:
-	 	add_plugin_call(__language__(30008)+' : '+title,plugin,{action:title})
+	 	add_plugin_call(__language__(30008)+': '+title,plugin,{action:title})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
