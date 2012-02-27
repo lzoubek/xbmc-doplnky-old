@@ -84,7 +84,11 @@ def _get_file_url(post_url):
 def url(url):
 	if supports(url):
 		util.init_urllib()
-		page = util.request(url)
+		try:
+			page = util.request(url)
+		except urllib2.HTTPError as e:
+				traceback.print_exc()
+				return -2
 		if page.find('Stránka nenalezena!') > 0:
 			util.error('[uloz.to] - page with movie was not found on server')
 			return -2
