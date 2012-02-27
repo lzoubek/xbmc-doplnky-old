@@ -36,6 +36,7 @@ def get_info(url):
 		info['search-title'] = _search_title(page)
 		info['url'] = url
 		info['cast'] = _cast(page)
+		info['genre'] = _genre(page)
 		info['img'] = _get_img(page)
 		info['plot'] = _plot(page)
 		country,info['year'] = _origin(page)
@@ -80,9 +81,10 @@ def _validate(info):
 		if not key in info:
 			info[key] = dummy[key]
 
-def _match(m):
+def _match(m,default=None):
 	if m:
 		return m.group(1)
+	return default
 
 def _votes(page):
 	num = _match(re.search('<a id=\"rating-count-link[^>]+>.+?\(([^\)]+)',page))
@@ -96,6 +98,9 @@ def _cast(page):
 	data  = util.substr(page,'<h4>Hrají:','</span>')
 	return re.findall('<a[^>]+>([^<]+)',data,re.IGNORECASE)
 
+def _genre(page):
+	return _match(re.search('<p class=\"genre\">([^<]+)',page),__empty_info['genre'])
+
 def _get_img(page):
 	data  = util.substr(page,'<div id=\"poster\"','</div>')
 	return _match(re.search('src=\"([^\"]+)',data))
@@ -106,7 +111,7 @@ def _get_title(page):
 
 def _director(page):
 	data  = util.substr(page,'<h4>Režie:','</span>')
-	return _match(re.search('<a[^>]+>([^<]+)',data))
+	return _match(re.search('<a[^>]+>([^<]+)',data),__empty_info['director'])
 
 def _search_title(page):
 	titles = []
