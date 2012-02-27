@@ -124,7 +124,7 @@ def kino_list(url):
 	page = util.request(furl(url))
 	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
 	for m in re.finditer('<td class=\"date\">(?P<date>[^<]+).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)',data,re.IGNORECASE|re.DOTALL):
-		info = scrapper.get_cached_info(furl(m.group('url')))
+		info = get_info(furl(m.group('url')))
 		if info:
 			name = '%s %s %s %s' % (m.group('date'),m.group('name'),m.group('year'),info['percent'])
 			add_item(name,info)
@@ -164,8 +164,13 @@ def item(params):
 def search_plugin(plugin,url,action):
 	info = scrapper.get_info(url)
 	titles = info['search-title']
+	params = {}
+	if __addon__.getSetting('search-integration-update-history') == 'false':
+		params['search-no-history'] = ''
+		print 'no history'
 	for title in info['search-title']:
-	 	add_plugin_call(__language__(30008)+': '+title,plugin,{action:title})
+		params[action] = title
+	 	add_plugin_call(__language__(30008)+': '+title,plugin,params)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -185,7 +190,7 @@ def top(params):
 		page = util.request(furl(params['top-select']+'?show=complete'))
 		data = util.substr(page,'<table class=\"content','</table>')
 		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-			info = scrapper.get_cached_info(furl(m.group('url')))
+			info = get_info(furl(m.group('url')))
 			if info:
 				add_item(m.group('name'),info)
 			else:
@@ -205,7 +210,17 @@ def top(params):
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 p = util.params()
-use_cache= __addon__.getSetting('cache-meta') == 'true'
+
+# we define funcion get_info that has 2 possible implementations according to setting
+if __addon__.getSetting('preload-metadata') == 'true':
+	get_info = scrapper.get_info
+else:
+	get_info = scrapper.get_cached_info
+
+if __addon__.getSetting('clear-cache') == 'true':
+	util.info('Cleaning all cache entries...')
+	__cache__.delete('http%')
+	__addon__.setSetting('clear-cache','false')
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	root()

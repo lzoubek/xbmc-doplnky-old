@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30000">Size of search history</string>
-	
-	
-	<string id="30001">Enable caching movie metadata</string>
+	<string id="30001">Preload movie metadata (slower for the first time)</string>
 	<string id="30002">[B]Search[/B]</string>
 	<string id="30003">[B]Search using ulozto[/B]</string>
 	<string id="30004">[B]Search using bezvadata[/B]</string>
@@ -11,6 +9,8 @@
 	<string id="30006">[B]Search using movie-library[/B]</string>
 	<string id="30007">[B]Movie information[/B]</string>
 	<string id="30008">Search for  </string>
+	<string id="30009">Add searches to addon's history</string>
+	<string id="30010">Clear cache on next startup</string>
 	<string id="30012">[B]Next[/B]</string>
 	<string id="30020">Enable search using</string>
 	<string id="30021"> - movie-library.cz</string>
