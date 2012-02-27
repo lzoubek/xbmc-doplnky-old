@@ -122,7 +122,8 @@ def search_remove(search):
 	util.remove_search(__addon__,'search_history_ulozto',search)
 	xbmc.executebuiltin('Container.Refresh')
 
-def search(what):
+def search(params):
+	what = params['search-ulozto']
 	if what == '':
 		kb = xbmc.Keyboard('',util.__lang__(30003),False)
 		kb.doModal()
@@ -135,8 +136,8 @@ def search(what):
 		except:
 			util.error('Unable to parse convert addon setting to number')
 			pass
-
-		util.add_search(__addon__,'search_history_ulozto',what,maximum)
+		if not 'search-no-history' in params.keys():
+			util.add_search(__addon__,'search_history_ulozto',what,maximum)
 		return list_page('http://www.ulozto.cz/hledej/?media=video&q='+urllib.quote(what))
 
 def list_page(url):

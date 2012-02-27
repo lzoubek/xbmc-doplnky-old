@@ -248,7 +248,7 @@ if 'download' in p.keys():
 if 'search-ulozto-list' in p.keys():
 	ulozto.search_list()
 if 'search-ulozto' in p.keys():
-	ulozto.search(p['search-ulozto'])
+	ulozto.search(p)
 if 'list-ulozto' in p.keys():
 	ulozto.list_page(p['list-ulozto'])
 if 'search-ulozto-remove' in p.keys():
