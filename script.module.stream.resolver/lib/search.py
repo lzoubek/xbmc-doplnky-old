@@ -34,7 +34,7 @@ def _remove(addon,history,search):
 	util.remove_search(addon,history,search)
 	xbmc.executebuiltin('Container.Refresh')
 
-def _search(addon,history,what,callback):
+def _search(addon,history,what,update_history,callback):
 	if what == '':
 		kb = xbmc.Keyboard('',util.__lang__(30003),False)
 		kb.doModal()
@@ -47,8 +47,8 @@ def _search(addon,history,what,callback):
 		except:
 			util.error('Unable to parse convert addon setting to number')
 			pass
-
-		util.add_search(addon,history,what,maximum)
+		if update_history:
+			util.add_search(addon,history,what,maximum)
 		callback(what)
 def item(items={}):
 	items['search-list'] = ''
@@ -58,6 +58,9 @@ def main(addon,history,p,callback):
 	if 'search-list' in p.keys():
 		_list(addon,history)
 	if 'search' in p.keys():
-		_search(addon,history,p['search'],callback)
+		update_history=True
+		if 'search-no-history' in p.keys():
+			update_history=False
+		_search(addon,history,p['search'],update_history,callback)
 	if 'search-remove' in p.keys():
 		_remove(addon,history,p['search-remove'])
