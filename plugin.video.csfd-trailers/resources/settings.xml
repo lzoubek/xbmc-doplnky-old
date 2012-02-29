@@ -2,6 +2,7 @@
 <settings>
 	<category label="128">
 		<setting label="30001" id="preload-metadata" type="bool" default="false" />
+		<setting label="30014" id="preload-metadata-search" type="bool" default="false" visible="eq(-1,true)" />
 		<setting label="30010" id="clear-cache" type="bool" default="false" />
 		<setting label="30000" type="text" id="keep-searches" default="20" />
 		<setting label="30030" id="downloads" type="folder" default="" />

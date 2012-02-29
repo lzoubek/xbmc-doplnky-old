@@ -12,6 +12,8 @@
 	<string id="30009">Add searches to addon's history</string>
 	<string id="30010">Clear cache on next startup</string>
 	<string id="30012">[B]Next[/B]</string>
+	<string id="30013">Search</string>
+	<string id="30014"> - preload when listing search results</string>
 	<string id="30020">Enable search using</string>
 	<string id="30021"> - movie-library.cz</string>
 	<string id="30022"> - ulozto.cz</string>

@@ -38,13 +38,32 @@ __cache__ = StorageServer.StorageServer(__scriptid__, 1)
 
 import scrapper
 
+BASE_URL='http://www.csfd.cz/'
 scrapper.__cache__ = __cache__
+scrapper.BASE_URL = BASE_URL
 import util,resolver,search
 
-BASE_URL='http://www.csfd.cz/'
 
 def _search_cb(what):
 	print 'searching for '+what
+	page = util.request(BASE_URL+'/hledat/complete-films/?q='+urllib.quote(what))
+	data = util.substr(page,'<div id=\"search-films','<div class=\"footer')
+	results = []
+	for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+		results.append((m.group('url'),m.group('name')))
+	
+	for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',util.substr(data,'<ul class=\"films others','</div'),re.DOTALL|re.IGNORECASE):
+		results.append((m.group('url'),m.group('name')))
+	
+	for url,name in results:
+		if __addon__.getSetting('preload-metadata-search') == 'true':
+			info = get_info(furl(url))
+			add_item(name,info)
+		else:
+			info = scrapper._empty_info()
+			info['url'] = url
+			add_item(name,info)
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def furl(url):
 	if url.startswith('http'):
@@ -90,6 +109,7 @@ def download(url,name):
 		print 'downloading...'
 
 def root():
+	search.item()
 	util.add_dir('Kino',{'kino':''})
 	util.add_dir('Žebříčky',{'top':''})
 	#util.add_dir('Blue-ray',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/'})
@@ -138,7 +158,7 @@ def kino_list(url):
 def item(params):
 	info = scrapper.get_info(params['item'])
 	xbmc_info = scrapper.xbmc_info(info)
-	page = util.request(info['url']+'/videa')
+	page = util.request(info['trailers_url'],headers={'Referer':BASE_URL})
 	data = util.substr(page,'<label for=\"frmfilterSelectForm-filter\">','</select>')
 	util.add_dir(__language__(30007),params,info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 	if __addon__.getSetting('search-integration') == 'true':
@@ -210,10 +230,10 @@ def top(params):
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 p = util.params()
-
+util.init_urllib()
 # we define funcion get_info that has 2 possible implementations according to setting
 if __addon__.getSetting('preload-metadata') == 'true':
-	get_info = scrapper.get_info
+	get_info =  scrapper.get_info
 else:
 	get_info = scrapper.get_cached_info
 
@@ -234,3 +254,4 @@ if 'item' in p.keys():
 	item(p)
 if 'play' in p.keys():
 	play(p['play'])
+search.main(__addon__,'search_history',p,_search_cb)

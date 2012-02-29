@@ -31,10 +31,11 @@ def get_info(url):
 	else:
 		info = _empty_info()
 		util.info('Not in cache : '+url)
-		page = util.request(url)
+		page = util.request(url,headers={'Referer':BASE_URL})
 		info['title'] = _get_title(page)
 		info['search-title'] = _search_title(page)
 		info['url'] = url
+		info['trailers_url'] = url.rstrip('/')+'/videa/'
 		info['cast'] = _cast(page)
 		info['genre'] = _genre(page)
 		info['img'] = _get_img(page)
@@ -131,14 +132,14 @@ def _search_title(page):
 def _origin(page):
 	origin = _match(re.search('<p class=\"origin\">([^<]+)',page))
 	if not origin:
-		return __empty_info['country'],__empty_info['year']
+		return '',__empty_info['year']
 	data = origin.split(',')
 	if len(data) > 1:
 		try:
 			return data[0].strip(),int(data[1].strip())
 		except:	
 			return data[0].strip(),0
-	return __empty_info['country'],__empty_info['year']
+	return '',__empty_info['year']
 def _plot(page):
 	data = util.substr(page,'<div id=\"plots\"','</ul>')
 	m = _match(re.search('<ul>([^$]+)',data))
@@ -173,6 +174,7 @@ __empty_info = {
 			'title':'',
 			'search-title':[],
 			'url':'',
+			'trailers_url':'',
 			'plot':u'',
 			'img':'',
 			'trailer': '',
