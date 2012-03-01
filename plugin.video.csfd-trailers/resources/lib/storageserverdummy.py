@@ -101,3 +101,6 @@ class StorageServer:
 
     def unlock(self, name):
         return False
+
+    def delete(self,name):
+        return False
