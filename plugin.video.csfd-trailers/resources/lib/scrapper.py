@@ -20,7 +20,7 @@
 # *
 # */
 
-import xbmc,xbmcplugin,re,sys
+import xbmc,xbmcplugin,re,sys,traceback
 import util
 import unicodedata
 
@@ -31,7 +31,13 @@ def get_info(url):
 	else:
 		info = _empty_info()
 		util.info('Not in cache : '+url)
-		page = util.request(url,headers={'Referer':BASE_URL})
+		try:
+			page = util.request(url,headers={'Referer':BASE_URL})
+		except:
+			util.error('Unable to read page '+url)
+			traceback.print_exc()
+			info['url'] = url
+			return info
 		info['title'] = _get_title(page)
 		info['search-title'] = _search_title(page)
 		info['url'] = url
