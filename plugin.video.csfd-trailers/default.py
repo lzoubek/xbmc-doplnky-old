@@ -46,14 +46,19 @@ import util,resolver,search
 
 def _search_cb(what):
 	print 'searching for '+what
-	page = util.request(BASE_URL+'/hledat/complete-films/?q='+urllib.quote(what))
+	page = util.request(BASE_URL+'hledat/complete-films/?q='+urllib.quote(what))
 	data = util.substr(page,'<div id=\"search-films','<div class=\"footer')
 	results = []
-	for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-		results.append((m.group('url'),m.group('name')))
+	for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<p>(?P<info>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+		results.append((m.group('url'),m.group('name')+' ('+m.group('info')+')'))
 	
-	for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',util.substr(data,'<ul class=\"films others','</div'),re.DOTALL|re.IGNORECASE):
-		results.append((m.group('url'),m.group('name')))
+	for m in re.finditer('<li(?P<item>.+?)</li>',util.substr(data,'<ul class=\"films others','</div'),re.DOTALL|re.IGNORECASE):
+		base = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',m.group('item'))
+		if base:
+			name = base.group('name')
+			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
+				name = '%s %s' % (name,n.group('data'))
+			results.append((base.group('url'),name))
 	
 	for url,name in results:
 		if __addon__.getSetting('preload-metadata-search') == 'true':
@@ -239,8 +244,8 @@ else:
 
 if __addon__.getSetting('clear-cache') == 'true':
 	util.info('Cleaning all cache entries...')
-	__cache__.delete('http%')
 	__addon__.setSetting('clear-cache','false')
+	__cache__.delete('http%')
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	root()
