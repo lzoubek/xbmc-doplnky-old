@@ -171,13 +171,13 @@ def decode_html(data):
 		return data
 
 def debug(text):
-	xbmc.log(text,xbmc.LOGDEBUG)
+	xbmc.log(str([text]),xbmc.LOGDEBUG)
 
 def info(text):
-	xbmc.log(text)
+	xbmc.log(str([text]))
 
 def error(text):
-	xbmc.log(text,xbmc.LOGERROR)
+	xbmc.log(str([text]),xbmc.LOGERROR)
 
 
 def get_searches(addon,server):
