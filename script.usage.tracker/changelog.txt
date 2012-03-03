@@ -1,3 +1,5 @@
+[B]0.9.3:[/B]
+- fixed: UI fails when addon contains non-unicode char in name
 [B]0.9.2:[/B]
 - typo
 [B]0.9.1:[/B]
