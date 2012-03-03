@@ -64,8 +64,9 @@ def trackUsage(params):
 	if __addon__.getSetting('enabled') == 'false':
 		print '[%s] globally disabled by user settings' % __scriptid__
 		return
-	if register(params):
+	if register(params):		
 		if __addon__.getSetting('ask-tracking') == 'true':
+			# user wants to confirm each reporting
 			ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),__(30001),__(30002),__(30003))
 			if ret == 0:
 				print '[%s] reporting for %s disabled by user' % (__scriptid__,params['id'])
@@ -73,6 +74,7 @@ def trackUsage(params):
 		print '[%s] Tracking usage ...' % __scriptid__
 		sett = tracker.TrackerSettings(__addon__)
 		info = tracker.TrackerInfo().getSystemInfo()
+		# retrieve per-installation-unique ID
 		info['instanceid'] = sett.getInstanceID(params['service'])
 		if 'google' == params['service']:
 			return google.track_usage(params['host'],params['action'],params['tc'],params['dry'],info)
@@ -119,17 +121,17 @@ def printHelp():
 	print 'Call script using xbmc.executebuiltin(\'RunPlugin(plugin://script.usage.tracker/?param1=value2&param2=value2)\')'
 	print ''
 	print 'Operations:'
-	print 'do=track - default does tracking, does not need to be specified when tracking'
-	print 'do=reg - only registers your addon with usage tracking addon - if it is for first time user is asked'
+	print 'do=track - (default) does tracking, does not need to be specified when tracking'
+	print 'do=reg - only registers your addon with Usage Tracker - if it is for first time user is asked to confirm whether he wants enable usage reporting'
 	print ''
 	print 'Parameters:'
-	print 'id=<caller plugin id> - required, it is used to determine whether usage reporting is enabled, also specifies default action'
+	print 'id=<caller plugin id> - required, it is used to determine whether usage reporting is enabled, also specifies default \'action\''
 	print 'host=<url> - required, URL to be tracked'
 	print 'tc=<tracking code> - required, tracking code associated with host param'
-	print 'service=google - optional, currently only google (default) service is supported, others may be added in future'
-	print 'cond=<string ID> - optional, defines ID of String from caller plugin which contains info what and when can be tracked, this is displayed as Author\' note in script Usage Tracker UI'
-	print 'action=<action> - optional, specifies request uri, that will be pinged'
-	print 'dry=true|false - optional, if true, reporting itself will be disabled - useful for debugging'
+	print 'service=google - optional, but currently only google (default) service is supported, others may be added in future'
+	print 'cond=<string ID> - optional, defines ID of String from caller plugin which contains info about how is usage of caller plugin going to be tracked, this is displayed as Author\' note in script Usage Tracker UI'
+	print 'action=<action> - optional, specifies request uri, that will be pinged, by default it is taken from  \'id\' param'
+	print 'dry=true|false - optional, if true, reporting will be disabled - useful for debugging'
 
 def main():
 	p = params()

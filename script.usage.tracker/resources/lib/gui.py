@@ -50,7 +50,6 @@ class MainWindow ( xbmcgui.WindowXMLDialog ) :
 				enStr = __addon__.getLocalizedString(30004)
 			else:
 				enStr = __addon__.getLocalizedString(30005)
-			print enStr
 			li.setProperty('enabled',enStr)
 			if enabled:
 				li.setProperty('isenabled','True')
@@ -59,12 +58,11 @@ class MainWindow ( xbmcgui.WindowXMLDialog ) :
 				# use defaults
 				terms = __addon__.getLocalizedString(30000) % (add_inst.getAddonInfo('name'),'')
 			else:
-				terms = __addon__.getLocalizedString(30000)% (add_inst.getAddonInfo('name'),add_inst.getLocalizedString(termsID))
+				terms = __addon__.getLocalizedString(30000)% (unicode(add_inst.getAddonInfo('name'),errors='replace'),add_inst.getLocalizedString(termsID))
 			li.setProperty('terms',terms)
 			list.addItem(li)
 
 	def _refresh_addon_details(self):
-		print 'refresh'
 		selected = self.getControl(ADDONS).getSelectedItem()
 
 	def onAction(self, action):
@@ -74,22 +72,17 @@ class MainWindow ( xbmcgui.WindowXMLDialog ) :
 		if action.getId() in [3,4] and self.getFocusId() == ADDONS:
 			self._refresh_addon_details()
 			
-#	if str(action.getId()) in ACTIONS:
-#			command = ACTIONS[str(action.getId())]
-#			print 'action: '+command
-#			self._exec_command(command)
-
 	def onClick( self, controlId ):
-		print controlId
 		if controlId in [1003, 1001]:
 			selected_index = self.getControl(ADDONS).getSelectedPosition()
 			addon = self.getControl(ADDONS).getSelectedItem().getProperty('id')
 			add_inst = xbmcaddon.Addon(addon)
 			isenabled = self.getControl(ADDONS).getSelectedItem().getProperty('isenabled') == 'True'
+			addon_name = unicode(add_inst.getAddonInfo('name'),errors='replace')
 			if isenabled:
-				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30007) % add_inst.getAddonInfo('name')))
+				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30007) % addon_name))
 			else:
-				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30006) % add_inst.getAddonInfo('name')))
+				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30006) % addon_name))
 			
 			confirmed = ret == 1
 			if confirmed:
@@ -99,7 +92,3 @@ class MainWindow ( xbmcgui.WindowXMLDialog ) :
 				self.getControl(ADDONS).selectItem(selected_index)
 		elif controlId == 1000:
 			__addon__.openSettings()
-#		if str(controlId) in CLICK_ACTIONS:
-#			command = CLICK_ACTIONS[str(controlId)]
-#			print 'click action: '+command
-#			self._exec_command(command)
