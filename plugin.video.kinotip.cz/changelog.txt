@@ -1,3 +1,5 @@
+[B]0.3.7:[/B]
+- přidana podpora pro vyhledávání pluginem ČSFD Trailery
 [B]0.3.6:[/B]
 - přidán Usage Tracking
 [B]0.3.5:[/B]
