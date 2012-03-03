@@ -47,11 +47,11 @@
 
 <addon id="plugin.video.pohadkar.cz"
        name="pohadkar.cz"
-       version="1.0.2"
+       version="1.0.3"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.7"/>
+    <import addon="script.module.stream.resolver" version="1.2.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -91,11 +91,11 @@
 
 <addon id="plugin.video.movie-library.cz"
        name="movie-library.cz"
-       version="1.1.7"
+       version="1.1.8"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.4"/>
+    <import addon="script.module.stream.resolver" version="1.2.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -113,7 +113,7 @@
 
 <addon id="script.usage.tracker"
        name="Usage Tracker"
-       version="0.9.2"
+       version="0.9.3"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -174,11 +174,11 @@
 
 <addon id="plugin.video.csfd-trailers"
        name="ČSFD Trailery"
-       version="0.0.1"
+       version="1.0.0"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.6"/>
+    <import addon="script.module.stream.resolver" version="1.2.1"/>
     <import addon="script.common.plugin.cache" version="0.9.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
@@ -189,15 +189,15 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">ČSFD Trailery</summary>
     <summary lang="cs">ČSFD Trailery</summary>
-    <description lang="cs">Tento doplněk Vám spřístupní přehled premiér z kin, filmů vycházejících na DVD a Blue-ray a TOP žebříčků z ČSFD. Můžete přehrávat trailery a další videa, ale je zde také integrace s doplňky movie-library.cz,bezvadata.cz nebo kinotip.cz pro možnost hledání vybraného filmu. </description>
-    <description lang="en">This addon provides trailers and related videos to movies listed in csfd.cz. There is an integration with movie-library.cz addon supporting convenient way to watch movie listed by this addon.</description>
+    <description lang="cs">Tento doplněk Vám zpřístupní přehled premiér z kin, filmů vycházejících na DVD a Blue-ray a TOP žebříčků z ČSFD. Na ČSFD je možné vyhledávat filmy nebo osoby a procházet jejich filmotéky. K filmům načítá i medatada podobně jako scrapper s tou výhodou, že není nutné, aby se film nacházel ve vaší knihovně. Můžete přehrávat trailery a další videa a je zde také integrace s doplňky movie-library.cz, bezvadata.cz nebo kinotip.cz pro možnost hledání vybraného filmu jedním z těchto doplňků. </description>
+    <description lang="en">This addon provides trailers and related videos to movies listed in csfd.cz. You can search for movies or actors,directors, list filmographies. Addon also fetches movie metadata similar as scrapper. There is an integration with movie-library.cz addon supporting convenient way to watch movie listed by this addon.</description>
     <platform>all</platform>
   </extension>
 </addon>
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.2.0"
+       version="1.2.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -238,11 +238,11 @@
 
 <addon id="plugin.video.kinotip.cz"
        name="kinotip.cz"
-       version="0.3.6"
+       version="0.3.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.4"/>
+    <import addon="script.module.stream.resolver" version="1.2.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
