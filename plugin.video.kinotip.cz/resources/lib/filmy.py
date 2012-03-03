@@ -61,14 +61,15 @@ def listing_years(data):
 	for m in re.finditer(pattern, util.substr(data,'<h2>Filmy podle roku</h2>','</ul>'), re.IGNORECASE | re.DOTALL):
 		common.add_dir(m.group('cat'),{'cat':m.group('link')})
 
-def search(what):
+def search(what,affect_history=True):
 	if what == '':
 		kb = xbmc.Keyboard('',__language__(30003),False)
 		kb.doModal()
 		if kb.isConfirmed():
 			what = kb.getText()
 	if not what == '':
-		common.add_search(__addon__,SERVER,what)
+		if affect_history:
+			common.add_search(__addon__,SERVER,what)
 		data = util.request(BASE_URL+'?s='+what)
 		return list_movies(data)
 
@@ -104,7 +105,10 @@ def handle(params):
 	if 'list' in params.keys():
 		listing(params['list'])
 	if 'search' in params.keys():
-		search(params['search'])
+		affect_history = True
+		if 'search-no-history' in params.keys():
+			affect_history=False
+		search(params['search'],affect_history)
 	if 'list-search' in params.keys():
 		list_search()
 	if 'cat' in params.keys():

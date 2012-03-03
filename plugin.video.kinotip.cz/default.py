@@ -59,3 +59,6 @@ if p=={}:
 	root()
 if 'server' in p.keys():
 	server(p)
+if 'search' in p.keys() and not 'server' in p.keys():
+	p['server'] = 'filmy'
+	server(p)
