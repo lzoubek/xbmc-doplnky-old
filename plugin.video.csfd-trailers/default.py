@@ -34,7 +34,7 @@ try:
 except:
 	import storageserverdummy as StorageServer
 
-__cache__ = StorageServer.StorageServer(__scriptid__, 1)
+__cache__ = StorageServer.StorageServer(__scriptid__, 1*24*30)
 
 import scrapper
 
@@ -47,27 +47,68 @@ import util,resolver,search
 def _search_cb(what):
 	print 'searching for '+what
 	page = util.request(BASE_URL+'hledat/complete-films/?q='+urllib.quote(what))
-	data = util.substr(page,'<div id=\"search-films','<div class=\"footer')
+	preload = __addon__.getSetting('preload-metadata-search') == 'true' and __addon__.getSetting('preload-metadata') == 'true'
+
+	movie = ''
+	person = ''
+
+	if __addon__.getSetting('search-for-movies') == 'true' and __addon__.getSetting('search-for-persons') == 'true':
+		movie = str('[%s] ' % __language__(30017))
+		person = str('[%s] ' % __language__(30018))
 	results = []
-	for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<p>(?P<info>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-		results.append((m.group('url'),m.group('name')+' ('+m.group('info')+')'))
+	print movie
+	print person
+	if __addon__.getSetting('search-for-movies') == 'true':
+		data = util.substr(page,'<div id=\"search-films','<div class=\"footer')
+		for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<p>(?P<info>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			results.append((m.group('url'),'%s%s (%s)' %(movie,m.group('name'),m.group('info'))))
 	
-	for m in re.finditer('<li(?P<item>.+?)</li>',util.substr(data,'<ul class=\"films others','</div'),re.DOTALL|re.IGNORECASE):
-		base = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',m.group('item'))
-		if base:
-			name = base.group('name')
-			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
-				name = '%s %s' % (name,n.group('data'))
-			results.append((base.group('url'),name))
+		for m in re.finditer('<li(?P<item>.+?)</li>',util.substr(data,'<ul class=\"films others','</div'),re.DOTALL|re.IGNORECASE):
+			base = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',m.group('item'))
+			if base:
+				name = movie+base.group('name')
+				for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
+					name = '%s %s' % (name,n.group('data'))
+				results.append((base.group('url'),name))
+
+		for url,name in results:
+			if preload:
+				info = get_info(furl(url))
+				add_item(name,info)
+			else:
+				info = scrapper.get_cached_info(furl(url))
+				if info:
+					add_item(name,info)
+				else:
+					info = scrapper._empty_info()
+					info['url'] = url
+					add_item(name,info)
+	if __addon__.getSetting('search-for-persons') == 'true':
+		results = []
+		data = util.substr(page,'<div id=\"search-creators','<div class=\"footer')
+		for m in re.finditer('<h3 class=\"subject\"[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<p>(?P<info>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			results.append((m.group('url'),person+m.group('name')+' ('+m.group('info')+')'))
 	
-	for url,name in results:
-		if __addon__.getSetting('preload-metadata-search') == 'true':
-			info = get_info(furl(url))
-			add_item(name,info)
-		else:
-			info = scrapper._empty_info()
-			info['url'] = url
-			add_item(name,info)
+		for m in re.finditer('<li(?P<item>.+?)</li>',util.substr(data,'<ul class=\"creators others','</div'),re.DOTALL|re.IGNORECASE):
+			base = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',m.group('item'))
+			if base:
+				name = person+base.group('name')
+				for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
+					name = '%s %s' % (name,n.group('data'))
+				results.append((base.group('url'),name))
+
+		for url,name in results:
+			if preload:
+				info = get_info(furl(url))
+				add_person(name,info)
+			else:
+				info = scrapper.get_cached_info(furl(url))
+				if info:
+					add_person(name,info)
+				else:
+					info = scrapper._empty_info()
+					info['url'] = url
+					add_person(name,info)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def furl(url):
@@ -115,13 +156,17 @@ def download(url,name):
 
 def root():
 	search.item()
-	util.add_dir('Kino',{'kino':''})
-	util.add_dir('Žebříčky',{'top':''})
-	#util.add_dir('Blue-ray',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/'})
-	#util.add_dir('Premiova DVD',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/?format=dvd_retail'})
-	#util.add_dir('Levna DVD',{'cat':'dvd','url':'http://www.csfd.cz/dvd-a-bluray/mesicne/?format=dvd_lite'})
+	util.add_dir('Kino',{'kino':''},icon())
+	util.add_dir('Žebříčky',{'top':''},util.icon('top.png'))
+	util.add_dir('Blu-ray',{'dvd':'bluray'},icon())
+	util.add_dir('Premiérová DVD',{'dvd':'dvd_retail'},icon())
+	util.add_dir('Levná DVD v trafikách a časopisech',{'dvd':'dvd_lite'},icon())
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+
+def add_person(name,info):
+	xbmc_info = scrapper.xbmc_info(info)
+	util.add_dir(name,{'person':furl(info['url'])},info['img'],infoLabels=xbmc_info)
 
 def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
@@ -148,7 +193,7 @@ def kino(params):
 def kino_list(url):
 	page = util.request(furl(url))
 	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
-	for m in re.finditer('<td class=\"date\">(?P<date>[^<]+).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)',data,re.IGNORECASE|re.DOTALL):
+	for m in re.finditer('<td class=\"date\">(?P<date>[^<]*).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)',data,re.IGNORECASE|re.DOTALL):
 		info = get_info(furl(m.group('url')))
 		if info:
 			name = '%s %s %s %s' % (m.group('date'),m.group('name'),m.group('year'),info['percent'])
@@ -186,13 +231,35 @@ def item(params):
 		util.add_video(m.group('name'),{'play':url},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+def person(params):
+	info = scrapper.get_info(params['person'])
+	xbmc_info = scrapper.xbmc_info(info)
+	page = util.request(info['url'],headers={'Referer':BASE_URL})
+	data = util.substr(page,'<div id=\"filmography\"','<div id=\"fanclub\"')
+	results = []
+	for m in re.finditer('<td(?P<item>.+?)</td>',data,re.DOTALL|re.IGNORECASE):
+		base = re.search('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',m.group('item'))
+		if base:
+			name = base.group('name')
+			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
+				name = '%s %s' % (name,n.group('data'))
+			results.append((base.group('url'),name))
+	for url,name in results:
+		info = get_info(furl(url))
+		if info:
+			add_item(name,info)
+		else:
+			info = scrapper._empty_info()
+			info['url'] = m.group('url')
+			add_item(name,info)
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 def search_plugin(plugin,url,action):
 	info = scrapper.get_info(url)
 	titles = info['search-title']
 	params = {}
 	if __addon__.getSetting('search-integration-update-history') == 'false':
 		params['search-no-history'] = ''
-		print 'no history'
 	for title in info['search-title']:
 		params[action] = title
 	 	add_plugin_call(__language__(30008)+': '+title,plugin,params)
@@ -214,15 +281,15 @@ def top(params):
 	if 'top-select' in params.keys():
 		page = util.request(furl(params['top-select']+'?show=complete'))
 		data = util.substr(page,'<table class=\"content','</table>')
-		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+		for m in re.finditer('<td class=\"order\">(?P<order>[^<]+).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			info = get_info(furl(m.group('url')))
 			if info:
-				add_item(m.group('name'),info)
+				name = '%s %s (%s) %s' % (m.group('order'),m.group('name'),info['year'],info['percent'])
+				add_item(name,info)
 			else:
 				info = scrapper._empty_info()
 				info['url'] = m.group('url')
-				name = m.group('name')
-				#name = '%s %s %s' % (m.group('date'),m.group('name'),m.group('year'))
+				name = '%s %s' % (m.group('order'),m.group('name'))
 				add_item(name,info)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -231,8 +298,22 @@ def top(params):
 		data = util.substr(page,'<div class=\"navigation','</div>')
 		util.add_dir('Nejlepší filmy',{'top':'','top-select':'zebricky/nejlepsi-filmy/'})
 		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-			util.add_dir(m.group('name'),{'top':'','top-select':m.group('url')})
+			util.add_dir(m.group('name'),{'top':'','top-select':m.group('url')},icon())
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def dvd(params):
+	if 'year' in params.keys():
+		return kino_list('dvd-a-bluray/rocne/?format='+params['dvd']+'&year='+params['year'])
+	else:
+		page = util.request(furl('dvd-a-bluray/rocne/?format='+params['dvd']))
+		data = util.substr(page,'id=\"frmfilter-year','</select>')
+		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			params['year'] = m.group('value')
+			util.add_dir(m.group('name'),params)
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def icon():
+	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 
 p = util.params()
 util.init_urllib()
@@ -253,10 +334,14 @@ if 'kino' in p.keys():
 	kino(p)
 if 'top' in p.keys():
 	top(p)
+if 'dvd' in p.keys():
+	dvd(p)
 if 'search-plugin' in p.keys():
 	search_plugin(p['search-plugin'],p['url'],p['action'])
 if 'item' in p.keys():
 	item(p)
+if 'person' in p.keys():
+	person(p)
 if 'play' in p.keys():
 	play(p['play'])
 search.main(__addon__,'search_history',p,_search_cb)

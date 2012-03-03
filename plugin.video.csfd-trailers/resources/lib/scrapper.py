@@ -109,8 +109,8 @@ def _genre(page):
 	return _match(re.search('<p class=\"genre\">([^<]+)',page),__empty_info['genre'])
 
 def _get_img(page):
-	data  = util.substr(page,'<div id=\"poster\"','</div>')
-	return _match(re.search('src=\"([^\"]+)',data))
+	data =  util.substr(page,'<div id=\"profile\"','</div>')
+	return _match(re.search('src=\"([^\"]+)',data),__empty_info['img'])
 
 def _get_title(page):
 	data  = util.substr(page,'<meta property=\"og:title\"','>')
@@ -174,7 +174,7 @@ def _rating(page):
 	return __empty_info['percent'],__empty_info['rating']
 
 def _empty_info():
-	return __empty_info
+	return __empty_info.copy()
 
 __empty_info = {
 			'title':'',

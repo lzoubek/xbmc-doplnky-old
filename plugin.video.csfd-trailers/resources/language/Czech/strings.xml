@@ -14,6 +14,10 @@
 	<string id="30012">[B]Další[/B]</string>
 	<string id="30013">Vyhledávání</string>
 	<string id="30014"> - předčítat i při listování výsledků vyhledávání</string>
+	<string id="30015">Povolit hledaní filmů na ČSFD</string>
+	<string id="30016">Povolit hledaní osob na ČSFD</string>
+	<string id="30017">Film</string>
+	<string id="30018">Osoba</string>
 	<string id="30020">Zapnout vyhledávání pomocí jiných doplňků</string>
 	<string id="30021"> - movie-library.cz</string>
 	<string id="30022"> - ulozto.cz</string>

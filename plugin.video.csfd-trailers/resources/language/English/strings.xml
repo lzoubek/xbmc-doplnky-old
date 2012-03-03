@@ -14,6 +14,10 @@
 	<string id="30012">[B]Next[/B]</string>
 	<string id="30013">Search</string>
 	<string id="30014"> - preload when listing search results</string>
+	<string id="30015">Show movies in ČSFD search result</string>
+	<string id="30016">Show persons in ČSFD search result</string>
+	<string id="30017">Movie</string>
+	<string id="30018">Person</string>
 	<string id="30020">Enable search using</string>
 	<string id="30021"> - movie-library.cz</string>
 	<string id="30022"> - ulozto.cz</string>
