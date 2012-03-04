@@ -1,3 +1,6 @@
+[B]1.2.2:[/B]
+- bugfixes
+- search.py now supports multiple search items within one addon
 [B]1.2.0:[/B]
 - added method to prelace czech diaktitic chars
 - fixed divByZero when downloading, made notifications more robust
