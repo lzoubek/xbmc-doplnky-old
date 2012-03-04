@@ -86,7 +86,7 @@ def url(url):
 		util.init_urllib()
 		try:
 			page = util.request(url)
-		except urllib2.HTTPError as e:
+		except urllib2.HTTPError, e:
 				traceback.print_exc()
 				return -2
 		if page.find('Stránka nenalezena!') > 0:
