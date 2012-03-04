@@ -78,7 +78,10 @@ def _search_person_cb(what):
 			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
 				name = '%s %s' % (name,n.group('data'))
 			results.append((base.group('url'),name))
-	add_items(results)
+	for url,name in results:
+		info = scrapper._empty_info()
+		info['url'] = url
+		add_person(name,info)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def furl(url):
