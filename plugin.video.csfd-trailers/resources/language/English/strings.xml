@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30000">Size of search history</string>
-	<string id="30001">Preload movie metadata (slower for the first time)</string>
+	<string id="30001">Preload metadata</string>
 	<string id="30002">[B]Search[/B]</string>
 	<string id="30003">[B]Search using ulozto[/B]</string>
 	<string id="30004">[B]Search using bezvadata[/B]</string>
@@ -13,17 +13,16 @@
 	<string id="30010">Clear cache on next startup</string>
 	<string id="30012">[B]Next[/B]</string>
 	<string id="30013">Search</string>
-	<string id="30014"> - preload when listing search results</string>
 	<string id="30015">Show movies in ČSFD search result</string>
 	<string id="30016">Show persons in ČSFD search result</string>
-	<string id="30017">Movie</string>
-	<string id="30018">Person</string>
+	<string id="30017">[B]Movie[/B]</string>
+	<string id="30018">[B]Person[/B]</string>
+	<string id="30019">Preloading metadata...</string>
 	<string id="30020">Enable search using</string>
 	<string id="30021"> - movie-library.cz</string>
 	<string id="30022"> - ulozto.cz</string>
 	<string id="30023"> - bezvadata.cz</string>
 	<string id="30024"> - kinotip.cz</string>
-	
 	<string id="30030">Downloads</string>
 	<string id="30031">Please setup downloads folder</string>
 	<string id="30032">Notify when downloading</string>

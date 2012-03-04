@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 	<string id="30000">Počet zapamatovaných hledání</string>
-	<string id="30001">Předčítat metadata do cache při listování (poprvé zpomaluje)</string>
+	<string id="30001">Načíst metadata</string>
 	<string id="30002">[B]Vyhledat[/B]</string>
 	<string id="30003">[B]Vyhledat na ulozto[/B]</string>
 	<string id="30004">[B]Vyhledat na bezvadata[/B]</string>
@@ -13,11 +13,11 @@
 	<string id="30010">Vyčistit cache při příštím spuštění</string>
 	<string id="30012">[B]Další[/B]</string>
 	<string id="30013">Vyhledávání</string>
-	<string id="30014"> - předčítat i při listování výsledků vyhledávání</string>
 	<string id="30015">Povolit hledaní filmů na ČSFD</string>
 	<string id="30016">Povolit hledaní osob na ČSFD</string>
-	<string id="30017">Film</string>
-	<string id="30018">Osoba</string>
+	<string id="30017">[B]Film[/B]</string>
+	<string id="30018">[B]Osobnost[/B]</string>
+	<string id="30019">Načítám metadata...</string>
 	<string id="30020">Zapnout vyhledávání pomocí jiných doplňků</string>
 	<string id="30021"> - movie-library.cz</string>
 	<string id="30022"> - ulozto.cz</string>

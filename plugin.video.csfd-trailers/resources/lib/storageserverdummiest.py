@@ -19,12 +19,12 @@ except:
 
 import time
 import sys
-
+import simplejson as json
 if hasattr(sys.modules["__main__"], "settings"):
     settings = sys.modules["__main__"].settings
 else:
     settings = False
-
+__addon__ = sys.modules['__main__'].__addon__
 
 class StorageServer:
     def __init__(self, table=False,cacheTime=0):
@@ -85,10 +85,36 @@ class StorageServer:
         return result
 
     def set(self, name, data):
-        return ""
+	mydata = {}
+	local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,'cache.json')
+	if os.path.exists(local):
+		f = open(local,'r')
+		content = f.read()
+		mydata = json.loads(unicode(content.decode('utf-8','ignore')))
+		f.close()
+	mydata[name] = data
+	f = open(local,'w')
+	f.write(json.dumps(mydata,ensure_ascii=True))
+	f.close()
+	return ''
 
     def get(self, name):
-        return ""
+	local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+	if not os.path.exists(local):
+		os.makedirs(local)
+	local = os.path.join(local,'cache.json')
+	if not os.path.exists(local):
+		return ''
+	f = open(local,'r')
+	data = f.read()
+	mydata  = json.loads(unicode(data.decode('utf-8','ignore')))
+	f.close()
+	if name in mydata:
+		return mydata[name]
+        return ''
 
     def setMulti(self, name, data):
         return ""
@@ -103,4 +129,10 @@ class StorageServer:
         return False
 
     def delete(self,name):
-        return False
+        try:
+		local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+		local = os.path.join(local,'cache.json')
+		os.remove(local)
+	except:
+		pass
+	return False

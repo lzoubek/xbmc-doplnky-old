@@ -32,7 +32,7 @@ def get_info(url):
 		info = _empty_info()
 		util.info('Not in cache : '+url)
 		try:
-			page = util.request(url,headers={'Referer':BASE_URL})
+			page = util.request(url,headers={'Referer':BASE_URL,'User-Agent':util.UA})
 		except:
 			util.error('Unable to read page '+url)
 			traceback.print_exc()
