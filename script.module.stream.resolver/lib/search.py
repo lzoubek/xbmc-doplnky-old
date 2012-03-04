@@ -24,10 +24,15 @@ import os,re,sys
 import xbmcplugin,xbmcaddon,xbmc
 import util
 
-def _list(addon,history):
-	util.add_dir(util.__lang__(30004),{'search':''},util.icon('search.png'))
+def _list(addon,history,key,value):
+	params = {}
+	if key:
+		params[key] = value
+	params['search'] = ''
+	util.add_dir(util.__lang__(30004),params,util.icon('search.png'))
 	for what in util.get_searches(addon,history):
-		util.add_dir(what,{'search':what},menuItems={xbmc.getLocalizedString(117):{'search-remove':what}})
+		params['search'] = what
+		util.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):{'search-remove':what}})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def _remove(addon,history,search):
@@ -50,17 +55,19 @@ def _search(addon,history,what,update_history,callback):
 		if update_history:
 			util.add_search(addon,history,what,maximum)
 		callback(what)
-def item(items={}):
-	items['search-list'] = ''
-	util.add_dir(util.__lang__(30003),items,util.icon('search.png'))
 
-def main(addon,history,p,callback):
-	if 'search-list' in p.keys():
-		_list(addon,history)
-	if 'search' in p.keys():
-		update_history=True
-		if 'search-no-history' in p.keys():
-			update_history=False
-		_search(addon,history,p['search'],update_history,callback)
-	if 'search-remove' in p.keys():
-		_remove(addon,history,p['search-remove'])
+def item(items={},label=util.__lang__(30003)):
+	items['search-list'] = ''
+	util.add_dir(label,items,util.icon('search.png'))
+
+def main(addon,history,p,callback,key=None,value=None):
+	if (key==None) or (key in p and p[key] == value):
+		if 'search-list' in p.keys():
+			_list(addon,history,key,value)
+		if 'search' in p.keys():
+			update_history=True
+			if 'search-no-history' in p.keys():
+				update_history=False
+			_search(addon,history,p['search'],update_history,callback)
+		if 'search-remove' in p.keys():
+			_remove(addon,history,p['search-remove'])
