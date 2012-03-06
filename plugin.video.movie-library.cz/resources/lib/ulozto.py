@@ -149,6 +149,7 @@ def list_page(url):
 		util.add_video('%s (%s | %s)' % (m.group('name'),m.group('size').strip(),m.group('time')),
 			{'play':iurl},
 			full_url(m.group('logo')),
+			infoLabels={'Title':m.group('name')},
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
 	# page naviagation

@@ -164,9 +164,11 @@ def parse_item(page):
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a></div></td><td[^>]+>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
 		iurl = furl(m.group('url'))
-		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
-		{'play':iurl},
-		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
+		util.add_video(
+			'%s (%s)'%(m.group('name'), m.group('size')),
+			{'play':iurl},
+			infoLabels={'Title':m.group('name')},
+			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 		)
 
 	# search for movie items
@@ -174,9 +176,11 @@ def parse_item(page):
 	pattern = '<a class=\"under\" href="(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(.+?)<abbr[^>]*>(?P<size>[^<]+)'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
 		iurl = furl(m.group('url'))
-		util.add_video('%s (%s)'%(m.group('name'), m.group('size')),
-		{'play':iurl},
-		menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
+		util.add_video(
+			'%s (%s)'%(m.group('name'), m.group('size')),
+			{'play':iurl},
+			infoLabels={'Title':m.group('name')},
+			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 		)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
