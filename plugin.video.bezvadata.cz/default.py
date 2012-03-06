@@ -53,6 +53,7 @@ def parse_page(page):
 			util.add_video(
 				name,
 				{'play':iurl},m.group('img'),
+				infoLabels={'Title':m.group('name')},
 				menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
 	data = util.substr(page,'<div class=\"pagination','</div>')
