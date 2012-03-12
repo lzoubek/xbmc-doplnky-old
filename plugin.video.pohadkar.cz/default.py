@@ -102,17 +102,30 @@ def _get_image(data,local):
 			print ' Downloading %s' % img
 			_save(util.request(img),local)
 
-def categories():
-	#search.item()
-	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
-	data = util.substr(util.request(BASE_URL),'<div class=\"vypis_data\"','</div')
-	letters = ['A','B','C','Č','D','Ď','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','Ř','S','Š','T','Ť','U','V','W','X','Y','Z','Ž']
+def list_all():
 	for letter in letters:
 		data = util.request(BASE_URL+'system/load-vypis/?znak='+letter+'&typ=1&zar=hp')
 		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			image,plot = _get_meta(m.group('name'),furl(m.group('url')))
 			util.add_dir(m.group('name'),{'tale':furl(m.group('url')+'video/')},image,infoLabels={'Plot':plot})
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def list_letter(index):
+	letter = letters[int(index)]
+	data = util.request(BASE_URL+'system/load-vypis/?znak='+letter+'&typ=1&zar=hp')
+	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
+			image,plot = _get_meta(m.group('name'),furl(m.group('url')))
+			util.add_dir(m.group('name'),{'tale':furl(m.group('url')+'video/')},image,infoLabels={'Plot':plot})
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def categories():
+	#search.item()
+	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
+	util.add_dir('Všechny',{'list-all':''})
+	for index,letter in enumerate(letters):
+		util.add_dir(letter,{'list':str(index)})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
@@ -186,9 +199,14 @@ def download(url,name):
 			util.download(__addon__,name,stream[0],os.path.join(downloads,name+'.mp4'))
 
 p = util.params()
+letters = ['A','B','C','Č','D','Ď','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','Ř','S','Š','T','Ť','U','V','W','X','Y','Z','Ž']
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	categories()
+if 'list-all' in p.keys():
+	list_all()
+if 'list' in p.keys():
+	list_letter(p['list'])
 if 'tale' in p.keys():
 	list_page(p['tale'])
 if 'play' in p.keys():
