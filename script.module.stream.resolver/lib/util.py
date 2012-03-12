@@ -124,11 +124,11 @@ def reportUsage(addonid,action):
 	tc = 'UA-3971432-4'
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (addonid,host,tc,action))
 
-def params():
+def params(url=sys.argv[2]):
         param={}
-        paramstring=sys.argv[2]
+        paramstring=url
         if len(paramstring)>=2:
-                params=sys.argv[2]
+                params=url
                 cleanedparams=params.replace('?','')
                 if (params[len(params)-1]=='/'):
                         params=params[0:len(params)-2]
