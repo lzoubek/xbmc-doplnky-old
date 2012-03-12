@@ -47,7 +47,7 @@
 
 <addon id="plugin.video.pohadkar.cz"
        name="pohadkar.cz"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
