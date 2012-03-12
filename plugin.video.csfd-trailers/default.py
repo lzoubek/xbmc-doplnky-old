@@ -45,7 +45,8 @@ import util,resolver,search
 
 def _search_movie_cb(what):
 	print 'searching for movie '+what
-	page = util.request(BASE_URL+'hledat/complete-films/?q='+urllib.quote(what))
+	url = BASE_URL+'hledat/complete-films/?q='+urllib.quote(what)
+	page = util.request(url)
 
 	results = []
 	data = util.substr(page,'<div id=\"search-films','<div class=\"footer')
@@ -59,6 +60,8 @@ def _search_movie_cb(what):
 			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
 				name = '%s %s' % (name,n.group('data'))
 			results.append((base.group('url'),name))
+	if preload():
+		return preload_items(results)
 	add_items(results)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -146,7 +149,11 @@ def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
 	if not '0%' == info['percent']:
 		name += ' '+info['percent']
-	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
+	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,
+		menuItems={
+			__language__(30007):'Action(info)',
+			__language__(30001):{'preload-refresh':''},
+		})
 
 def add_items(items):
 	for url,name in items:
@@ -168,31 +175,27 @@ def preload_items(results):
 		if pDialog.iscanceled():
 			pDialog.close()
 			return
+		prog = float(prog + step)
+		pDialog.update(int(prog),__language__(30019),name)
 		if not scrapper.get_cached_info(furl(url)):
 			scrapper.get_info(furl(url))
 			time.sleep(3)
-		prog = float(prog + step)
-		pDialog.update(int(prog),__language__(30019),name)
 	pDialog.close()
 
 def kino(params):
 	if 'kino-year' in params.keys() and 'kino-country' in params.keys():
-		return kino_list('kino/prehled/?country=%s&year=%s' % (params['kino-country'],params['kino-year']),preload='preload' in params.keys())
+		return kino_list('kino/prehled/?country=%s&year=%s' % (params['kino-country'],params['kino-year']))
 	if 'kino-country' in params.keys():
 		data = util.request(furl('kino/prehled'))
 		data = util.substr(data,'id=\"frmfilter-year','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			params['kino-year'] = m.group('value')
-			miparams = params.copy()
-			miparams['preload'] = ''
 			util.add_dir(
 				m.group('name'),
 				params,
-				menuItems={__language__(30001):miparams},
 			)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	else:
-		print furl('kino/prehled')
 		data = util.request(furl('kino/prehled'))
 		data = util.substr(data,'id=\"frmfilter-country','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
@@ -200,14 +203,14 @@ def kino(params):
 			util.add_dir(m.group('name'),params)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-def kino_list(url,preload=False):
+def kino_list(url):
 	page = util.request(furl(url))
 	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
 	results = []
 	for m in re.finditer('<td class=\"date\">(?P<date>[^<]*).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)',data,re.IGNORECASE|re.DOTALL):
 		name = '%s %s %s' % (m.group('date'),m.group('name'),m.group('year'))
 		results.append((m.group('url'),name))
-	if preload:
+	if preload():
 		preload_items(results)
 	else:
 		add_items(results)
@@ -255,6 +258,8 @@ def person(params):
 			for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',m.group('item')):
 				name = '%s %s' % (name,n.group('data'))
 			results.append((base.group('url'),name))
+	if preload():
+		return preload_items(results)
 	add_items(results)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -281,9 +286,10 @@ def add_plugin_call(name,plugin,params,logo='',infoLabels={}):
 	plugurl = util._create_plugin_url(params,plugin)
         return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=plugurl,listitem=liz,isFolder=True)
 
-def top(params,preload=False):
+def top(params):
 	if 'top-select' in params.keys():
-		page = util.request(furl(params['top-select']+'?show=complete'))
+		url = furl(params['top-select']+'?show=complete')
+		page = util.request(url)
 		data = util.substr(page,'<table class=\"content','</table>')
 		results = []
 		for m in re.finditer('<tr>(?P<data>.+?)</tr>',data,re.DOTALL|re.IGNORECASE):
@@ -293,9 +299,8 @@ def top(params,preload=False):
 				name = '%s %s' % (base.group('order'),base.group('name'))
 				for n in re.finditer('<span[^>]*>(?P<data>[^<]+)',item):
 					name = '%s %s' % (name,n.group('data'))
-				
 				results.append((base.group('url'),name))
-		if 'preload' in params.keys():
+		if preload():
 			preload_items(results)
 		else:
 			add_items(results)
@@ -315,50 +320,65 @@ def top(params,preload=False):
 				m.group('name'),
 				{'top':'','top-select':m.group('url')},
 				icon(),
-				menuItems={__language__(30001):{'preload':'','top':'','top-select':m.group('url')}},
 			)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def dvd(params):
 	if 'year' in params.keys():
-		return kino_list('dvd-a-bluray/rocne/?format='+params['dvd']+'&year='+params['year'],preload='preload' in params.keys())
+		return kino_list('dvd-a-bluray/rocne/?format='+params['dvd']+'&year='+params['year'])
 	else:
 		page = util.request(furl('dvd-a-bluray/rocne/?format='+params['dvd']))
 		data = util.substr(page,'id=\"frmfilter-year','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			params['year'] = m.group('value')
-			miparams = params.copy()
-			miparams['preload'] = ''
-			util.add_dir(m.group('name'),params,menuItems={__language__(30001):miparams})
+			util.add_dir(m.group('name'),params)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def icon():
 	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 
+def preload():
+	return __addon__.getSetting('preload') == 'true'
+
+def preload_refresh():
+	p = util.params(__addon__.getSetting('last-url'))
+	__addon__.setSetting('preload','true')
+	try:
+		main(p)
+	except Error, e:
+		raise e
+	finally:
+		__addon__.setSetting('preload','false')
+		xbmc.executebuiltin('Container.Refresh')
+
+def main(p):
+	if p=={}:
+		xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+		root()
+	if 'kino' in p.keys():
+		kino(p)
+	if 'top' in p.keys():
+		top(p)
+	if 'dvd' in p.keys():
+		dvd(p)
+	if 'search-plugin' in p.keys():
+		search_plugin(p['search-plugin'],p['url'],p['action'])
+	if 'item' in p.keys():
+		item(p)
+	if 'person' in p.keys():
+		person(p)
+	if 'preload-refresh' in p.keys():
+		return preload_refresh()
+	if 'play' in p.keys():
+		play(p['play'])
+	search.main(__addon__,'search_history_movies',p,_search_movie_cb,'s','movie')
+	search.main(__addon__,'search_history_persons',p,_search_person_cb,'s','person')
 
 p = util.params()
 util.init_urllib()
-
 if __addon__.getSetting('clear-cache') == 'true':
 	util.info('Cleaning all cache entries...')
 	__addon__.setSetting('clear-cache','false')
 	__cache__.delete('http%')
-if p=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-	root()
-if 'kino' in p.keys():
-	kino(p)
-if 'top' in p.keys():
-	top(p)
-if 'dvd' in p.keys():
-	dvd(p)
-if 'search-plugin' in p.keys():
-	search_plugin(p['search-plugin'],p['url'],p['action'])
-if 'item' in p.keys():
-	item(p)
-if 'person' in p.keys():
-	person(p)
-if 'play' in p.keys():
-	play(p['play'])
-search.main(__addon__,'search_history_movies',p,_search_movie_cb,'s','movie')
-search.main(__addon__,'search_history_persons',p,_search_person_cb,'s','person')
+main(p)
+__addon__.setSetting('last-url',sys.argv[2])
