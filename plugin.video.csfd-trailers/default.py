@@ -238,8 +238,8 @@ def dvd_list(url):
 		add_items(results)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-def add_addon_search(label,addon,info,action):
-	util.add_dir(__language__(label),{'search-plugin':'plugin://%s' % addon,'url':info['url'],'action':action},xbmcaddon.Addon(addon).getAddonInfo('icon'))
+def add_addon_search(label,addon,info,action,path):
+	util.add_dir(__language__(label),{'search-plugin':'%s' % path,'url':info['url'],'action':action},xbmcaddon.Addon(addon).getAddonInfo('icon'))
 
 def item(params):
 	info = scrapper.get_info(params['item'])
@@ -249,13 +249,13 @@ def item(params):
 	util.add_dir(__language__(30007),params,info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 	if __addon__.getSetting('search-integration') == 'true':
 		if __addon__.getSetting('search-integration-movie-library') == 'true':
-			add_addon_search(30006,'plugin.video.movie-library.cz',info,'search')
+			add_addon_search(30006,'plugin.video.movie-library.cz',info,'search','plugin://video/movie-library.cz')
 		if __addon__.getSetting('search-integration-ulozto') == 'true':
-			add_addon_search(30003,'plugin.video.movie-library.cz',info,'search-ulozto')
+			add_addon_search(30003,'plugin.video.movie-library.cz',info,'search-ulozto','plugin://video/movie-library.cz')
 		if __addon__.getSetting('search-integration-bezvadata') == 'true':
-			add_addon_search(30004,'plugin.video.bezvadata.cz',info,'search')
+			add_addon_search(30004,'plugin.video.bezvadata.cz',info,'search','plugin://video/bezvadata.cz')
 		if __addon__.getSetting('search-integration-kinotip') == 'true':
-			add_addon_search(30005,'plugin.video.kinotip.cz',info,'search')
+			add_addon_search(30005,'plugin.video.kinotip.cz',info,'search','plugin://video/kinotip.cz')
 	def_trailer = None
 	for m in re.finditer('<option value=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 		url  = info['url']+'/videa/-filtr-'+m.group('url')
