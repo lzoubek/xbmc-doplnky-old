@@ -138,12 +138,13 @@ def root():
 	util.add_dir('Blu-ray',{'dvd':'bluray'},icon())
 	util.add_dir('Premiérová DVD',{'dvd':'dvd_retail'},icon())
 	util.add_dir('Levná DVD v trafikách a časopisech',{'dvd':'dvd_lite'},icon())
+	util.add_dir('Tvůrci',{'artists':''},icon())
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 def add_person(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
-	util.add_dir(name,{'person':furl(info['url'])},info['img'],infoLabels=xbmc_info)
+	util.add_dir(name,{'person':furl(info['url'])},'DefaultArtist.png',infoLabels=xbmc_info)
 
 def add_item(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
@@ -333,6 +334,45 @@ def dvd(params):
 			params['year'] = m.group('value')
 			util.add_dir(m.group('name'),params)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+def artists(params):
+	if not 'type' in params.keys():
+		page = util.request(furl('tvurci/statistiky'))
+		for m in re.finditer('<div id=\"(?P<type>[^\"]+)[^<]+<h2 class=\"header\">(?P<name>[^<]+)',page,re.DOTALL|re.IGNORECASE):
+			util.add_dir(m.group('name'),{'artists':'','type':m.group('type')},icon())
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	typ = params['type']
+	page = util.request(furl('tvurci/statistiky/?expand='+typ))
+	data = util.substr(page,'<div id=\"'+typ+'\"','<div class=\"footer')
+	results = []
+	if not 'subtype' in params.keys():
+		for m in re.finditer('<h3 class=\"label\">(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			results.append(m.group('name'))
+		if len(results) > 0:
+			index = 0
+			for name in results:
+				params['subtype'] = str(index)
+				index+=1
+				util.add_dir(name,params,icon())
+			return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+		else:
+			for m in re.finditer('<li[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(?P<data>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+				results.append((m.group('name')+m.group('data'),m.group('url')))
+	else:
+		subtype = int(params['subtype'])
+		index = 0
+		for m in re.finditer('<h3 class=\"label\">(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			if index == subtype:
+				subtype = m.group('name')
+				break
+			index+=1
+		data = util.substr(data,subtype,'</div>')
+		for m in re.finditer('<li[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(?P<data>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			results.append((m.group('name')+m.group('data'),m.group('url')))
+	for index,(name,url) in enumerate(results):
+		info = scrapper._empty_info()
+		info['url'] = url
+		add_person('%i. %s' % (index+1,name),info)
+	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def icon():
 	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
@@ -344,9 +384,10 @@ def preload_refresh():
 	p = util.params(__addon__.getSetting('last-url'))
 	__addon__.setSetting('preload','true')
 	try:
-		main(p)
-	except Error, e:
-		raise e
+		try:
+			main(p)
+		except Error, e:
+			raise e
 	finally:
 		__addon__.setSetting('preload','false')
 		xbmc.executebuiltin('Container.Refresh')
@@ -361,6 +402,8 @@ def main(p):
 		top(p)
 	if 'dvd' in p.keys():
 		dvd(p)
+	if 'artists' in p.keys():
+		artists(p)
 	if 'search-plugin' in p.keys():
 		search_plugin(p['search-plugin'],p['url'],p['action'])
 	if 'item' in p.keys():
