@@ -146,25 +146,27 @@ def add_person(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
 	util.add_dir(name,{'person':furl(info['url'])},'DefaultArtist.png',infoLabels=xbmc_info)
 
-def add_item(name,info):
+def add_item(name,info,showing=None):
 	xbmc_info = scrapper.xbmc_info(info)
 	if not '0%' == info['percent']:
 		name += ' '+info['percent']
-	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,
-		menuItems={
-			__language__(30007):'Action(info)',
-			__language__(30001):{'preload-refresh':''},
-		})
+	menuItems={__language__(30007):'Action(info)',__language__(30001):{'preload-refresh':''}}
+	if showing:
+		menuItems[__language__(30025)] = {'show-cinema':showing}
+	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems=menuItems)
 
-def add_items(items):
+def add_items(items,showing={}):
 	for url,name in items:
+		showing_url = None
+		if url in showing.keys():
+			showing_url = showing[url]
 		info = scrapper.get_cached_info(furl(url))
 		if info:
-			add_item(name,info)
+			add_item(name,info,showing_url)
 		else:
 			info = scrapper._empty_info()
 			info['url'] = url
-			add_item(name,info)
+			add_item(name,info,showing_url)
 
 def preload_items(results):
 	step = 100./len(results)
@@ -205,6 +207,23 @@ def kino(params):
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def kino_list(url):
+	page = util.request(furl(url))
+	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
+	results = []
+	showing = {}
+	for m in re.finditer('<td class=\"date\">(?P<date>[^<]*).+?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+).+?<span class=\"film-year\">(?P<year>[^<]+)(?P<data>.+?)</tr>',data,re.IGNORECASE|re.DOTALL):
+		name = '%s %s %s' % (m.group('date'),m.group('name'),m.group('year'))
+		results.append((m.group('url'),name))
+		sh = re.search('<td class=\"showing[^<]+<a href=\"(?P<url>[^\"]+)',m.group('data'))
+		if sh:
+			showing[m.group('url')] =  sh.group('url')
+	if preload():
+		preload_items(results)
+	else:
+		add_items(results,showing)
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def dvd_list(url):
 	page = util.request(furl(url))
 	data = util.substr(page,'<div id=\"releases\"','<div class=\"footer\">')
 	results = []
@@ -326,7 +345,7 @@ def top(params):
 
 def dvd(params):
 	if 'year' in params.keys():
-		return kino_list('dvd-a-bluray/rocne/?format='+params['dvd']+'&year='+params['year'])
+		return dvd_list('dvd-a-bluray/rocne/?format='+params['dvd']+'&year='+params['year'])
 	else:
 		page = util.request(furl('dvd-a-bluray/rocne/?format='+params['dvd']))
 		data = util.substr(page,'id=\"frmfilter-year','</select>')
@@ -374,6 +393,27 @@ def artists(params):
 		add_person('%i. %s' % (index+1,name),info)
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+def show_cinema(params):
+	url = params['show-cinema']
+	page = util.request(furl(url))
+	items = []
+	for m in re.finditer('<div id=\"cinema(?P<data>.+?)<div class=\"footer',page,re.DOTALL|re.IGNORECASE):
+		cinema = re.search('<h2>([^<]+)',m.group('data'))
+		address = re.search('<div class=\"controls\">([^<]+)',m.group('data'))
+		if cinema:
+			cinema_name = cinema.group(1)
+			if address:
+				cinema_name = cinema.group(1)+ ' : '+address.group(1)
+			for n in re.finditer('<table>(?P<data>.+?)</table>',m.group('data'),re.DOTALL|re.IGNORECASE):
+				date = re.search('<caption>([^<]+)',n.group('data'))
+				if date:
+					times = []
+					for k in re.finditer('<td>([^<]+)',n.group('data'),re.DOTALL|re.IGNORECASE):
+						times.append(k.group(1))
+					items.append(date.group(1) +' [' +','.join(times)+'] '+cinema_name)
+	dialog = xbmcgui.Dialog()
+	ret = dialog.select(__language__(30025), items)
+
 def icon():
 	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 
@@ -393,11 +433,14 @@ def preload_refresh():
 		xbmc.executebuiltin('Container.Refresh')
 
 def main(p):
+	# actions called using context menu must return, otherwise 'last-url' would get updated
 	if p=={}:
 		xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 		root()
 	if 'kino' in p.keys():
 		kino(p)
+	if 'show-cinema' in p.keys():
+		return show_cinema(p)
 	if 'top' in p.keys():
 		top(p)
 	if 'dvd' in p.keys():
@@ -416,6 +459,7 @@ def main(p):
 		play(p['play'])
 	search.main(__addon__,'search_history_movies',p,_search_movie_cb,'s','movie')
 	search.main(__addon__,'search_history_persons',p,_search_person_cb,'s','person')
+	__addon__.setSetting('last-url',sys.argv[2])
 
 p = util.params()
 util.init_urllib()
@@ -424,4 +468,3 @@ if __addon__.getSetting('clear-cache') == 'true':
 	__addon__.setSetting('clear-cache','false')
 	__cache__.delete('http%')
 main(p)
-__addon__.setSetting('last-url',sys.argv[2])
