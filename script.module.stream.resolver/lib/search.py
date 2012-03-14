@@ -26,13 +26,16 @@ import util
 
 def _list(addon,history,key,value):
 	params = {}
+	menuItems = {}
 	if key:
 		params[key] = value
+		menuItems[key] = value
 	params['search'] = ''
 	util.add_dir(util.__lang__(30004),params,util.icon('search.png'))
 	for what in util.get_searches(addon,history):
 		params['search'] = what
-		util.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):{'search-remove':what}})
+		menuItems['search-remove'] = what
+		util.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):menuItems})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def _remove(addon,history,search):
