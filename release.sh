@@ -58,4 +58,6 @@ for addonFile in $addons ; do
     fi
     echo
 done
-
+echo "Regenerate addons.xml"
+python addons_xml_generator.py
+echo "Done"
