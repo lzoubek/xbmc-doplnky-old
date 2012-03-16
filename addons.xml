@@ -174,11 +174,11 @@
 
 <addon id="plugin.video.csfd-trailers"
        name="ČSFD Trailery"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.3"/>
+    <import addon="script.module.stream.resolver" version="1.2.4"/>
     <import addon="script.common.plugin.cache" version="0.9.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
@@ -197,7 +197,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.2.3"
+       version="1.2.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
