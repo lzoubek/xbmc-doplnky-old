@@ -15,4 +15,8 @@
 		<setting label="30024" id="search-integration-kinotip" type="bool" default="false" visible="eq(-4,true)" />
 		<setting label="30009" id="search-integration-update-history" type="bool" default="true" visible="eq(-5,true)" />
 	</category>
+	<category label="30038">
+		<setting label="30039" id="csfd-user" type="text" default="" />
+		<setting label="30040" id="csfd-pass" option="hidden" type="text" default="" />
+	</category>
 </settings>

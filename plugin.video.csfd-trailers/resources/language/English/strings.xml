@@ -32,5 +32,11 @@
 	<string id="30035">5%</string>
 	<string id="30036">1%</string>
 	<string id="30037">[B]Downloads[/B]</string>
+	<string id="30038">Credentials</string>
+	<string id="30039">ČSFD username</string>
+	<string id="30040">ČSFD password</string>
+	<string id="30041">[B]Favorites[/B]</string>
+	<string id="30042">Please provide credential in addon settings</string>
+	<string id="30043">Login failed[CR]update your credentials in addon settings</string>
 	<string id="31000">Usage of plugin is tracked whenever you play or download video. We do NOT track what has been played</string>
 </strings>

@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2,traceback,time
+import re,os,urllib,urllib2,traceback,time,cookielib
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 __scriptid__   = 'plugin.video.csfd-trailers'
 __scriptname__ = 'ČSFD Trailery'
@@ -133,6 +133,7 @@ def download(url,name):
 def root():
 	search.item({'s':'movie'},label=util.__lang__(30003)+' '+__language__(30017))
 	search.item({'s':'person'},label=util.__lang__(30003)+' '+__language__(30018))
+	util.add_dir(__language__(30041),{'fav':''},icon())
 	util.add_dir('Kino',{'kino':''},icon())
 	util.add_dir('Žebříčky',{'top':''},util.icon('top.png'))
 	util.add_dir('Blu-ray',{'dvd':'bluray'},icon())
@@ -432,6 +433,75 @@ def preload_refresh():
 		__addon__.setSetting('preload','false')
 		xbmc.executebuiltin('Container.Refresh')
 
+def login(url=BASE_URL):
+	url = furl(url)
+	username = __addon__.getSetting('csfd-user')
+	if username == '':
+		# TODO notify user to provide some user/pass
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30042))
+		return
+	password = __addon__.getSetting('csfd-pass')
+
+	cookiefile = os.path.join(xbmc.translatePath(__addon__.getAddonInfo('profile')),'cookies.txt')
+	# install cookie handler
+	cj = cookielib.LWPCookieJar()
+	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+	urllib2.install_opener(opener)
+	# load cookies from file
+	if os.path.exists(cookiefile):
+		cj.load(cookiefile, ignore_discard=True, ignore_expires=True)
+	data = util.request(url)
+	if data.find('prihlaseni/odhlaseni') > 0:
+		util.info('Logged in - continuing session')
+		return data
+
+# let's try log in
+	data = util.post(BASE_URL+'prihlaseni/prihlaseni/?do=form-submit',{'username':username,'password':password,'__REFERER__':url,'ok':'Prihlasit'})
+
+	if data.find('prihlaseni/odhlaseni') > 0:
+		util.info('CSFD login successfull')
+		# save correct cookies
+		cj.save(cookiefile,True,True)
+		return data
+	else:
+		util.info('CSFD login error, invalid user/pass?')
+		xbmcgui.Dialog().ok(__scriptname__,__language__(30043))
+		return
+
+def favourites(p):
+	if p['fav'] == '':
+		data = login()
+		if data:
+			userid = re.search('<a href=\"(?P<url>/uzivatel/[^\"]+)',data)
+			if userid:
+				util.add_dir('Oblíbené filmy',{'fav':userid.group('url')+'oblibene-filmy/'},icon())
+				util.add_dir('Oblíbené serialy',{'fav':userid.group('url')+'oblibene-serialy/'},icon())
+				util.add_dir('Oblíbené pořady',{'fav':userid.group('url')+'oblibene-porady/'},icon())
+				util.add_dir('Oblíbení herci',{'fav':userid.group('url')+'oblibeni-herci/'},icon())
+				util.add_dir('Oblíbené herečky',{'fav':userid.group('url')+'oblibene-herecky/'},icon())
+				util.add_dir('Oblíbení režiséři',{'fav':userid.group('url')+'oblibeni-reziseri/'},icon())
+				util.add_dir('Oblíbení skladatelé',{'fav':userid.group('url')+'oblibeni-skladatele/'},icon())
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	data = login(p['fav'])
+	if not data:
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	results = []
+	for m in re.finditer('<h3 class=\"subject\"><a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+		results.append((m.group('url'),m.group('name')))
+
+	# we load items different way for persons
+	if p['fav'].find('oblibeni-herci') > 0 or p['fav'].find('oblibene-herecky') > 0  or p['fav'].find('oblibeni-reziseri') > 0 or p['fav'].find('oblibeni-skladatele') > 0 :
+		for url,name in results:
+			info = scrapper._empty_info()
+			info['url'] = url
+			add_person(name,info)
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+	if preload():
+		return preload_items(results)
+	add_items(results)
+	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
 def main(p):
 	# actions called using context menu must return, otherwise 'last-url' would get updated
 	if p=={}:
@@ -445,6 +515,8 @@ def main(p):
 		top(p)
 	if 'dvd' in p.keys():
 		dvd(p)
+	if 'fav' in p.keys():
+		favourites(p)
 	if 'artists' in p.keys():
 		artists(p)
 	if 'search-plugin' in p.keys():

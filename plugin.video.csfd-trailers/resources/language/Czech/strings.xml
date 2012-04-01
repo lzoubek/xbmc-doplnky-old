@@ -32,6 +32,12 @@
 	<string id="30035">5%</string>
 	<string id="30036">1%</string>
 	<string id="30037">[B]Stažené soubory[/B]</string>
+	<string id="30038">Přihlášení</string>
+	<string id="30039">ČSFD jméno</string>
+	<string id="30040">ČSFD heslo</string>
+	<string id="30041">[B]Obíbené[/B]</string>
+	<string id="30042">Vyplňte prosím přihlašovací údaje v nastavení</string>
+	<string id="30043">Chyba při přihlášení[CR]nastavte správné jméno a heslo</string>
 
 	<string id="31000">Data o použití jsou zaslána v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem. Není odesílána informace o tom, co přehráváte.</string>
 </strings>
