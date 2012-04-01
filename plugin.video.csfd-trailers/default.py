@@ -475,7 +475,7 @@ def favourites(p):
 			userid = re.search('<a href=\"(?P<url>/uzivatel/[^\"]+)',data)
 			if userid:
 				util.add_dir('Oblíbené filmy',{'fav':userid.group('url')+'oblibene-filmy/'},icon())
-				util.add_dir('Oblíbené serialy',{'fav':userid.group('url')+'oblibene-serialy/'},icon())
+				util.add_dir('Oblíbené seriály',{'fav':userid.group('url')+'oblibene-serialy/'},icon())
 				util.add_dir('Oblíbené pořady',{'fav':userid.group('url')+'oblibene-porady/'},icon())
 				util.add_dir('Oblíbení herci',{'fav':userid.group('url')+'oblibeni-herci/'},icon())
 				util.add_dir('Oblíbené herečky',{'fav':userid.group('url')+'oblibene-herecky/'},icon())

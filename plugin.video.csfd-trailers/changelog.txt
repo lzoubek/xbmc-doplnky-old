@@ -1,3 +1,6 @@
+[B]1.0.2:[/B]
+- přidána možnost přihlášení
+- přihlášený uživatel může procházet svoje Oblíbené filmy, seriály ...
 [B]1.0.1:[/B]
 - opravena totální nefunčnost na XBMC Dharma 10.1 na windows
 - přidán přehled tvůrců
