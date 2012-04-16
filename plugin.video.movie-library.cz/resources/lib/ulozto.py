@@ -142,7 +142,7 @@ def search(params):
 
 def list_page(url):
 	util.init_urllib()
-	page = util.request(url)
+	page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest'})
 	data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
 	for m in re.finditer('<li>.+?<a href=\"(?P<url>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
 		iurl=full_url(m.group('url'))
