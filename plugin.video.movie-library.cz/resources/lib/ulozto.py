@@ -29,12 +29,19 @@ def full_url(url):
 		return url
 	return 'http://www.ulozto.cz/'+url.lstrip('/')
 
-def _get_file_url(post_url):
+def _get_file_url(page,post_url):
 	code = __addon__.getSetting('captcha-key')
 	if len(code) < 1:
 		# empty code in settings? set something to query user for beeter code
 		code = 'abcd'
-	request = urllib.urlencode({'captcha[id]':__addon__.getSetting('captcha-id'),'captcha[text]':code,'freeDownload':'Stáhnout'})
+	
+	ts = re.search('<input type=\"hidden\" name=\"ts\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+	cid = re.search('<input type=\"hidden\" name=\"cid\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+	sign = re.search('<input type=\"hidden\" name=\"sign\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+	if not (sign and ts and cid):
+		util.error('[uloz.to] - unable to parse required params from page, plugin needs fix')
+		return
+	request = urllib.urlencode({'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha[id]':__addon__.getSetting('captcha-id'),'captcha[text]':code,'freeDownload':'Stáhnout'})
 	defrhandler = urllib2.HTTPRedirectHandler
 	redirecthandler = UloztoHTTPRedirectHandler()
 	redirecthandler.location = None
@@ -42,6 +49,8 @@ def _get_file_url(post_url):
 	urllib2.install_opener(opener)
 	req = urllib2.Request(post_url,request)
 	req.add_header('User-Agent',util.UA)
+	req.add_header('Referer',post_url)
+	req.add_header('Cookie','uloz-to-id='+cid.group(1)+';')
 	try:
 		resp = urllib2.urlopen(req)
 	except RedirectionException:
@@ -68,7 +77,7 @@ def _get_file_url(post_url):
 			code = kb.getText()
 			__addon__.setSetting('captcha-id',captcha_id)
 			__addon__.setSetting('captcha-key',code)
-			return _get_file_url(post_url)
+			return _get_file_url(page,post_url)
 		else:
 			return
 	if stream.find('full=y') > -1:
@@ -95,7 +104,7 @@ def url(url):
 		data = util.substr(page,'<h3>Omezené stahování</h3>','<script')
 		m = re.search('<form(.+?)action=\"(?P<action>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			return _get_file_url(full_url(m.group('action')))
+			return _get_file_url(page,full_url(m.group('action')))
 
 def _regex(url):
 	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
@@ -142,7 +151,7 @@ def search(params):
 
 def list_page(url):
 	util.init_urllib()
-	page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest'})
+	page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest','Referer':url,'Cookie':'uloz-to-id=1561277170;'})
 	data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
 	for m in re.finditer('<li>.+?<a href=\"(?P<url>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
 		iurl=full_url(m.group('url'))
