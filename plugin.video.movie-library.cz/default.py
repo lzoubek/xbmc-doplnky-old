@@ -64,7 +64,7 @@ def furl(url):
 
 def categories():
 	search.item()
-	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
+	#util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
