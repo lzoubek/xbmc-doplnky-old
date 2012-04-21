@@ -1,3 +1,5 @@
+[B]1.2.2:[/B]
+- hledání ulozto zase zapnuto a funkční
 [B]1.2.1:[/B]
 - opraveno neoknečné zadávání kódu obrázku - nefunkční stahování #62
 - vypnuto hledání na ulozto - momentálně nefunkční
