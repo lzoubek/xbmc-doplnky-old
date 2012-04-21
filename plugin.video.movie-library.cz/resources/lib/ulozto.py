@@ -21,6 +21,9 @@
 # */
 import re,urllib,urllib2,random,util,sys,os,traceback
 import xbmc,xbmcplugin,xbmcgui
+import simplejson as json
+from base64 import b64decode
+
 def supports(url):
 	return not _regex(url) == None
 
@@ -87,11 +90,29 @@ def _get_file_url(page,post_url):
 		util.error('[uloz.to] - movie was not found on server')
 		return -2
 	#return stream only when captcha was accepted and there
+	index = stream.rfind('/')
+	if index > 0:
+		fn = stream[index:]
+		index2 = fn.find('?')
+		if index2 > 0:
+			fn = urllib.quote(fn[:index2])+fn[index2:]
+		else:
+			fn = urllib.quote(fn)
+		stream = stream[:index]+fn
 	return stream
+
 
 # returns the steam url
 def url(url):
 	if supports(url):
+		if url.startswith('#'):
+			ret = json.loads(util.request(url[1:]))
+			if not ret['result'] == 'null':
+				url = b64decode(ret['result'])
+				url = full_url(url)
+		if url.startswith('#'):
+			util.error('[uloz.to] - url was not correctly decoded')
+			return -2
 		util.init_urllib()
 		try:
 			page = util.request(url)
@@ -107,7 +128,7 @@ def url(url):
 			return _get_file_url(page,full_url(m.group('action')))
 
 def _regex(url):
-	return re.search('(ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
+	return re.search('(#(.*)|ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
 
 class UloztoHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
@@ -152,9 +173,23 @@ def search(params):
 def list_page(url):
 	util.init_urllib()
 	page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest','Referer':url,'Cookie':'uloz-to-id=1561277170;'})
+
+	script = util.substr(page,'</ul>','</script>')
+	keymap = None
+	key = None
+	k = re.search('{([^\;]+)"',script,re.IGNORECASE | re.DOTALL)
+	if k:
+		keymap = json.loads("{"+k.group(1)+"\"}")
+	j = re.search('kapp\(kn\[\"([^\"]+)"',script,re.IGNORECASE | re.DOTALL)
+	if j:
+		key = j.group(1)
+	if not (j and k):
+		return
+	burl = b64decode('I2h0dHA6Ly9jcnlwdG8tenNlcnYucmhjbG91ZC5jb20vYXBpL3YyL2RlY3J5cHQvP2tleT0lcyZ2YWx1ZT0lcwo=')
 	data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
-	for m in re.finditer('<li>.+?<a href=\"(?P<url>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
-		iurl=full_url(m.group('url'))
+	for m in re.finditer('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
+		value = keymap[m.group('key')]
+		iurl = burl % (keymap[key],value)
 		util.add_video('%s (%s | %s)' % (m.group('name'),m.group('size').strip(),m.group('time')),
 			{'play':iurl},
 			full_url(m.group('logo')),
