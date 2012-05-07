@@ -134,6 +134,7 @@ def root():
 	search.item({'s':'movie'},label=util.__lang__(30003)+' '+__language__(30017))
 	search.item({'s':'person'},label=util.__lang__(30003)+' '+__language__(30018))
 	util.add_dir(__language__(30041),{'fav':''},icon())
+	util.add_dir(__language__(30044),{'filmoteka':''},icon())
 	util.add_dir('Kino',{'kino':''},icon())
 	util.add_dir('Žebříčky',{'top':''},util.icon('top.png'))
 	util.add_dir('Blu-ray',{'dvd':'bluray'},icon())
@@ -468,19 +469,48 @@ def login(url=BASE_URL):
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30043))
 		return
 
+def get_userid(data):
+	userid = re.search('<a href=\"(?P<url>/uzivatel/[^\"]+)',data)
+	if userid:
+		return userid.group('url')
+
+def filmoteka(p):
+	if p['filmoteka'] == '':
+		data = login()
+		if data:
+			userid = get_userid(data)
+			if userid:
+				print userid
+				page = util.request(furl(userid+'filmoteka'))
+				data = util.substr(page,'<select name=\"filter','</select>')
+				for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+					p['filmoteka'] = userid+'filmoteka/filtr-'+m.group('value')
+					util.add_dir(m.group('name'),p)
+				xbmcplugin.endOfDirectory(int(sys.argv[1]))
+	else:
+		print p['filmoteka']
+		page = login(p['filmoteka'])
+		data = util.substr(page,'<table class=\"ui-table-list','</table')
+		results = []
+		for m in re.finditer('<tr[^<]+<td>(?P<added>[^<]+)</td[^<]+<td[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
+			results.append((m.group('url'),m.group('name')))
+		if preload():
+			return preload_items(results)
+		add_items(results)
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 def favourites(p):
 	if p['fav'] == '':
 		data = login()
 		if data:
-			userid = re.search('<a href=\"(?P<url>/uzivatel/[^\"]+)',data)
+			userid = get_userid(data)
 			if userid:
-				util.add_dir('Oblíbené filmy',{'fav':userid.group('url')+'oblibene-filmy/'},icon())
-				util.add_dir('Oblíbené seriály',{'fav':userid.group('url')+'oblibene-serialy/'},icon())
-				util.add_dir('Oblíbené pořady',{'fav':userid.group('url')+'oblibene-porady/'},icon())
-				util.add_dir('Oblíbení herci',{'fav':userid.group('url')+'oblibeni-herci/'},icon())
-				util.add_dir('Oblíbené herečky',{'fav':userid.group('url')+'oblibene-herecky/'},icon())
-				util.add_dir('Oblíbení režiséři',{'fav':userid.group('url')+'oblibeni-reziseri/'},icon())
-				util.add_dir('Oblíbení skladatelé',{'fav':userid.group('url')+'oblibeni-skladatele/'},icon())
+				util.add_dir('Oblíbené filmy',{'fav':userid+'oblibene-filmy/'},icon())
+				util.add_dir('Oblíbené seriály',{'fav':userid+'oblibene-serialy/'},icon())
+				util.add_dir('Oblíbené pořady',{'fav':userid+'oblibene-porady/'},icon())
+				util.add_dir('Oblíbení herci',{'fav':userid+'oblibeni-herci/'},icon())
+				util.add_dir('Oblíbené herečky',{'fav':userid+'oblibene-herecky/'},icon())
+				util.add_dir('Oblíbení režiséři',{'fav':userid+'oblibeni-reziseri/'},icon())
+				util.add_dir('Oblíbení skladatelé',{'fav':userid+'oblibeni-skladatele/'},icon())
 		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	data = login(p['fav'])
 	if not data:
@@ -517,6 +547,8 @@ def main(p):
 		dvd(p)
 	if 'fav' in p.keys():
 		favourites(p)
+	if 'filmoteka' in p.keys():
+		filmoteka(p)
 	if 'artists' in p.keys():
 		artists(p)
 	if 'search-plugin' in p.keys():
