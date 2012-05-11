@@ -66,6 +66,7 @@ def categories():
 	search.item()
 	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
+	util.add_dir(__language__(30038),{'popular':''},icon('top.png'))
 	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
 	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
@@ -101,7 +102,7 @@ def parse_page(page,url):
 	# set as empty list when split returns nothing
 	if len(lang_filter) == 1 and lang_filter[0] == '':
 		lang_filter = []
-	data = util.substr(page,'<div class=\"sortlist','<div class=\"pagelist')
+	data = util.substr(page,'<iframe id=\"listade','<div class=\"pagelist')
 	pattern = '<tr><td[^>]+><a href=\"(?P<url>[^\"]+)[^>]+><img src=\"(?P<logo>[^\"]+)(.+?)<a class=\"movietitle\"[^>]+>(?P<name>[^<]+)</a>(?P<data>.+?)/td></tr>'
 	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
 		info = m.group('data')
@@ -239,6 +240,8 @@ p = util.params()
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	categories()
+if 'popular' in p.keys():
+	list_page(furl('popularni'))
 if 'cat' in p.keys():
 	list_page(p['cat'])
 if 'countries' in p.keys():

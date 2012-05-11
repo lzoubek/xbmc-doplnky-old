@@ -8,7 +8,7 @@
 	<string id="30007">roku</string>
 	<string id="30008">data přidání</string>
 	<string id="30009">hodnocení</string>
-	<string id="30010">Vyhledat na ulozto.cz</string>
+	<string id="30010">[B]Vyhledat na ulozto.cz[/B]</string>
 	<string id="30011">Předchozí</string>
 	<string id="30012">Další</string>
 	<string id="30013">Filtrovat jazyk - jazyky oddělené čárkou např: cz,sk</string>
@@ -20,7 +20,9 @@
 	<string id="30034">10%</string>
 	<string id="30035">5%</string>
 	<string id="30036">1%</string>
-	<string id="30037">Stažené soubory</string>
+	<string id="30037">[B]Stažené soubory[/B]</string>
+	<string id="30037">[B]Stažené soubory[/B]</string>
+	<string id="30038">Nejvíce uploadované</string>
 
 	<string id="200">Je vyžadováno opsání kódu obrázku</string>
 	<string id="201">Vyčkejte...</string>
