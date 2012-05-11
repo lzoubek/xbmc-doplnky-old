@@ -1,3 +1,5 @@
+[B]1.2.3:[/B]
+- přidaná položka "Nejvíce uploadované"
 [B]1.2.2:[/B]
 - hledání ulozto zase zapnuto a funkční
 [B]1.2.1:[/B]
