@@ -124,7 +124,9 @@ def findstreams(addon,data,regexes):
 		return None
 	if len(resolved) == 0:
 		return {}
-	resolved = _filter_by_quality(sorted(resolved,key=lambda i:i['quality']),addon.getSetting('quality') or '0')
+	resolved = sorted(resolved,key=lambda i:i['quality'])
+	resolved = sorted(resolved,key=lambda i:len(i['quality']))
+	resolved = _filter_by_quality(resolved,addon.getSetting('quality') or '0')
 	resolved.reverse()
 	if len(resolved) > 1:
 				dialog = xbmcgui.Dialog()
@@ -203,7 +205,9 @@ def findstreams_multi(addon,data,regexes):
 		return None
 	if len(resolved) == 0:
 		return []
-	resolved2 = _filter_by_quality(sorted(resolved,key=lambda i:i['quality']),addon.getSetting('quality') or '0')
+	resolved = sorted(resolved,key=lambda i:i['quality'])
+	resolved = sorted(resolved,key=lambda i:len(i['quality']))
+	resolved2 = _filter_by_quality(resolved,addon.getSetting('quality') or '0')
 	resolved2.reverse()
 	qualities = {}
 	for item in resolved2:
