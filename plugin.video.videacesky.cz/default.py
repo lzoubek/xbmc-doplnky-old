@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib
+import re,os,urllib,shutil
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 import util,resolver
 import youtuberesolver as youtube
@@ -89,29 +89,54 @@ def resolve(url):
 	data = util.substr(util.request(url),'<div class=\"postContent\"','</div>')
 	youtube.__eurl__ = 'http://www.videacesky.cz/wp-content/plugins/jw-player-plugin-for-wordpress/player.swf'
 	resolved = resolver.findstreams(__addon__,data,['<iframe src=\"(?P<url>[^\"]+)','\;file=(?P<url>[^\&]+)'])
-	print resolved
+	subtitles = getSubtitles(data)
+	print subtitles
 	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
 		return
 	if not resolved == {}:
-		return resolved['url']
+		return resolved['url'],subtitles
+
+def getSubtitles(data):
+	if __addon__.getSetting('subtitles') == 'false':
+		return None
+	m = re.search('\;captions\.file=(?P<url>[^\&]+)',data,re.IGNORECASE | re.DOTALL)
+	if m:
+		subs = util.request(m.group('url'))
+		local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
+		if not os.path.exists(local):
+			os.makedirs(local)
+		local = os.path.join(local,'subtitles.srt')
+		try:
+			f = open(local,'w')
+			f.write(util.request(m.group('url')))
+			f.close()
+		except:
+			traceback.print_exc()
+			return None
+		return local
+	return None
+
 
 def play(url):
-	stream = resolve(url)
+	stream,subs = resolve(url)
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		util.load_subtitles(subs)
 
 def download(url,name):
 	downloads = __addon__.getSetting('downloads')
 	if '' == downloads:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
 		return
-	stream = resolve(url)
+	stream,subs = resolve(url)
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/download')
+		if subs:
+			shutil.copyfile(subs,os.path.join(downloads,name+'.srt'))
 		name+='.flv'
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
 
