@@ -343,3 +343,16 @@ def replace_diacritic(string):
 		else:
 			ret.append(char)
 	return ''.join(ret)
+
+def load_subtitles(url):
+	if not url or url == '':
+		return
+	player = xbmc.Player()
+	count = 0
+	max_count = 99
+	while not player.isPlaying() and count < max_count:
+		xbmc.sleep(200)
+		count+=1
+		if count < max_count:
+			debug('Subtitles %s loaded' % url)
+			player.setSubtitles(url)
