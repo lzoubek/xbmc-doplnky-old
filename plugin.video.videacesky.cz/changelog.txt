@@ -1,3 +1,5 @@
+[B]1.0.4:[/B]
+- přidáno načítání titlků
 [B]1.0.3:[/B]
 - opraveno listování kategoriemi #67
 - přidaná možnost volby kvality videa
