@@ -81,7 +81,7 @@ def list_page(data,url):
 			logo=furl(m.group('logo')),
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
-	prev = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/old_videa.png',data,re.IGNORECASE | re.DOTALL )
+	prev = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/predchozi.png',data,re.IGNORECASE | re.DOTALL )
 	navurl = url
 	index = url.find('?')
 	if index > 0:
@@ -89,7 +89,7 @@ def list_page(data,url):
 	if prev:
 		print prev.group('url')
 		util.add_dir(__addon__.getLocalizedString(30007),{'list':navurl+prev.group('url')},util.icon('prev.png'))
-	next = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/new_videa.png',data,re.IGNORECASE | re.DOTALL )
+	next = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/dalsi.png',data,re.IGNORECASE | re.DOTALL )
 	if next:
 		print next.group('url')
 		util.add_dir(__addon__.getLocalizedString(30008),{'list':navurl+next.group('url')},util.icon('next.png'))
