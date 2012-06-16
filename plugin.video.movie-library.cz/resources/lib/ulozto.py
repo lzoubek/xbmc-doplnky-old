@@ -19,7 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,urllib,urllib2,random,util,sys,os,traceback
+import re,urllib,urllib2,cookielib,random,util,sys,os,traceback
 import xbmc,xbmcplugin,xbmcgui
 import simplejson as json
 from base64 import b64decode
@@ -32,7 +32,7 @@ def full_url(url):
 		return url
 	return 'http://www.ulozto.cz/'+url.lstrip('/')
 
-def _get_file_url(page,post_url):
+def _get_file_url(page,post_url,redirecthandler,headers):
 	code = __addon__.getSetting('captcha-key')
 	if len(code) < 1:
 		# empty code in settings? set something to query user for beeter code
@@ -41,20 +41,19 @@ def _get_file_url(page,post_url):
 	ts = re.search('<input type=\"hidden\" name=\"ts\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
 	cid = re.search('<input type=\"hidden\" name=\"cid\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
 	sign = re.search('<input type=\"hidden\" name=\"sign\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
-	if not (sign and ts and cid):
+	key = re.search('<input type=\"hidden\" id=\"captcha_key\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+	if not (sign and ts and cid and key):
 		util.error('[uloz.to] - unable to parse required params from page, plugin needs fix')
 		return
-	request = urllib.urlencode({'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha[id]':__addon__.getSetting('captcha-id'),'captcha[text]':code,'freeDownload':'Stáhnout'})
-	defrhandler = urllib2.HTTPRedirectHandler
-	redirecthandler = UloztoHTTPRedirectHandler()
-	redirecthandler.location = None
-	opener = urllib2.build_opener(redirecthandler)
-	urllib2.install_opener(opener)
+	request = urllib.urlencode({'captcha_key':key.group(1),'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha_id':__addon__.getSetting('captcha-id'),'captcha_value':code,'freeDownload':'Stáhnout'})
 	req = urllib2.Request(post_url,request)
 	req.add_header('User-Agent',util.UA)
-	req.add_header('Referer',post_url)
-	req.add_header('Cookie','uloz-to-id='+cid.group(1)+';')
+	req.add_header('Referer',post_url[:post_url.find('?')])
+	sessionid=re.search('(ULOSESSID=[^\;]+)',headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL).group(1)
+	req.add_header('Cookie','uloz-to-id='+cid.group(1)+';'+sessionid+';')
+	print 'Request:'+str(req.headers)
 	try:
+		redirecthandler.throw=True
 		resp = urllib2.urlopen(req)
 	except RedirectionException:
 		# this is what we need, our redirect handler raises this
@@ -66,11 +65,10 @@ def _get_file_url(page,post_url):
 		util.info('[uloz.to] POST url:'+post_url)
 		return
 	stream = redirecthandler.location
-	urllib2.install_opener(urllib2.build_opener(defrhandler))
 	# we did not get 302 but 200
 	if stream == None:
 		cd = CaptchaDialog('captcha-dialog.xml',__addon__.getAddonInfo('path'),'default','0')
-		captcha_id = str(random.randint(1,10000))
+		captcha_id = re.search('<input type=\"hidden\" id=\"captcha_id\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL).group(1)
 		cd.image = 'http://img.uloz.to/captcha/%s.png' % captcha_id
 		cd.doModal()
 		del cd
@@ -80,7 +78,7 @@ def _get_file_url(page,post_url):
 			code = kb.getText()
 			__addon__.setSetting('captcha-id',captcha_id)
 			__addon__.setSetting('captcha-key',code)
-			return _get_file_url(page,post_url)
+			return _get_file_url(page,post_url,redirecthandler,headers)
 		else:
 			return
 	if stream.find('full=y') > -1:
@@ -114,8 +112,18 @@ def url(url):
 			util.error('[uloz.to] - url was not correctly decoded')
 			return -2
 		util.init_urllib()
+		cj = cookielib.LWPCookieJar()
+		hcp = urllib2.HTTPCookieProcessor(cj)
+		redirecthandler = UloztoHTTPRedirectHandler()
+		redirecthandler.throw=False
+		redirecthandler.location = None
+		opener = urllib2.build_opener(hcp,redirecthandler)
+		urllib2.install_opener(opener)
 		try:
-			page = util.request(url)
+			request = urllib2.Request(url)
+			response = urllib2.urlopen(request)
+			page = response.read()
+			response.close()
 		except urllib2.HTTPError, e:
 				traceback.print_exc()
 				return -2
@@ -125,7 +133,7 @@ def url(url):
 		data = util.substr(page,'<h3>Omezené stahování</h3>','<script')
 		m = re.search('<form(.+?)action=\"(?P<action>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
 		if not m == None:
-			return _get_file_url(page,full_url(m.group('action')))
+			return _get_file_url(page,full_url(m.group('action')),redirecthandler,response.headers)
 
 def _regex(url):
 	return re.search('(#(.*)|ulozto\.cz|uloz\.to)',url,re.IGNORECASE | re.DOTALL)
@@ -133,11 +141,14 @@ def _regex(url):
 class UloztoHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
 
 	def http_error_302(self, req, fp, code, msg, headers):
-		self.location = headers.getheader('Location')
-		raise RedirectionException()
-		# this will lead to exception when 302 is recieved
-		# exactly what we want - not to open url that's being redirected to
-	http_error_301 = http_error_303 = http_error_307 = http_error_302
+		if self.throw:
+			self.location = headers.getheader('Location')
+			raise RedirectionException()
+		else:
+			return urllib2.HTTPRedirectHandler.http_error_302(self,req,fp,code,msg,headers)
+			# this will lead to exception when 302 is recieved
+			# exactly what we want - not to open url that's being redirected to
+	#http_error_301 = http_error_303 = http_error_307 = http_error_302
 
 class RedirectionException(Exception):
 	pass
