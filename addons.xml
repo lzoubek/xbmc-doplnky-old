@@ -108,6 +108,7 @@
     <description lang="en">Watch online movies from kinotip.cz</description>
     <description lang="cs">Sledujte online filmy a seriály se servru kinotip.cz</description>
     <platform>all</platform>
+	<broken>Provoz servru kinotip.cz byl ukončen</broken>
   </extension>
 </addon>
 
