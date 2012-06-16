@@ -254,8 +254,6 @@ def item(params):
 			add_addon_search(30003,'plugin.video.movie-library.cz',info,'search-ulozto')
 		if __addon__.getSetting('search-integration-bezvadata') == 'true':
 			add_addon_search(30004,'plugin.video.bezvadata.cz',info,'search')
-		if __addon__.getSetting('search-integration-kinotip') == 'true':
-			add_addon_search(30005,'plugin.video.kinotip.cz',info,'search')
 	def_trailer = None
 	for m in re.finditer('<option value=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 		url  = info['url']+'/videa/-filtr-'+m.group('url')
