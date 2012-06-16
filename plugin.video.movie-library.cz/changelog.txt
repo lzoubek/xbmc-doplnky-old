@@ -1,3 +1,5 @@
+[B]1.2.4:[/B]
+- #72 opraveno neoknečné zadávání kódu obrázku - nefunkční stahování
 [B]1.2.3:[/B]
 - přidaná položka "Nejvíce uploadované"
 [B]1.2.2:[/B]
