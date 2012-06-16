@@ -79,6 +79,7 @@ def list_page(data,url):
 		util.add_video(m.group('name'),
 			{'play':iurl},
 			logo=furl(m.group('logo')),
+			infoLabels={'Title':m.group('name')},
 			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':iurl}}
 			)
 	prev = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"\./style/images/predchozi.png',data,re.IGNORECASE | re.DOTALL )
