@@ -1,3 +1,6 @@
+[B]1.2.5:[/B]
+- #74 opraveno neoknečné zadávání kódu obrázku - nefunkční stahování
+- #68 nastavitelný formát názvu filmu při list:wování kategoriemi
 [B]1.2.4:[/B]
 - #72 opraveno neoknečné zadávání kódu obrázku - nefunkční stahování
 [B]1.2.3:[/B]
