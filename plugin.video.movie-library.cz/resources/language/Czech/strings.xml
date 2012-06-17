@@ -23,6 +23,7 @@
 	<string id="30037">[B]Stažené soubory[/B]</string>
 	<string id="30037">[B]Stažené soubory[/B]</string>
 	<string id="30038">Nejvíce uploadované</string>
+	<string id="30039">Formát názvu filmu (%name %genre %rating %year)</string>
 
 	<string id="200">Je vyžadováno opsání kódu obrázku</string>
 	<string id="201">Vyčkejte...</string>

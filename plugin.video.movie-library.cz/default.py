@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2
+import re,os,urllib,urllib2,traceback
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 
 __scriptid__   = 'plugin.video.movie-library.cz'
@@ -142,7 +142,8 @@ def parse_page(page,url):
 		t = re.search('<div style=\"margin-top:5px\">(?P<plot>[^<]+)',info)
 		if t:
 			plot = t.group('plot')
-		util.add_dir(m.group('name')+lang,{'item':furl(m.group('url'))},m.group('logo'),infoLabels={'Plot':plot,'Genre':genre,'Rating':rating,'Year':year})
+		infoLabels = infoLabels={'plot':plot,'genre':genre,'rating':rating,'year':year}
+		util.add_dir(format_label(m.group('name'),infoLabels)+lang,{'item':furl(m.group('url'))},m.group('logo'),infoLabels=infoLabels)
 	data = util.substr(page,'<div class=\"pagelist\"','<div id=\"footertext\">')
 	for m in re.finditer('<a style=\"float:(right|left)(.+?)href=\"(.+?)(?P<page>page=\d+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL):
 		logo = 'DefaultFolder.png'
@@ -152,6 +153,19 @@ def parse_page(page,url):
 			logo = util.icon('prev.png')
 		util.add_dir(m.group('name'),{'cat':url+'&'+m.group('page')},logo)
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def format_label(name,infoLabels):
+	ret = __addon__.getSetting('label-format')
+	try:
+		ret = ret.replace('%name',name)
+		for token in ['%genre','%rating','%year']:
+			if token[1:] in infoLabels.keys():
+				value = infoLabels[token[1:]]
+				ret = ret.replace(token,str(value))
+		return ret
+	except:
+		traceback.print_exc()
+		return name
 
 def orderby():
 	return '&sort=%s' % __addon__.getSetting('order-by')

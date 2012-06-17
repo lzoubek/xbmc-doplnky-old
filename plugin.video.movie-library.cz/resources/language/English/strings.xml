@@ -22,6 +22,7 @@
 	<string id="30036">1%</string>
 	<string id="30037">[B]Downloads[/B]</string>
 	<string id="30038">Most uploaded</string>
+	<string id="30039">Movie name format (use tokens %name %genre %rating %year)</string>
 
 	<string id="200">Captcha requested</string>
 	<string id="201">Downloading...</string>
