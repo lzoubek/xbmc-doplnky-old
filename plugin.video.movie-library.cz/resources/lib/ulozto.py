@@ -48,13 +48,17 @@ def _get_file_url(page,post_url,redirecthandler,headers):
 	request = urllib.urlencode({'captcha_key':key.group(1),'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha_id':__addon__.getSetting('captcha-id'),'captcha_value':code,'freeDownload':'Stáhnout'})
 	req = urllib2.Request(post_url,request)
 	req.add_header('User-Agent',util.UA)
-	req.add_header('Referer',post_url[:post_url.find('?')])
-	sessionid=re.search('(ULOSESSID=[^\;]+)',headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL).group(1)
-	req.add_header('Cookie','uloz-to-id='+cid.group(1)+';'+sessionid+';')
+	req.add_header('Referer',post_url)
+	sessid=[]
+	for cookie in re.finditer('(ULOSESSID=[^\;]+)',headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL):
+		sessid.append(cookie.group(1))
+	req.add_header('Cookie','uloz-to-id='+cid.group(1)+'; '+sessid[-1])
 	print 'Request:'+str(req.headers)
 	try:
 		redirecthandler.throw=True
 		resp = urllib2.urlopen(req)
+		page = resp.read()
+		headers = resp.headers
 	except RedirectionException:
 		# this is what we need, our redirect handler raises this
 		pass
