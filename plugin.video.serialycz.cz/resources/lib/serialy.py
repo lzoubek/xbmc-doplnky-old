@@ -103,7 +103,7 @@ def newest_episodes():
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def add_video(name,url,image=''):
-	return util.add_video(name,{'play':url},image,menuItems={xbmc.getLocalizedString(33003):{'name':name+'.mp4','download':url}})
+	return util.add_video(name,{'play':url},image,infoLabels={'Title':util.decode_html(name)},menuItems={xbmc.getLocalizedString(33003):{'name':name+'.mp4','download':url}})
 
 def resolve(url):
 	if not url.startswith('http'):
