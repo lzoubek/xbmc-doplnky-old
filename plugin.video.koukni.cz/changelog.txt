@@ -1,3 +1,5 @@
+[B]1.0.6:[/B]
+- oprava: nefunguje přehrávání
 [B]1.0.5:[/B]
 - opraveno zobrazování správného názvu epizody
 [B]1.0.4:[/B]
