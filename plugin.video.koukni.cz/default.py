@@ -119,7 +119,7 @@ def getSubtitles(data):
 	data = util.substr(data,'$f(\"a.player\",','</script>')
 	m = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
 	if m:
-		subs = util.request(m.group('url'))
+		subs = util.request(furl(m.group('url')))
 		local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 		if not os.path.exists(local):
 			os.makedirs(local)
@@ -141,7 +141,7 @@ def resolve(url):
 	data = util.request(url)
 	m = re.search('id=\"player\" href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
 	if m:
-		req = urllib2.Request(m.group('url'))
+		req = urllib2.Request(furl(m.group('url')))
 		req.add_header('User-Agent',util.UA)
 		response = urllib2.urlopen(req)
 		response.close()
