@@ -23,117 +23,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.movie-library.cz"
-       name="movie-library.cz"
-       version="1.2.5"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">movie-library.cz</summary>
-    <summary lang="cs">movie-library.cz</summary>
-    <description lang="en">Watch online content from movie-library.cz</description>
-    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo pokaždé opisovat kontrolní kód!!. Dále je možné vyhledávat videa jak na movie-library.cz tak přímo na ulozto.cz a taky stahovat videa na disk.</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.re-play.cz"
-       name="re-play.cz"
-       version="1.0.2"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.7" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">re-play.cz</summary>
-    <summary lang="cs">re-play.cz</summary>
-    <description lang="en">Watch news about games on re-play.cz</description>
-    <description lang="cs">Sledujte video-archív seriálu o nejnovějších hrách</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.videacesky.cz"
-       name="videacesky.cz"
-       version="1.0.3"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.5" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">videacesky.cz</summary>
-    <summary lang="cs">videacasky.cz</summary>
-    <description lang="en">Watch content from videacesky.cz</description>
-    <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.kinotip.cz"
-       name="kinotip.cz"
-       version="0.3.7"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">kinotip.cz</summary>
-    <summary lang="cs">kinotip.cz</summary>
-    <description lang="en">Watch online movies from kinotip.cz</description>
-    <description lang="cs">Sledujte online filmy a seriály se servru kinotip.cz</description>
-    <platform>all</platform>
-	<broken>Provoz servru kinotip.cz byl ukončen</broken>
-  </extension>
-</addon>
-
-<addon id="plugin.video.koukni.cz"
-       name="koukni.cz"
-       version="1.0.5"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.4"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">koukni.cz</summary>
-    <summary lang="cs">koukni.cz</summary>
-    <description lang="en">Watch online HD content from koukni.cz</description>
-    <description lang="cs">Sledujte online HD obsah ze servru koukni.cz</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="script.module.stream.resolver"
        name="stream resolver"
        version="1.2.5"
@@ -149,6 +38,28 @@
     <summary>xbmc-doplnky plugins common python modules mainly for resolving stream URLs</summary>
     <description>Common python modules pack that is used by xbmc-doplnky plugins</description>
     <license>GNU GPL</license>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.bezvadata.cz"
+       name="bezvadata.cz"
+       version="1.0.1"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.9"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">movie-library.cz</summary>
+    <summary lang="cs">movie-library.cz</summary>
+    <description lang="en">Watch online content from bezvadata.cz</description>
+    <description lang="cs">Sledujte nebo stahujte obsah ze servru bezvadata.cz. Stahování nebo přehrávání bez omezení rychlosti</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -175,6 +86,50 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.serialycz.cz"
+       name="serialycz.cz"
+       version="1.1.6"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.7" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">serialycz.cz</summary>
+    <summary lang="cs">serialycz.cz</summary>
+    <description lang="en">Watch online series from serialycz.cz</description>
+    <description lang="cs">Sledujte online seriály ze servru serialycz.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.videacesky.cz"
+       name="videacesky.cz"
+       version="1.0.3"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.2.5" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">videacesky.cz</summary>
+    <summary lang="cs">videacasky.cz</summary>
+    <description lang="en">Watch content from videacesky.cz</description>
+    <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="script.usage.tracker"
        name="Usage Tracker"
        version="0.9.3"
@@ -188,6 +143,50 @@
     <summary>module for plugin usage tracking, currently supports google analytics</summary>
     <description>module for plugin usage tracking, currently supports google analytics</description>
     <license>GNU GPL</license>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.koukni.cz"
+       name="koukni.cz"
+       version="1.0.6"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.2.4"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">koukni.cz</summary>
+    <summary lang="cs">koukni.cz</summary>
+    <description lang="en">Watch online HD content from koukni.cz</description>
+    <description lang="cs">Sledujte online HD obsah ze servru koukni.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.re-play.cz"
+       name="re-play.cz"
+       version="1.0.2"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.1.7" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">re-play.cz</summary>
+    <summary lang="cs">re-play.cz</summary>
+    <description lang="en">Watch news about games on re-play.cz</description>
+    <description lang="cs">Sledujte video-archív seriálu o nejnovějších hrách</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -214,86 +213,13 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.serialycz.cz"
-       name="serialycz.cz"
-       version="1.1.5"
+<addon id="plugin.video.movie-library.cz"
+       name="movie-library.cz"
+       version="1.2.5"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.7" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">serialycz.cz</summary>
-    <summary lang="cs">serialycz.cz</summary>
-    <description lang="en">Watch online series from serialycz.cz</description>
-    <description lang="cs">Sledujte online seriály ze servru serialycz.cz</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="repository.xbmc.doplnky"
-       version="1.0.0"
-       name="XBMC Doplňky (CZ &amp; SK)"
-       provider-name="lzoubek">
-  <requires>
-    <import addon="xbmc.addon" version="0.1"/>
-  </requires>
-  <extension point="xbmc.addon.repository"
-              name="repozitář českých a slovenských doplňků">
-    <info compressed="false">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml</info>
-    <checksum>https://raw.github.com/lzoubek/xbmc-doplnky/dharma/addons.xml.md5</checksum>
-    <datadir zip="true">https://raw.github.com/lzoubek/xbmc-doplnky/dharma/repo</datadir>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>XBMC Doplňky (CZ &amp; SK)</summary>
-    <description>
-    	This repository contains mostly video addons for czech users.
-
-	Please send feedback, patches or fire any issues on https://code.google.com/p/xbmc-doplnky
-    </description>
-    <description lang="cs">
-    	Tento repozitář obsahuje video doplňky pro česky a slovensky mluvící uživatele.
-
-	Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte http://code.google.com/p/xbmc-doplnky.
-    </description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.dokumentarni.tv"
-       name="dokumentarni.tv"
-       version="1.0.0"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.4"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">dokumentarni.tv</summary>
-    <summary lang="cs">dokumentarni.tv</summary>
-    <description lang="en">Watch online HD content from dokumentarni.tv</description>
-    <description lang="cs">Sledujte dokumenty ze servru dokumentarni.tv</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.bezvadata.cz"
-       name="bezvadata.cz"
-       version="1.0.1"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.1.9"/>
+    <import addon="script.module.stream.resolver" version="1.2.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -303,8 +229,37 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">movie-library.cz</summary>
     <summary lang="cs">movie-library.cz</summary>
-    <description lang="en">Watch online content from bezvadata.cz</description>
-    <description lang="cs">Sledujte nebo stahujte obsah ze servru bezvadata.cz. Stahování nebo přehrávání bez omezení rychlosti</description>
+    <description lang="en">Watch online content from movie-library.cz</description>
+    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo pokaždé opisovat kontrolní kód!!. Dále je možné vyhledávat videa jak na movie-library.cz tak přímo na ulozto.cz a taky stahovat videa na disk.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="repository.xbmc.doplnky"
+       version="1.0.1"
+       name="XBMC Doplňky (CZ &amp; SK)"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.addon" version="0.1"/>
+  </requires>
+  <extension point="xbmc.addon.repository"
+              name="repozitář českých a slovenských doplňků">
+    <info compressed="false">http://xbmc-doplnky.googlecode.com/git-history/master/addons.xml</info>
+    <checksum>http://xbmc-doplnky.googlecode.com/git-hitory/master/addons.xml.md5</checksum>
+    <datadir zip="true">http://xbmc-doplnky.googlecode.com/git-history/master/repo</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>XBMC Doplňky (CZ &amp; SK)</summary>
+    <description>
+    	This repository contains mostly video addons for czech users.
+
+	Please send feedback, patches or fire any issues on http://xbmc-doplnky.googlecode.com
+    </description>
+    <description lang="cs">
+    	Tento repozitář obsahuje video doplňky pro česky a slovensky mluvící uživatele.
+
+	Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte http://xbmc-doplnky.googlecode.com.
+    </description>
     <platform>all</platform>
   </extension>
 </addon>
