@@ -43,7 +43,7 @@ def root():
 	#search.item()
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	data = util.request(BASE_URL)
-	data = util.substr(data,'<div id=\"stred','<div id=\"patka>')
+	data = util.substr(data,'<div id=\"stred','<div id=\'patka>')
 	for m in re.finditer('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>[^<]*<br[^<]*<a[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
 		util.add_dir(m.group('name'),{'show':m.group('url')},furl(m.group('img')))
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
@@ -86,8 +86,8 @@ def play(url):
 def resolve(url):
 	util.init_urllib()
 	data = util.request(furl(url))	
-	data = util.substr(data,'<div id=\"stred','<div id=\"patka>')
-	resolved = resolver.findstreams(__addon__,data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
+	data = util.substr(data,'<div class=\'video','<div id=\'patka>')
+	resolved = resolver.findstreams(__addon__,data,['<embed( )*flashvars=\"file=(?P<url>[^\"]+)','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
 	print resolved
 	if resolved == None:
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
