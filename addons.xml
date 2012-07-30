@@ -108,6 +108,28 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.eserial.cz"
+       name="eserial.cz"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.2.4"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">eserial.cz</summary>
+    <summary lang="cs">eserial.cz</summary>
+    <description lang="en">Watch online shows from eserial.cz</description>
+    <description lang="cs">Sledujte online seriály se servru eserial.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.videacesky.cz"
        name="videacesky.cz"
        version="1.0.3"
