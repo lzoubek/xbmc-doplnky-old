@@ -86,7 +86,7 @@ def play(url):
 def resolve(url):
 	util.init_urllib()
 	data = util.request(furl(url))	
-	data = util.substr(data,'<div class=\'video','<div id=\'patka>')
+	data = util.substr(data,'<div id=\"stred','<div id=\'patka>')
 	resolved = resolver.findstreams(__addon__,data,['<embed( )*flashvars=\"file=(?P<url>[^\"]+)','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
 	print resolved
 	if resolved == None:
