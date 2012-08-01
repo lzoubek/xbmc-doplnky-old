@@ -21,7 +21,7 @@
 # */
 
 import re,os,urllib,urllib2,shutil,traceback
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util,search
+import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util,search,resolver
 
 __scriptid__   = 'plugin.video.koukni.cz'
 __scriptname__ = 'koukni.cz'
@@ -103,49 +103,12 @@ def play(url):
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-		if not subs == '':
-			player = xbmc.Player()
-			count = 0
-			max_count = 99
-			while not player.isPlaying() and count < max_count:
-				xbmc.sleep(200)
-				count+=1
-				if count < max_count:
-					player.setSubtitles(subs)
-
-def getSubtitles(data):
-	if __addon__.getSetting('subtitles') == 'false':
-		return ''
-	data = util.substr(data,'$f(\"a.player\",','</script>')
-	m = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-	if m:
-		subs = util.request(furl(m.group('url')))
-		local = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-		if not os.path.exists(local):
-			os.makedirs(local)
-		local = os.path.join(local,'subtitles.srt')
-		try:
-			f = open(local,'w')
-			f.write(util.request(m.group('url')))
-			f.close()
-		except:
-			traceback.print_exc()
-			return ''
-		return local
-	return ''
-
-
+		util.load_subtitles(subs)
 
 def resolve(url):
-	util.init_urllib()
-	data = util.request(url)
-	m = re.search('id=\"player\" href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-	if m:
-		req = urllib2.Request(furl(m.group('url')))
-		req.add_header('User-Agent',util.UA)
-		response = urllib2.urlopen(req)
-		response.close()
-		return (response.geturl(),getSubtitles(data))
+	streams = resolver.resolve2(url)
+	if len(streams)>0:
+		return (streams[0]['url'],streams[0]['subs'])
 	xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
 
 def download(url,name):
@@ -156,7 +119,7 @@ def download(url,name):
 	stream,subs = resolve(url)
 	if stream:
 		if not subs == '':
-			shutil.copyfile(subs,os.path.join(downloads,name+'.srt'))
+			util.save_to_file(subs,os.path.join(downloads,name+'.srt'))
 		name+='.mp4'
 		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		util.download(__addon__,name,stream,os.path.join(downloads,name))
