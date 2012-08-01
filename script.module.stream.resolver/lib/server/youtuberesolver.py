@@ -73,6 +73,7 @@ def resolve(url):
 					item['url'] = stream
 					item['quality'] = quality
 					item['surl'] = url
+					item['subs'] = ''
 					qualities.append(quality)
 					resolved.append(item)
 			return resolved

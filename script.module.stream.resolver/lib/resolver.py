@@ -34,6 +34,7 @@ def _resolve(link):
 		item['url'] = stream
 		item['quality'] = '???'
 		item['surl'] = link
+		item['subs'] = ''
 		resolved.append(item)
 	return resolved
 
@@ -49,7 +50,6 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
 	resolver = eval(module)
 	util.debug('found %s %s' % (resolver,dir(resolver)))
 	if not hasattr(resolver,'resolve'):
-		util.debug('inject resolve func')
 		resolver.resolve = _resolve
 	RESOLVERS.append(resolver)
 del module
@@ -77,6 +77,7 @@ def resolve2(url):
 	url = util.decode_html(url)
 	util.info('Resolving '+url)
 	resolver = _get_resolver(url)
+	util.debug('Using resolver '+str(resolver));
 	if resolver == None:
 		return None
 	value = resolver.resolve(url)
