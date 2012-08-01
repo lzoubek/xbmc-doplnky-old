@@ -1,3 +1,6 @@
+[B]1.2.6:[/B]
+- resolvers can now retrieve subtitles
+- added koukni.cz resovler (supports subtitles)
 [B]1.2.2:[/B]
 - bugfixes
 - search.py now supports multiple search items within one addon
