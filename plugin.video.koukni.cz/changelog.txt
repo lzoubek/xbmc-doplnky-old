@@ -1,3 +1,5 @@
+[B]1.0.7:[/B]
+- oprava načítání titulků
 [B]1.0.6:[/B]
 - oprava: nefunguje přehrávání
 [B]1.0.5:[/B]
