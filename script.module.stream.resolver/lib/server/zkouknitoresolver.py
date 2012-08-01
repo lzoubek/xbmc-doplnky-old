@@ -29,7 +29,9 @@ def url(url):
 	m = _regex(url)
 	if not m == None:
 		data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
-		return [re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
+		f = re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL)
+		if f:
+			return [f.group(1)]
 
 def _regex(url):
 	return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)',url,re.IGNORECASE | re.DOTALL)
