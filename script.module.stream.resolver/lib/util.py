@@ -124,6 +124,35 @@ def reportUsage(addonid,action):
 	tc = 'UA-3971432-4'
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (addonid,host,tc,action))
 
+def save_to_file(url,file):
+	try:
+		f = open(file,'w')
+		f.write(request(url))
+		f.close()
+		return True
+	except:
+		traceback.print_exc()
+
+def load_subtitles(url):
+	if not (url=='' or url==None):	
+		local = xbmc.translatePath(__addon__.getAddonInfo('path'))
+		if not os.path.exists(local):
+			os.makedirs(local)
+		local = os.path.join(local,'xbmc_subs'+str(int(time.time()))+'.srt')
+		if not save_to_file(url,local):
+			return
+		player = xbmc.Player()
+		count = 0
+		max_count = 99
+		print local
+		while not player.isPlaying() and count < max_count:
+			count+=1
+			xbmc.sleep(200)
+			if count>max_count-2:
+				util.debug("Cannot load subtitles, player timed out")
+				return
+		player.setSubtitles(local)
+
 def params(url=sys.argv[2]):
         param={}
         paramstring=url
