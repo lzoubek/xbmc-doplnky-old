@@ -25,7 +25,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.2.5"
+       version="1.2.6"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -110,7 +110,7 @@
 
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -171,11 +171,11 @@
 
 <addon id="plugin.video.koukni.cz"
        name="koukni.cz"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.4"/>
+    <import addon="script.module.stream.resolver" version="1.2.6"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
