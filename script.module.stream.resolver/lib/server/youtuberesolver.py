@@ -24,12 +24,14 @@ __name__ = 'youtube'
 __eurl__ = ''
 fmt_value = {
         '5': '240p',
+	'17': '???',  # ???
         '18': '360p',
         '22': '720p',
         '26': '???',
         '33': '???',
         '34': '360p',
         '35': '480p',
+	'36': '240p',
         '37': '1080p',
         '38': '720p',
         '43': '360p',
@@ -66,7 +68,9 @@ def resolve(url):
 			resolved = []
 			for n in re.finditer('(=|,|\|)url=(?P<url>.+?)(,|\||fallback_host).+?itag=(?P<q>\d+)',data):
 				stream = urllib.unquote(n.group('url'))
-				quality = fmt_value[n.group('q')]
+				quality = '???'
+				if n.group('q') in fmt_value.keys():
+					quality = fmt_value[n.group('q')]
 				if not quality in qualities:
 					item = {}
 					item['name'] = __name__
