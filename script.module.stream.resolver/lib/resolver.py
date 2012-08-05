@@ -83,6 +83,10 @@ def resolve2(url):
 	value = resolver.resolve(url)
 	if value == None:
 		return []
+	def fix_key(i):
+		if not 'subs' in i.keys():
+			i['subs'] = ''
+	[fix_key(i) for i in value]
 	return sorted(value,key=lambda i:i['quality'])
 
 
