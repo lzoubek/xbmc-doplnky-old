@@ -25,7 +25,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.2.6"
+       version="1.2.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
