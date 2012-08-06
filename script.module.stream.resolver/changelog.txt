@@ -1,3 +1,6 @@
+[B]1.2.7:[/B]
+- youtube resolver fixes
+- all resolvers now return non-empty 'subs' key within resolve2 or findstreams 
 [B]1.2.6:[/B]
 - resolvers can now retrieve subtitles
 - added koukni.cz resovler (supports subtitles)
