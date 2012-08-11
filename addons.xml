@@ -105,6 +105,7 @@
     <description lang="en">Watch online series from serialycz.cz</description>
     <description lang="cs">Sledujte online seriály ze servru serialycz.cz</description>
     <platform>all</platform>
+    <broken>Server serialycz.cz je nedostupný</broken>
   </extension>
 </addon>
 
