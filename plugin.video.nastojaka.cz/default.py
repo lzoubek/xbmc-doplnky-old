@@ -31,7 +31,8 @@ __language__   = __addon__.getLocalizedString
 BASE_URL='http://www.nastojaka.cz/'
 
 def _search_cb(what):
-	return list(BASE_URL+'hledej?hledej='+urllib.quote(what))
+	data = util.post(BASE_URL+'vyhledavani',{'btnsearch':'OK','txtsearch':what});
+	return show(data)
 
 def furl(url):
 	if url.startswith('http'):
@@ -43,17 +44,19 @@ def icon():
 	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 
 def root():
-#	search.item()
+	search.item()
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
 	util.add_dir(__language__(30005),{'show':'scenky/?sort=date'},icon())
 	util.add_dir(__language__(30006),{'show':'scenky/?sort=performer'},icon())
 	util.add_dir(__language__(30007),{'show':'scenky/?sort=rating'},icon())
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-def show(url):
-	page = util.request(furl(url))
+def list(url):
+	return show(util.request(furl(url)))
+
+def show(page):
 	data = util.substr(page,'<div id=\"search','<hr>')
-	for m in re.finditer('<div.+?class=\"scene\"[^>]*>.+?<img src="(?P<img>[^\"]+)\" alt=\"(?P<name>[^\"]+).+?<div class=\"sc-name\">(?P<author>[^<]+).+?<a href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL ):
+	for m in re.finditer('<div.+?class=\"scene[^>]*>.+?<img src="(?P<img>[^\"]+)\" alt=\"(?P<name>[^\"]+).+?<div class=\"sc-name\">(?P<author>[^<]+).+?<a href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL ):
 		name = "%s (%s)" % (m.group('name'),m.group('author'))
 		util.add_video(
 			name,
@@ -109,9 +112,7 @@ if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	root()
 if 'show' in p.keys():
-	show(p['show'])
-if 'list' in p.keys():
-	list(p['list'])
+	list(p['show'])
 if 'play' in p.keys():
 	play(p['play'])
 if 'download' in p.keys():
