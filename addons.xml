@@ -155,7 +155,7 @@
 
 <addon id="plugin.video.nastojaka.cz"
        name="nastojaka.cz"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
