@@ -1,3 +1,5 @@
+[B]1.0.8:[/B]
+- přidány další výchozí tagy #91
 [B]1.0.7:[/B]
 - oprava načítání titulků
 [B]1.0.6:[/B]
