@@ -117,7 +117,7 @@ def download(url,name):
 
 p = util.params()
 if p=={}:
-	#xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
 	categories()
 if 'cat' in p.keys():
 	list_cat(p['cat'])
