@@ -38,13 +38,14 @@ def url(url):
 		json = data.replace('false','False').replace('true','True').replace('null','None')
 		aData = eval('('+json+')')
 		max_res = 99999
-
 		r = re.finditer('"l".*?:.*?"(.+?)".+?"u".*?:.*?"(.+?)"', json)
 		chosen_res = 0
 		stream_url = False
- 
+		stream_url_part1 = False 
 		if r:
+			
 			for match in r:
+				print match.groups()
 				res, url = match.groups()
 				res = int(res.strip('p'))
 				if res > chosen_res and res <= max_res:
@@ -53,7 +54,8 @@ def url(url):
 		else:
 			return
 
-
+		if not stream_url_part1:
+			return
 		# Decode the link from the json data settings
 		spn_ik = unhexlify(__decrypt(aData["settings"]["login_status"]["spen"], aData["settings"]["login_status"]["salt"], 950569)).split(';')
 		spn = spn_ik[0].split('&')

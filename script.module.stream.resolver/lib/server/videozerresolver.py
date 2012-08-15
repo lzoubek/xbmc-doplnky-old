@@ -40,6 +40,7 @@ def url(url):
 		max_res = 99999
 		r = re.finditer('"l".*?:.*?"(.+?)".+?"u".*?:.*?"(.+?)"', json)
 		chosen_res = 0
+		stream_url_part1 = False
 		if r:
 			for match in r:
 				res, url = match.groups()
@@ -51,7 +52,8 @@ def url(url):
       					chosen_res = res
  		else:
 			return
-
+		if not stream_url_part1:
+			return
 
 	# Decode the link from the json data settings.
 		spn_ik = unhexlify(__decrypt(aData["cfg"]["login"]["spen"], aData["cfg"]["login"]["salt"], 950569)).split(';')
