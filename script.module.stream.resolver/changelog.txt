@@ -1,3 +1,6 @@
+[B]1.2.8:[/B]
+- added nahnoji and moevideo resolvers by Ivo Brhel
+- fixed putlocker (by Ivo), videozer & videobb resolvers
 [B]1.2.7:[/B]
 - youtube resolver fixes
 - all resolvers now return non-empty 'subs' key within resolve2 or findstreams 
