@@ -18,7 +18,7 @@
 # *
 # */
 
-import sys,os,util,re
+import sys,os,util,re,traceback
 import xbmcgui,xbmc
 
 # dummy implementation of 2nd generation of resolving
@@ -80,7 +80,10 @@ def resolve2(url):
 	util.debug('Using resolver '+str(resolver));
 	if resolver == None:
 		return None
-	value = resolver.resolve(url)
+	try:
+		value = resolver.resolve(url)
+	except:
+		traceback.print_exc()
 	if value == None:
 		return []
 	def fix_key(i):
