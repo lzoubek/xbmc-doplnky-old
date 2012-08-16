@@ -84,7 +84,7 @@ def play(url):
 	print 'URL: '+url
 	stream = resolve(url)
 	if stream:
-		#util.reportUsage(__scriptid__,__scriptid__+'/play')
+		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
 		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
@@ -112,7 +112,7 @@ def download(url,name):
 	stream = resolve(url)
 	if stream:
 		name+='.mp4'
-		#util.reportUsage(__scriptid__,__scriptid__+'/download')
+		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		util.download(__addon__,name,stream['url'],os.path.join(downloads,name))
 
 p = util.params()
