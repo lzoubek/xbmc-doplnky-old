@@ -94,15 +94,20 @@ def resolve(url):
 		xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
 		return
 	if not resolved == {}:
-		return resolved['url']
+		# search for subs
+		m = re.search('captions\.file=(?P<sub>[^\&]+)',data)
+		if m:
+			resolved['subs'] = m.group('sub')
+		return resolved
 
 def play(url):
 	stream = resolve(url)
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
+		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+		util.load_subtitles(stream['subs'])
 
 def download(url,name):
 	downloads = __addon__.getSetting('downloads')
@@ -113,7 +118,7 @@ def download(url,name):
 	if stream:
 		util.reportUsage(__scriptid__,__scriptid__+'/download')
 		name+='.flv'
-		util.download(__addon__,name,stream,os.path.join(downloads,name))
+		util.download(__addon__,name,stream['url'],os.path.join(downloads,name))
 
 p = util.params()
 if p=={}:
