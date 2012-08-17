@@ -1,3 +1,5 @@
+[B]1.0.5:[/B]
+- přidaná podpora titulků
 [B]1.0.4:[/B]
 - oprava některých nefunkčních youtube videí
 [B]1.0.3:[/B]
