@@ -154,11 +154,11 @@
 
 <addon id="plugin.video.videacesky.cz"
        name="videacesky.cz"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.2.7" />
+    <import addon="script.module.stream.resolver" version="1.2.8" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -302,7 +302,7 @@
 </addon>
 
 <addon id="repository.xbmc.doplnky"
-       version="1.0.1"
+       version="1.0.2"
        name="XBMC Doplňky (CZ &amp; SK)"
        provider-name="Libor Zoubek">
   <requires>
@@ -310,9 +310,9 @@
   </requires>
   <extension point="xbmc.addon.repository"
               name="repozitář českých a slovenských doplňků">
-    <info compressed="false">http://xbmc-doplnky.googlecode.com/git-history/master/addons.xml</info>
-    <checksum>http://xbmc-doplnky.googlecode.com/git-hitory/master/addons.xml.md5</checksum>
-    <datadir zip="true">http://xbmc-doplnky.googlecode.com/git-history/master/repo</datadir>
+    <info compressed="false">http://xbmc-doplnky.googlecode.com/git/addons.xml</info>
+    <checksum>http://xbmc-doplnky.googlecode.com/git/addons.xml.md5</checksum>
+    <datadir zip="true">http://xbmc-doplnky.googlecode.com/git/repo</datadir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>XBMC Doplňky (CZ &amp; SK)</summary>
