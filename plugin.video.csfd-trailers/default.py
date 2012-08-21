@@ -169,6 +169,9 @@ def add_items(items,showing={}):
 			info = scrapper._empty_info()
 			info['url'] = url
 			add_item(name,info,showing_url)
+	xbmcplugin.addSortMethod(int(sys.argv[1]),xbmcplugin.SORT_METHOD_VIDEO_TITLE)
+	xbmcplugin.addSortMethod(int(sys.argv[1]),xbmcplugin.SORT_METHOD_VIDEO_RATING)
+	xbmcplugin.addSortMethod(int(sys.argv[1]),xbmcplugin.SORT_METHOD_VIDEO_YEAR)
 
 def preload_items(results):
 	step = 100./len(results)
