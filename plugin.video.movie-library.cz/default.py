@@ -67,13 +67,16 @@ def categories():
 	util.add_dir(__language__(30010),{'search-ulozto-list':''},icon('ulozto.png'))
 	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
 	util.add_dir(__language__(30038),{'popular':''},icon('top.png'))
-	data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
-	pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
-	for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		if m.group('url').find('staty') > 0:
-			util.add_dir(m.group('name'),{'countries':furl(m.group('url'))})
-		else:
-			util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
+	try:
+		data = util.substr(util.request(BASE_URL),'div id=\"menu\"','</td')
+		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
+			if m.group('url').find('staty') > 0:
+				util.add_dir(m.group('name'),{'countries':furl(m.group('url'))})
+			else:
+				util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
+	except:
+		traceback.print_exc();
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def countries(url):
