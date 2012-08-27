@@ -1,3 +1,5 @@
+[B]1.2.6:[/B]
+- doplněk nespadne v okamžiku, kdy se nepodaří vylistovat obsah ze servru movie-library - vyhledávání ulozto bude stále dostupné
 [B]1.2.5:[/B]
 - #74 opraveno neoknečné zadávání kódu obrázku - nefunkční stahování
 - #68 nastavitelný formát názvu filmu při list:wování kategoriemi
