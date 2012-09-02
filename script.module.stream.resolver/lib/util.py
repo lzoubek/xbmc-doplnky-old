@@ -20,13 +20,10 @@
 # *
 # */
 import os,re,sys,urllib,urllib2,traceback,cookielib,time,socket
-import xbmcgui,xbmcplugin,xbmc,xbmcaddon
 from htmlentitydefs import name2codepoint as n2cp
 import simplejson as json
 UA='Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 
-__addon__      = xbmcaddon.Addon(id='script.module.stream.resolver')
-__lang__   = __addon__.getLocalizedString
 ##
 # initializes urllib cookie handler
 def init_urllib():
@@ -60,57 +57,6 @@ def substr(data,start,end):
 	i2 = data.find(end,i1)
 	return data[i1:i2]
 
-def add_dir(name,params,logo='',infoLabels={},menuItems={}):
-	name = decode_html(name)
-	if not 'Title' in infoLabels:
-		infoLabels['Title'] = name
-	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
-        try:
-		liz.setInfo( type='Video', infoLabels=infoLabels )
-	except:
-		traceback.print_exc()
-	items = []
-	for mi in menuItems.keys():
-		action = menuItems[mi]
-		if not type(action) == type({}):
-			items.append((mi,action))
-		else:
-			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
-	if len(items) > 0:
-		liz.addContextMenuItems(items)
-        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
-
-def add_local_dir(name,url,logo='',infoLabels={},menuItems={}):
-	name = decode_html(name)
-	infoLabels['Title'] = name
-	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
-        liz.setInfo( type='Video', infoLabels=infoLabels )
-	items = []
-	for mi in menuItems.keys():
-		items.append((mi,'RunPlugin(%s)'%_create_plugin_url(menuItems[mi])))
-	if len(items) > 0:
-		liz.addContextMenuItems(items)
-        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,isFolder=True)
-
-def add_video(name,params={},logo='',infoLabels={},menuItems={}):
-	name = decode_html(name)
-	if not 'Title' in infoLabels:
-		infoLabels['Title'] = name
-	url = _create_plugin_url(params)
-	li=xbmcgui.ListItem(name,path=url,iconImage='DefaultVideo.png',thumbnailImage=logo)
-        li.setInfo( type='Video', infoLabels=infoLabels )
-	li.setProperty('IsPlayable','true')
-	items = []
-	for mi in menuItems.keys():
-		action = menuItems[mi]
-		if not type(action) == type({}):
-			items.append((mi,action))
-		else:
-			items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
-	if len(items) > 0:
-		li.addContextMenuItems(items)
-        return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
-
 def _create_plugin_url(params,plugin=sys.argv[0]):
 	url=[]
 	for key in params.keys():
@@ -119,10 +65,6 @@ def _create_plugin_url(params,plugin=sys.argv[0]):
 		url.append(key+'='+value.encode('hex',)+'&')
 	return plugin+'?'+''.join(url)
 	
-def reportUsage(addonid,action):
-	host = 'xbmc-doplnky.googlecode.com'
-	tc = 'UA-3971432-4'
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (addonid,host,tc,action))
 
 def save_to_file(url,file):
 	try:
@@ -132,45 +74,6 @@ def save_to_file(url,file):
 		return True
 	except:
 		traceback.print_exc()
-
-def load_subtitles(url):
-	if not (url=='' or url==None):	
-		local = xbmc.translatePath(__addon__.getAddonInfo('path'))
-		if not os.path.exists(local):
-			os.makedirs(local)
-		local = os.path.join(local,'xbmc_subs'+str(int(time.time()))+'.srt')
-		if not save_to_file(url,local):
-			return
-		player = xbmc.Player()
-		count = 0
-		max_count = 99
-		print local
-		while not player.isPlaying() and count < max_count:
-			count+=1
-			xbmc.sleep(200)
-			if count>max_count-2:
-				util.debug("Cannot load subtitles, player timed out")
-				return
-		player.setSubtitles(local)
-
-def params(url=sys.argv[2]):
-        param={}
-        paramstring=url
-        if len(paramstring)>=2:
-                params=url
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
-                for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
-	for p in param.keys():
-		param[p] = param[p].decode('hex')
-	return param
 
 def _substitute_entity(match):
         ent = match.group(3)
@@ -199,151 +102,24 @@ def decode_html(data):
 		print [data]
 		return data
 
-def debug(text):
-	xbmc.log(str([text]),xbmc.LOGDEBUG)
+try:
+	import xbmc
+	def debug(text):
+		xbmc.log(str([text]),xbmc.LOGDEBUG)
 
-def info(text):
-	xbmc.log(str([text]))
+	def info(text):
+		xbmc.log(str([text]))
 
-def error(text):
-	xbmc.log(str([text]),xbmc.LOGERROR)
+	def error(text):
+		xbmc.log(str([text]),xbmc.LOGERROR)
+except:
+	def debug(text):
+		print('[DEBUG] '+str([text]))
+	def info(text):
+		print('[INFO] '+str([text]))
+	def error(text):
+		print('[ERROR] '+str([text]))
 
-
-def get_searches(addon,server):
-	local = xbmc.translatePath(addon.getAddonInfo('profile'))
-	if not os.path.exists(local):
-		os.makedirs(local)
-	local = os.path.join(local,server)
-	if not os.path.exists(local):
-		return []
-	f = open(local,'r')
-	data = f.read()
-	searches = json.loads(unicode(data.decode('utf-8','ignore')))
-	f.close()
-	return searches
-
-def add_search(addon,server,search,maximum):
-	searches = []
-	local = xbmc.translatePath(addon.getAddonInfo('profile'))
-	if not os.path.exists(local):
-		os.makedirs(local)
-	local = os.path.join(local,server)
-	if os.path.exists(local):
-		f = open(local,'r')
-		data = f.read()
-		searches = json.loads(unicode(data.decode('utf-8','ignore')))
-		f.close()
-	if search in searches:
-		searches.remove(search)
-	searches.insert(0,search)
-	remove = len(searches)-maximum
-	if remove>0:
-		for i in range(remove):
-			searches.pop()
-	f = open(local,'w')
-	f.write(json.dumps(searches,ensure_ascii=True))
-	f.close()
-
-def remove_search(addon,server,search):
-	local = xbmc.translatePath(addon.getAddonInfo('profile'))
-	if not os.path.exists(local):
-		return
-	local = os.path.join(local,server)
-	if os.path.exists(local):
-		f = open(local,'r')
-		data = f.read()
-		searches = json.loads(unicode(data.decode('utf-8','ignore')))
-		f.close()
-		searches.remove(search)
-		f = open(local,'w')
-		f.write(json.dumps(searches,ensure_ascii=True))
-		f.close()
-
-def download(addon,filename,url,local,notifyFinishDialog=True):
-	local = xbmc.makeLegalFilename(local)
-	icon = os.path.join(addon.getAddonInfo('path'),'icon.png')
-	notify = addon.getSetting('download-notify') == 'true'
-	notifyEvery = addon.getSetting('download-notify-every')
-	notifyPercent = 1
-	if int(notifyEvery) == 0:
-		notifyPercent = 10
-	if int(notifyEvery) == 1:
-		notifyPercent = 5
-	def callback(percent,speed,est,filename):
-		if percent == 0 and speed == 0:
-			xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(13413).encode('utf-8'),filename,icon))
-			return
-		if notify:
-			if percent > 0 and percent % notifyPercent == 0:
-				esTime = '%ss' % est
-				if est>60:
-					esTime = '%sm' % int(est/60)
-				message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s %s' % (speed,esTime)
-				xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)'%(message.encode('utf-8'),filename,icon))
-
-	downloader = Downloader(callback)
-	result = downloader.download(url,local,filename)
-	try:
-		if result == True:
-			if xbmc.Player().isPlaying():
-				xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
-			else:
-				if notifyFinishDialog:
-					xbmcgui.Dialog().ok(xbmc.getLocalizedString(20177),filename)
-				else:
-					xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(20177),filename,icon))
-		else:
-			xbmc.executebuiltin('XBMC.Notification(%s,%s,5000,%s)' % (xbmc.getLocalizedString(257),filename,icon))
-			xbmcgui.Dialog().ok(filename,xbmc.getLocalizedString(257) +' : '+result)
-	except:
-		traceback.print_exc()
-
-class Downloader(object):
-	def __init__(self,callback = None):
-		self.init_time = time.time()
-		self.callback = callback
-		self.gran = 50
-		self.percent = -1
-
-	def download(self,remote,local,filename=None):
-		class MyURLopener(urllib.FancyURLopener):
-			def http_error_default(self, url, fp, errcode, errmsg, headers):
-				self.error_msg = 'Downlad failed, error : '+str(errcode)
-
-		if not filename:
-			filename = os.path.basename(local)
-		self.filename = filename
-		if self.callback:
-			self.callback(0,0,0,filename)
-		socket.setdefaulttimeout(60)
-		opener = MyURLopener()
-		try:
-			opener.retrieve(remote,local,reporthook=self.dlProgress)
-			if hasattr(opener,'error_msg'):
-				return opener.error_msg
-			return True
-		except socket.error:
-			errno, errstr = sys.exc_info()[:2]
-			if errno == socket.timeout:
-				return 'Download failed, connection timeout'
-		except:
-			traceback.print_exc()
-			errno, errstr = sys.exc_info()[:2]
-			return str(errstr)
-
-	def dlProgress(self,count, blockSize, totalSize):
-		if count % self.gran == 0 and not count == 0:
-			percent = int(count*blockSize*100/totalSize)
-			newTime = time.time()
-			diff = newTime - self.init_time
-			self.init_time = newTime
-			if diff <=0:
-				diff = 1
-			speed = int(((1/diff) * blockSize * self.gran )/1024)
-			est = int((totalSize - int(count*blockSize))/1024/speed)
-			if self.callback and not self.percent == percent:
-				self.callback(percent,speed,est,self.filename)
-			self.percent=percent
 
 _diacritic_replace= {u'\u00f3':'o',
 u'\u0213':'-',

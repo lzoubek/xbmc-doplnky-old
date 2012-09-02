@@ -22,7 +22,7 @@
 # */
 import os,re,sys
 import xbmcplugin,xbmcaddon,xbmc
-import util
+import xbmcutil,util
 
 def _list(addon,history,key,value):
 	params = {}
@@ -31,20 +31,20 @@ def _list(addon,history,key,value):
 		params[key] = value
 		menuItems[key] = value
 	params['search'] = ''
-	util.add_dir(util.__lang__(30004),params,util.icon('search.png'))
-	for what in util.get_searches(addon,history):
+	xbmcutil.add_dir(xbmcutil.__lang__(30004),params,xbmcutil.icon('search.png'))
+	for what in xbmcutil.get_searches(addon,history):
 		params['search'] = what
 		menuItems['search-remove'] = what
-		util.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):menuItems})
+		xbmcutil.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):menuItems})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def _remove(addon,history,search):
-	util.remove_search(addon,history,search)
+	xbmcutil.remove_search(addon,history,search)
 	xbmc.executebuiltin('Container.Refresh')
 
 def _search(addon,history,what,update_history,callback):
 	if what == '':
-		kb = xbmc.Keyboard('',util.__lang__(30003),False)
+		kb = xbmc.Keyboard('',xbmcutil.__lang__(30003),False)
 		kb.doModal()
 		if kb.isConfirmed():
 			what = kb.getText()
@@ -56,12 +56,12 @@ def _search(addon,history,what,update_history,callback):
 			util.error('Unable to parse convert addon setting to number')
 			pass
 		if update_history:
-			util.add_search(addon,history,what,maximum)
+			xbmcutil.add_search(addon,history,what,maximum)
 		callback(what)
 
-def item(items={},label=util.__lang__(30003)):
+def item(items={},label=xbmcutil.__lang__(30003)):
 	items['search-list'] = ''
-	util.add_dir(label,items,util.icon('search.png'))
+	xbmcutil.add_dir(label,items,xbmcutil.icon('search.png'))
 
 def main(addon,history,p,callback,key=None,value=None):
 	if (key==None) or (key in p and p[key] == value):
