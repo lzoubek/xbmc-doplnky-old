@@ -24,6 +24,7 @@ from htmlentitydefs import name2codepoint as n2cp
 import simplejson as json
 UA='Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 
+sys.path.append( os.path.join ( os.path.dirname(__file__),'contentprovider') )
 ##
 # initializes urllib cookie handler
 def init_urllib():
@@ -148,3 +149,23 @@ def replace_diacritic(string):
 		else:
 			ret.append(char)
 	return ''.join(ret)
+
+
+def params(url=sys.argv[2]):
+        param={}
+        paramstring=url
+        if len(paramstring)>=2:
+                params=url
+                cleanedparams=params.replace('?','')
+                if (params[len(params)-1]=='/'):
+                        params=params[0:len(params)-2]
+                pairsofparams=cleanedparams.split('&')
+                param={}
+                for i in range(len(pairsofparams)):
+                        splitparams={}
+                        splitparams=pairsofparams[i].split('=')
+                        if (len(splitparams))==2:
+                                param[splitparams[0]]=splitparams[1]
+	for p in param.keys():
+		param[p] = param[p].decode('hex')
+	return param

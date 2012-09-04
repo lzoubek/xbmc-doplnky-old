@@ -18,16 +18,16 @@
 # *
 # */
 
-import sys,os,re,traceback,util,xbmcutil
+import sys,os,re,traceback,util,xbmcutil,search
+import xbmcplugin,xbmc,xbmcgui
 
-sys.path.append( os.path.join ( os.path.dirname(__file__),'contentprovider') )
 class XBMContentProvider(object):
 	'''
 	ContentProvider class provides an internet content. It should NOT have any xbmc-related imports
 	and must be testable without XBMC runtime. This is a basic/dummy implementation.
 	'''	
 	
-	def __init__(self,provider,settings):
+	def __init__(self,provider,settings,addon):
 		'''
 		XBMContentProvider constructor
 		Args:
@@ -35,6 +35,8 @@ class XBMContentProvider(object):
 		'''
 		self.provider = provider
 		self.settings = settings
+		self.addon = addon
+		self.addon_id = addon.getAddonInfo('id')
 
 	def run(self,params):
 		if params == {}:
@@ -47,86 +49,64 @@ class XBMContentProvider(object):
 			return self.download(params['down'],params['name'])
 		if 'play' in params.keys():
 			return self.play(params['play'])
+		search.main(self.addon,'history',params,self.search)
 
 	def root(self):
-		if 'search' in self.provider.categories():
+		if 'search' in self.provider.capabilities():
 			search.item()
-		util.add_local_dir(__language__(30037),self.settings['downloads'],util.icon('download.png'))	
+		xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))	
 		self.list(self.provider.categories())
 		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 	def download(self,url,name):
-		pass
+		downloads = self.settings['downloads']
+		if '' == downloads:
+			xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30009))
+			return
+		stream = self.resolve(url)
+		if stream:
+			xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
+			xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name))
 	
 	def play(self,url):
-		pass	
+		stream = self.resolve(url)
+		if stream:
+			xbmcutil.reportUsage(self.addon_id,self.addon_id+'/play')
+			print 'Sending %s to player' % stream['url']
+			li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
+			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)	
 
-	def video_item(self):
-		'''
-		returns empty video item - contains all required fields
-		'''
-		return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':'','img':'','length':'','quality':'???','subs':'','surl':''}
-
-	def dir_item(self):
-		'''
-			reutrns empty directory item
-		'''
-		return {'type':'dir','title':'','size':'0','url':''}
-
+	def resolve(self,url):
+		return self.provider.resolve({'url':url})
 
 	def search(self,keyword):
-		'''
-		Search for a keyword on a site
-		Args:
-            		keyword (str)
-
-		returns:
-			array of video or directory items
-		'''
-		return []
+		self.list(self.provider.search(keyword))
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	
 	def list(self,items):
-		'''
-		Lists content on given url
-		Args:
-            		url (str): either relative or absolute provider URL
-			filter (function{item}) - a filter function that takes 1 argument (a video item) and returns True for accepting such item
-		'''
 		for item in items:
 			if item['type'] == 'dir':
-				render_dir(item)
-			elif item['type'] = 'next':
-				util.add_dir(util.__language__(30008),{'list':item['url']},util.icon('next.png'))
-			elif item['type'] = 'prev':
-				util.add_dir(util.__language__(30007),{'list':item['url']},util.icon('prev.png'))
-			elif item['type'] = 'video':
-				pass
+				self.render_dir(item)
+			elif item['type'] == 'next':
+				xbmcutil.add_dir(xbmcutil.__lang__(30007),{'list':item['url']},xbmcutil.icon('next.png'))
+			elif item['type'] == 'prev':
+				xbmcutil.add_dir(xbmcutil.__lang__(30008),{'list':item['url']},xbmcutil.icon('prev.png'))
+			elif item['type'] == 'video':
+				self.render_video(item)
 
 	def render_dir(self,item):
-		util.add_dir(item['title'],{'list':item['url']},menuItems={xbmc.getLocalizedString(117):menuItems})
+		xbmcutil.add_dir(item['title'],{'list':item['url']},menuItems={xbmc.getLocalizedString(117):menuItems})
 
 	def render_video(self,item):
-		pass
+		title = '%s (%s)' % (item['title'],item['size'])
+		xbmcutil.add_video(title,
+			{'play':item['url']},
+			item['img'],
+			infoLabels={'Title':item['title']},
+			menuItems={xbmc.getLocalizedString(33003):{'name':item['title'],'down':item['url']}}
+		)	
 	
 	def categories(self):
-		'''
-		Lists categories on provided site
-
-		Returns:
-			array of video or directory items
-		'''
-		return []
-
-	def resolve(self,item,captcha_cb=None):
-		'''
-		Resolves given video item  to a downloable/playable file/stream URL
-	
-		Args:
-			url (str): relative or absolute URL to be resolved
-			captcha_cb(func{obj}): callback function when user input is required (captcha, one-time passwords etc).
-			function implementation must be Provider-specific
-		Returns:
-			None - if ``url`` was not resolved. Video item with 'url' key pointing to resolved target
-		'''
-		return None
+		self.list(self.provider.categories(keyword))
+		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 

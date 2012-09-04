@@ -33,12 +33,16 @@ import util
 
 import xbmcutil
 import bezvadata
+import xbmcprovider
+
 
 
 # filter function
 def can_show(ext_filter,item):
-	extension = os.path.splitext(item)[1]
+	extension = os.path.splitext(item['title'])[1]
 	if extension in ext_filter:
+		return False
+	elif '18+' in item.keys() and __addon__.getSetting('18+content') != 'true':
 		return False
 	return True
 
@@ -47,14 +51,17 @@ def create_filter():
 	return ['.'+f.strip() for f in ext_filter]
 
 def filter(item):
-	return can_show(create_filter(),item['title'])
+	return can_show(create_filter(),item)
 
 provider = bezvadata.BezvadataContentProvider(filter=filter)
 
-settings = {'downloads':__addon__.getSetting('downloads')}
+settings = {
+	'downloads':__addon__.getSetting('downloads'),
+	'download-notify':__addon__.getSetting('download-notify'),
+	'download-notify-every':__addon__.getSetting('download-notify-every'),
+}
 
 p = util.params()
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-XBMContentProvider(provider,settings).run(p)
-#search.main(__addon__,'search_history',p,_search_cb)
+xbmcprovider.XBMContentProvider(provider,settings,__addon__).run(p)

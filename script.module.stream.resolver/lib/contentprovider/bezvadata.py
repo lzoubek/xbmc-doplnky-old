@@ -44,7 +44,7 @@ class BezvadataContentProvider(ContentProvider):
 		page = util.request(self._url(url))
 		ad = re.search('<a href=\"(?P<url>/vyhledavani/souhlas-zavadny-obsah[^\"]+)',page,re.IGNORECASE|re.DOTALL)
 		if ad:
-			page = util.request(furl(ad.group('url')))
+			page = util.request(self._url(ad.group('url')))
 		data = util.substr(page,'<div class=\"content','<div class=\"stats')
 		pattern = '<section class=\"img[^<]+<a href=\"(?P<url>[^\"]+)(.+?)<img src=\"(?P<img>[^\"]+)\" alt=\"(?P<name>[^\"]+)(.+?)<b>velikost:</b>(?P<size>[^<]+)'
 		result = []

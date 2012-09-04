@@ -153,24 +153,6 @@ def load_subtitles(url):
 				return
 		player.setSubtitles(local)
 
-def params(url=sys.argv[2]):
-        param={}
-        paramstring=url
-        if len(paramstring)>=2:
-                params=url
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
-                for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
-	for p in param.keys():
-		param[p] = param[p].decode('hex')
-	return param
 
 def _substitute_entity(match):
         ent = match.group(3)
