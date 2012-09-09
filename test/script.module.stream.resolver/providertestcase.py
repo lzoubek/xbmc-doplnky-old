@@ -3,7 +3,6 @@ import ConfigParser
 import unittest
 sys.path.append( os.path.join ( '..', '..','script.module.stream.resolver','lib') )
 sys.path.append( os.path.join ( '..', '..','script.module.stream.resolver','lib','contentprovider') )
-import util
 import provider
 
 # to be updated by child class

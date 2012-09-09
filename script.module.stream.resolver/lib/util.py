@@ -151,7 +151,9 @@ def replace_diacritic(string):
 	return ''.join(ret)
 
 
-def params(url=sys.argv[2]):
+def params(url=None):
+	if url == None:
+		url = sys.argv[2]
         param={}
         paramstring=url
         if len(paramstring)>=2:
