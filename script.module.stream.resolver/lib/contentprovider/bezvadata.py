@@ -25,11 +25,7 @@ from provider import ContentProvider
 class BezvadataContentProvider(ContentProvider):
 
 	def __init__(self,username=None,password=None,filter=None):
-		self.name='bezvadata'
-		self.username=username
-		self.password=password
-		self.filter = filter
-		self.base_url='http://bezvadata.cz/'
+		ContentProvider.__init__(self,'bezvadata.cz','http://bezvadata.cz/',username,password,filter)
 		opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
 		urllib2.install_opener(opener)
 

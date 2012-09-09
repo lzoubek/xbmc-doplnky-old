@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<category label="30052">
+		<setting label="30000" id="keep-searches" type="text" default="20" />
+		<setting label="30030" id="downloads" type="folder" default="" />
+		<setting label="30032" id="download-notify" type="bool" default="true" />
+		<setting label="30033" id="download-notify-every" type="enum" lvalues="30034|30035|30036" default="0" visible="eq(-1,true)" />
+	</category>
+	<category label="30009">
+		<setting label="30002" id="bezvadata_enabled" type="bool" default="true" />
+		<setting label="30000" id="bezvadata_keep-searches" type="text" default="20" />
+		<setting label="30050" id="bezvadata_18+content" type="bool" default="false" />
+		<setting label="30051" id="bezvadata_ext-filter" type="text" default="exe,rar,srt,zip" />
+	</category>
+	<category label="30010">
+		<setting label="30002" id="ulozto_enabled" type="bool" default="true" />
+		<setting label="30000" id="ulozto_keep-searches" type="text" default="20" />
+		<setting label="30007" id="ulozto_user" type="text" default="" />
+		<setting label="30008" id="ulozto_pass" type="text" default="" option="hidden" />
+		<setting label="30003" id="ulozto_usevip" type="enum" lvalues="30004|30005|30006" default="0" />
+	</category>
+	<category label="30011">
+		<setting label="30002" id="hellspy_enabled" type="bool" default="true" />
+		<setting label="30000" id="hellspy_keep-searches" type="text" default="20" />
+		<setting label="30007" id="hellspy_user" type="text" default="" />
+		<setting label="30008" id="hellspy_pass" type="text" default="" option="hidden" />
+	</category>
+</settings>

@@ -27,11 +27,7 @@ from provider import ContentProvider
 class UloztoContentProvider(ContentProvider):
 
 	def __init__(self,username=None,password=None,filter=None):
-		self.name='uloz.to'
-		self.username=username
-		self.password=password
-		self.filter = filter
-		self.base_url='http://www.ulozto.cz/'
+		ContentProvider.__init__(self,'ulozto.cz','http://www.ulozto.cz/',username,password,filter)
 		self.cp = urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar())
 		self.rh = UloztoHTTPRedirectHandler()
 		self.rh.throw = False
@@ -122,6 +118,7 @@ class UloztoContentProvider(ContentProvider):
 		if url.startswith('#'):
 			util.error('[uloz.to] - url was not correctly decoded')
 			return
+		self.init_urllib()
 		logged_in = self.login()
 		if logged_in:
 			page = util.request(url)
@@ -186,7 +183,6 @@ class UloztoContentProvider(ContentProvider):
 		if not (sign and ts and cid and key):
 			util.error('[uloz.to] - unable to parse required params from page, plugin needs fix')
 			return
-		
 		request = urllib.urlencode({'captcha_key':key.group(1),'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha_id':captcha_id,'captcha_value':code,'freeDownload':'Stáhnout'})
 		req = urllib2.Request(post_url,request)
 		req.add_header('User-Agent',util.UA)
@@ -198,6 +194,7 @@ class UloztoContentProvider(ContentProvider):
 		try:
 			resp = urllib2.urlopen(req)
 			page = resp.read()
+			print 'sending requrest'	
 			headers = resp.headers
 		except RedirectionException:
 			# this is what we need, our redirect handler raises this
@@ -209,6 +206,7 @@ class UloztoContentProvider(ContentProvider):
 			util.info('[uloz.to] POST url:'+post_url)
 			return
 		stream = self.rh.location
+		print 'got something'
 		# we did not get 302 but 200
 		if stream == None:
 			util.debug('Captcha was invalid, retrying..')

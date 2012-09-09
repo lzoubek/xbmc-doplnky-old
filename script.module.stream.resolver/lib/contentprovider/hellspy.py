@@ -27,11 +27,7 @@ from provider import ContentProvider
 class HellspyContentProvider(ContentProvider):
 
 	def __init__(self,username=None,password=None,filter=None):
-		self.name='hellspy'
-		self.username=username
-		self.password=password
-		self.filter = filter
-		self.base_url='http://www.hellspy.cz/'
+		ContentProvider.__init__(self,'hellspy.cz','http://hellspy.cz/',username,password,filter)
 		opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
 		urllib2.install_opener(opener)
 
@@ -95,6 +91,8 @@ class HellspyContentProvider(ContentProvider):
 			result.append(item)
 		return result
 
+	def categories(self):
+		return []
 
 	def resolve(self,item,captcha_cb=None):
 		item = item.copy()
