@@ -3,10 +3,7 @@
 	<string id="30000">Počet zapamatovaných hledání</string>
 	<string id="30001">Načíst metadata</string>
 	<string id="30002">[B]Vyhledat[/B]</string>
-	<string id="30003">[B]Vyhledat na ulozto[/B]</string>
-	<string id="30004">[B]Vyhledat na bezvadata[/B]</string>
-	<string id="30005">[B]Vyhledat na kinotip[/B]</string>
-	<string id="30006">[B]Vyhledat na movie-library[/B]</string>
+	<string id="30006">[B]Vyhledat online[/B]</string>
 	<string id="30007">[B]Informace o filmu[/B]</string>
 	<string id="30008">Hledat jako </string>
 	<string id="30009">Přidávat hledané filmy do historie doplňků</string>
@@ -18,11 +15,6 @@
 	<string id="30017">[B]Film[/B]</string>
 	<string id="30018">[B]Osobnost[/B]</string>
 	<string id="30019">Načítám metadata...</string>
-	<string id="30020">Zapnout vyhledávání pomocí jiných doplňků</string>
-	<string id="30021"> - movie-library.cz</string>
-	<string id="30022"> - ulozto.cz</string>
-	<string id="30023"> - bezvadata.cz</string>
-	<string id="30024"> - kinotip.cz</string>
 	<string id="30025">Hrají v kinech</string>
 	<string id="30030">Složka pro stahování</string>
 	<string id="30031">Nastavte prosím složku pro stahování</string>

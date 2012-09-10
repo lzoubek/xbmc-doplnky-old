@@ -22,6 +22,7 @@
 
 import xbmc,xbmcplugin,re,sys,traceback
 import util
+import xbmcutil
 import unicodedata
 
 def get_info(url):

@@ -8,11 +8,7 @@
 		<setting label="30033" id="download-notify-every" type="enum" lvalues="30034|30035|30036" default="0" visible="eq(-1,true)" />
 	</category>
 	<category label="30013">
-		<setting label="30020" id="search-integration" type="bool" default="true" />
-		<setting label="30021" id="search-integration-movie-library" type="bool" default="true" visible="eq(-1,true)" />
-		<setting label="30022" id="search-integration-ulozto" type="bool" default="false" visible="eq(-2,true)" />
-		<setting label="30023" id="search-integration-bezvadata" type="bool" default="true" visible="eq(-3,true)" />
-		<setting label="30009" id="search-integration-update-history" type="bool" default="true" visible="eq(-4,true)" />
+		<setting label="30009" id="search-integration-update-history" type="bool" default="true" />
 	</category>
 	<category label="30038">
 		<setting label="30039" id="csfd-user" type="text" default="" />

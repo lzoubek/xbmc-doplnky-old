@@ -41,7 +41,7 @@ import scrapper
 BASE_URL='http://www.csfd.cz/'
 scrapper.__cache__ = __cache__
 scrapper.BASE_URL = BASE_URL
-import util,resolver,search
+import xbmcutil,util,resolver,search
 
 def _search_movie_cb(what):
 	print 'searching for movie '+what
@@ -96,7 +96,7 @@ def furl(url):
 def play(url):
 	stream,subs = resolve(url)
 	if stream:
-		util.reportUsage(__scriptid__,__scriptid__+'/play')
+		xbmcutil.reportUsage(__scriptid__,__scriptid__+'/play')
 		print 'Sending %s to player' % stream
 		li = xbmcgui.ListItem(path=stream,iconImage='DefaulVideo.png')
 		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
@@ -131,22 +131,22 @@ def download(url,name):
 		print 'downloading...'
 
 def root():
-	search.item({'s':'movie'},label=util.__lang__(30003)+' '+__language__(30017))
-	search.item({'s':'person'},label=util.__lang__(30003)+' '+__language__(30018))
-	util.add_dir(__language__(30041),{'fav':''},icon())
-	util.add_dir(__language__(30044),{'filmoteka':''},icon())
-	util.add_dir('Kino',{'kino':''},icon())
-	util.add_dir('Žebříčky',{'top':''},util.icon('top.png'))
-	util.add_dir('Blu-ray',{'dvd':'bluray'},icon())
-	util.add_dir('Premiérová DVD',{'dvd':'dvd_retail'},icon())
-	util.add_dir('Levná DVD v trafikách a časopisech',{'dvd':'dvd_lite'},icon())
-	util.add_dir('Tvůrci',{'artists':''},icon())
+	search.item({'s':'movie'},label=xbmcutil.__lang__(30003)+' '+__language__(30017))
+	search.item({'s':'person'},label=xbmcutil.__lang__(30003)+' '+__language__(30018))
+	xbmcutil.add_dir(__language__(30041),{'fav':''},icon())
+	xbmcutil.add_dir(__language__(30044),{'filmoteka':''},icon())
+	xbmcutil.add_dir('Kino',{'kino':''},icon())
+	xbmcutil.add_dir('Žebříčky',{'top':''},xbmcutil.icon('top.png'))
+	xbmcutil.add_dir('Blu-ray',{'dvd':'bluray'},icon())
+	xbmcutil.add_dir('Premiérová DVD',{'dvd':'dvd_retail'},icon())
+	xbmcutil.add_dir('Levná DVD v trafikách a časopisech',{'dvd':'dvd_lite'},icon())
+	xbmcutil.add_dir('Tvůrci',{'artists':''},icon())
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
 def add_person(name,info):
 	xbmc_info = scrapper.xbmc_info(info)
-	util.add_dir(name,{'person':furl(info['url'])},'DefaultArtist.png',infoLabels=xbmc_info)
+	xbmcutil.add_dir(name,{'person':furl(info['url'])},'DefaultArtist.png',infoLabels=xbmc_info)
 
 def add_item(name,info,showing=None):
 	xbmc_info = scrapper.xbmc_info(info)
@@ -155,7 +155,7 @@ def add_item(name,info,showing=None):
 	menuItems={__language__(30007):'Action(info)',__language__(30001):{'preload-refresh':''}}
 	if showing:
 		menuItems[__language__(30025)] = {'show-cinema':showing}
-	util.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems=menuItems)
+	xbmcutil.add_dir(name,{'item':furl(info['url'])},info['img'],infoLabels=xbmc_info,menuItems=menuItems)
 
 def add_items(items,showing={}):
 	for url,name in items:
@@ -198,7 +198,7 @@ def kino(params):
 		data = util.substr(data,'id=\"frmfilter-year','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			params['kino-year'] = m.group('value')
-			util.add_dir(
+			xbmcutil.add_dir(
 				m.group('name'),
 				params,
 			)
@@ -208,7 +208,7 @@ def kino(params):
 		data = util.substr(data,'id=\"frmfilter-country','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			params['kino-country'] = m.group('value')
-			util.add_dir(m.group('name'),params)
+			xbmcutil.add_dir(m.group('name'),params)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def kino_list(url):
@@ -242,21 +242,15 @@ def dvd_list(url):
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def add_addon_search(label,addon,info,action):
-	util.add_dir(__language__(label),{'search-plugin':'plugin://%s' % addon,'url':info['url'],'action':action},xbmcaddon.Addon(addon).getAddonInfo('icon'))
+	xbmcutil.add_dir(__language__(label),{'search-plugin':'plugin://%s' % addon,'url':info['url'],'action':action},xbmcaddon.Addon(addon).getAddonInfo('icon'))
 
 def item(params):
 	info = scrapper.get_info(params['item'])
 	xbmc_info = scrapper.xbmc_info(info)
 	page = util.request(info['trailers_url'],headers={'Referer':BASE_URL})
 	data = util.substr(page,'<label for=\"frmfilterSelectForm-filter\">','</select>')
-	util.add_dir(__language__(30007),params,info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
-	if __addon__.getSetting('search-integration') == 'true':
-		if __addon__.getSetting('search-integration-movie-library') == 'true':
-			add_addon_search(30006,'plugin.video.movie-library.cz',info,'search')
-		if __addon__.getSetting('search-integration-ulozto') == 'true':
-			add_addon_search(30003,'plugin.video.movie-library.cz',info,'search-ulozto')
-		if __addon__.getSetting('search-integration-bezvadata') == 'true':
-			add_addon_search(30004,'plugin.video.bezvadata.cz',info,'search')
+	xbmcutil.add_dir(__language__(30007),params,info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
+	add_addon_search(30006,'plugin.video.online-files',info,'search')
 	def_trailer = None
 	for m in re.finditer('<option value=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 		url  = info['url']+'/videa/-filtr-'+m.group('url')
@@ -265,7 +259,7 @@ def item(params):
 			info['trailer'] = trailer
 			scrapper.set_info(info)
 		xbmc_info['Title'] = '%s - %s' %(info['title'],m.group('name'))
-		util.add_video(m.group('name'),{'play':url},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
+		xbmcutil.add_video(m.group('name'),{'play':url},info['img'],infoLabels=xbmc_info,menuItems={__language__(30007):'Action(info)'})
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def person(params):
@@ -332,14 +326,14 @@ def top(params):
 		page = util.request(furl('zebricky/'))
 		data = util.substr(page,'<div class=\"navigation','</div>')
 			
-		util.add_dir(
+		xbmcutil.add_dir(
 			'Nejlepší filmy',
 			{'top':'','top-select':'zebricky/nejlepsi-filmy/'},
 			icon(),
 			menuItems={__language__(30001):{'preload':'','top':'','top-select':'zebricky/nejlepsi-filmy/'}},
 		)
 		for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
-			util.add_dir(
+			xbmcutil.add_dir(
 				m.group('name'),
 				{'top':'','top-select':m.group('url')},
 				icon(),
@@ -354,13 +348,13 @@ def dvd(params):
 		data = util.substr(page,'id=\"frmfilter-year','</select>')
 		for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 			params['year'] = m.group('value')
-			util.add_dir(m.group('name'),params)
+			xbmcutil.add_dir(m.group('name'),params)
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 def artists(params):
 	if not 'type' in params.keys():
 		page = util.request(furl('tvurci/statistiky'))
 		for m in re.finditer('<div id=\"(?P<type>[^\"]+)[^<]+<h2 class=\"header\">(?P<name>[^<]+)',page,re.DOTALL|re.IGNORECASE):
-			util.add_dir(m.group('name'),{'artists':'','type':m.group('type')},icon())
+			xbmcutil.add_dir(m.group('name'),{'artists':'','type':m.group('type')},icon())
 		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	typ = params['type']
 	page = util.request(furl('tvurci/statistiky/?expand='+typ))
@@ -374,7 +368,7 @@ def artists(params):
 			for name in results:
 				params['subtype'] = str(index)
 				index+=1
-				util.add_dir(name,params,icon())
+				xbmcutil.add_dir(name,params,icon())
 			return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 		else:
 			for m in re.finditer('<li[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>(?P<data>[^<]+)',data,re.DOTALL|re.IGNORECASE):
@@ -481,15 +475,13 @@ def filmoteka(p):
 		if data:
 			userid = get_userid(data)
 			if userid:
-				print userid
 				page = util.request(furl(userid+'filmoteka'))
 				data = util.substr(page,'<select name=\"filter','</select>')
 				for m in re.finditer('<option value=\"(?P<value>[^\"]+)[^>]+>(?P<name>[^<]+)',data,re.DOTALL|re.IGNORECASE):
 					p['filmoteka'] = userid+'filmoteka/filtr-'+m.group('value')
-					util.add_dir(m.group('name'),p)
+					xbmcutil.add_dir(m.group('name'),p)
 				xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	else:
-		print p['filmoteka']
 		page = login(p['filmoteka'])
 		data = util.substr(page,'<table class=\"ui-table-list','</table')
 		results = []
@@ -505,13 +497,13 @@ def favourites(p):
 		if data:
 			userid = get_userid(data)
 			if userid:
-				util.add_dir('Oblíbené filmy',{'fav':userid+'oblibene-filmy/'},icon())
-				util.add_dir('Oblíbené seriály',{'fav':userid+'oblibene-serialy/'},icon())
-				util.add_dir('Oblíbené pořady',{'fav':userid+'oblibene-porady/'},icon())
-				util.add_dir('Oblíbení herci',{'fav':userid+'oblibeni-herci/'},icon())
-				util.add_dir('Oblíbené herečky',{'fav':userid+'oblibene-herecky/'},icon())
-				util.add_dir('Oblíbení režiséři',{'fav':userid+'oblibeni-reziseri/'},icon())
-				util.add_dir('Oblíbení skladatelé',{'fav':userid+'oblibeni-skladatele/'},icon())
+				xbmcutil.add_dir('Oblíbené filmy',{'fav':userid+'oblibene-filmy/'},icon())
+				xbmcutil.add_dir('Oblíbené seriály',{'fav':userid+'oblibene-serialy/'},icon())
+				xbmcutil.add_dir('Oblíbené pořady',{'fav':userid+'oblibene-porady/'},icon())
+				xbmcutil.add_dir('Oblíbení herci',{'fav':userid+'oblibeni-herci/'},icon())
+				xbmcutil.add_dir('Oblíbené herečky',{'fav':userid+'oblibene-herecky/'},icon())
+				xbmcutil.add_dir('Oblíbení režiséři',{'fav':userid+'oblibeni-reziseri/'},icon())
+				xbmcutil.add_dir('Oblíbení skladatelé',{'fav':userid+'oblibeni-skladatele/'},icon())
 		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 	data = login(p['fav'])
 	if not data:
