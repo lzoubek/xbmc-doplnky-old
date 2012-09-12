@@ -1,3 +1,6 @@
+[B]1.3.0:[/B]
+- introduced ContentProvider API
+- util.py splitted to util.py and xbmcutil.py (so we're now able to run tests in non-xbmc environment)
 [B]1.2.8:[/B]
 - added nahnoji and moevideo resolvers by Ivo Brhel
 - fixed putlocker (by Ivo), videozer & videobb resolvers
