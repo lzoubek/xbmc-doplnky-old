@@ -148,14 +148,19 @@ class XBMContentProvider(object):
 	def render_dir(self,item):
 		params = self.params()
 		params.update({'list':item['url']})
-		xbmcutil.add_dir(item['title'],params,menuItems={xbmc.getLocalizedString(117):menuItems})
+		xbmcutil.add_dir(item['title'],params)
 
 	def render_video(self,item):
 		params = self.params()
 		params.update({'play':item['url']})
 		downparams = self.params()
 		downparams.update({'name':item['title'],'down':item['url']})
-		title = '%s (%s)' % (item['title'],item['size'])
+		def_item = self.provider.video_item()
+		if item['size'] == def_item['size']:
+			item['size'] = ''
+		else:
+			item['size'] = ' (%s)' % item['size']
+		title = '%s%s' % (item['title'],item['size'])
 		xbmcutil.add_video(title,
 			params,
 			item['img'],
@@ -166,6 +171,17 @@ class XBMContentProvider(object):
 	def categories(self):
 		self.list(self.provider.categories(keyword))
 		return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+class XBMCMultiResolverContentProvider(XBMContentProvider):
+
+	def resolve(self,url):
+		def select_cb(resolved):
+			dialog = xbmcgui.Dialog()
+			ret = dialog.select(xbmcutil.__lang__(30005), ['%s [%s]'%(r['title'],r['quality']) for r in resolved])
+			if ret >= 0:
+				return resolved[ret]
+
+		return self.provider.resolve({'url':url},select_cb=select_cb)
 
 class XBMCLoginRequiredContentProvider(XBMContentProvider):
 

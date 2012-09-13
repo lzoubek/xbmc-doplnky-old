@@ -97,7 +97,7 @@ class ContentProvider(object):
 		'''
 		return []
 
-	def resolve(self,item,captcha_cb=None):
+	def resolve(self,item,captcha_cb=None,select_cb=None):
 		'''
 		Resolves given video item  to a downloable/playable file/stream URL
 	

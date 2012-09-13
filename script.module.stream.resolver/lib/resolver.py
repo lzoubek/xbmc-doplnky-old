@@ -19,7 +19,6 @@
 # */
 
 import sys,os,util,re,traceback
-import xbmcgui,xbmc
 
 # dummy implementation of 2nd generation of resolving
 # this will be injected to each resolver, that does not have this method yet
@@ -112,7 +111,7 @@ def can_resolve(url):
 # @return exactly 1 dictionary with keys: name,url,quality,surl
 # @return None if at least 1 resoler failed to resolve and nothing else has been found
 # @return [] if no resolvable URLs or no resolvers for URL has been found
-def findstreams(addon,data,regexes):
+def findstreams(data,regexes):
 	resolved = []
 	# keep list of found urls to aviod having duplicates
 	urls = []
@@ -134,16 +133,8 @@ def findstreams(addon,data,regexes):
 		return {}
 	resolved = sorted(resolved,key=lambda i:i['quality'])
 	resolved = sorted(resolved,key=lambda i:len(i['quality']))
-	resolved = _filter_by_quality(resolved,addon.getSetting('quality') or '0')
 	resolved.reverse()
-	if len(resolved) > 1:
-				dialog = xbmcgui.Dialog()
-				ret = dialog.select(util.__lang__(30005), ['%s [%s]'%(r['name'],r['quality']) for r in resolved])
-				if ret >= 0:
-					return resolved[ret]
-				else:	
-					return {}
-	return resolved[0]
+	return resolved
 
 q_map = {'3':'720p','4':'480p','5':'360p'}
 
@@ -193,7 +184,7 @@ def _filter_by_quality(resolved,q):
 # @return array of dictionaries with keys: name,url,quality,surl
 # @return None if at least 1 resoler failed to resolve and nothing else has been found
 # @return [] if no resolvable URLs or no resolvers for URL has been found
-def findstreams_multi(addon,data,regexes):
+def findstreams_multi(data,regexes):
 	resolved = []
 	# keep list of found urls to aviod having duplicates
 	urls = []
@@ -215,7 +206,7 @@ def findstreams_multi(addon,data,regexes):
 		return []
 	resolved = sorted(resolved,key=lambda i:i['quality'])
 	resolved = sorted(resolved,key=lambda i:len(i['quality']))
-	resolved2 = _filter_by_quality(resolved,addon.getSetting('quality') or '0')
+	resolved2 = resolved
 	resolved2.reverse()
 	qualities = {}
 	for item in resolved2:
@@ -226,13 +217,4 @@ def findstreams_multi(addon,data,regexes):
 	# now .. we must sort items to be in same order as they were found on page
 	for q in qualities.keys():
 		qualities[q] = sorted(qualities[q],key=lambda i:resolved.index(i))
-	if len(qualities) > 1:
-				dialog = xbmcgui.Dialog()
-				ret = dialog.select(util.__lang__(30005), ['%s (%s)'%(q,xbmc.getLocalizedString(282) % len(qualities[q])) for q in qualities.keys()])
-				if ret >= 0:
-					for index,key in enumerate(qualities.keys()):
-						if index == ret:
-							return qualities[key]
-				else:	
-					return []
-	return qualities[qualities.keys()[0]]
+	return qualities
