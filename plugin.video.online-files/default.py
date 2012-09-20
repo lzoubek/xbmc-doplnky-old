@@ -88,12 +88,18 @@ if __settings__('hellspy_enabled') == 'true':
 	extra.update(settings)
 	providers[p.name] = xbmcprovider.XBMCLoginRequiredContentProvider(p,extra,__addon__)
 
+def icon(provider):
+	icon_file = os.path.join(__addon__.getAddonInfo('path'),'resources','icons',provider+'.png')
+	print icon_file
+	if not os.path.isfile(icon_file):
+		return 'DefaultFolder.png'
+	return icon_file
 
 def root():
 	search.item()
 	xbmcutil.add_local_dir(xbmcutil.__lang__(30006),settings['downloads'],xbmcutil.icon('download.png'))
 	for provider in providers.keys():
-		xbmcutil.add_dir(provider,{'cp':provider})
+		xbmcutil.add_dir(provider,{'cp':provider},icon(provider))
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 params = util.params()
