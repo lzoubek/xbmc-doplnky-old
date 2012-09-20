@@ -1,3 +1,6 @@
+[B]1.0.9:[/B]
+- migrace na content.resolver 1.3.0
+- odebrana moznost pridavat a odebirat tagy
 [B]1.0.8:[/B]
 - přidány další výchozí tagy #91
 [B]1.0.7:[/B]

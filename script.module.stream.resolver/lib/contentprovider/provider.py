@@ -116,5 +116,5 @@ class ContentProvider(object):
 		'''
 		if url.startswith('http'):
 			return url
-		return self.base_url+url.lstrip('/')
+		return self.base_url+url.lstrip('./')
 

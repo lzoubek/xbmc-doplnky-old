@@ -114,6 +114,8 @@ class XBMContentProvider(object):
 		stream = self.resolve(url)
 		if stream:
 			xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
+			if not stream['subs'] == '':
+					util.save_to_file(stream['subs'],os.path.join(downloads,name+'.srt'))
 			xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name))
 	
 	def play(self,url):
@@ -122,7 +124,8 @@ class XBMContentProvider(object):
 			xbmcutil.reportUsage(self.addon_id,self.addon_id+'/play')
 			print 'Sending %s to player' % stream['url']
 			li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
-			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)	
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+			xbmcutil.load_subtitles(stream['subs'])
 
 	def resolve(self,url):
 		return self.provider.resolve({'url':url})
@@ -142,6 +145,12 @@ class XBMContentProvider(object):
 			elif item['type'] == 'prev':
 				params.update({'list':item['url']})
 				xbmcutil.add_dir(xbmcutil.__lang__(30008),params,xbmcutil.icon('prev.png'))
+			elif item['type'] == 'new':
+				params.update({'list':item['url']})
+				xbmcutil.add_dir(xbmcutil.__lang__(30012),params,xbmcutil.icon('new.png'))
+			elif item['type'] == 'top':
+				params.update({'list':item['url']})
+				xbmcutil.add_dir(xbmcutil.__lang__(30013),params,xbmcutil.icon('top.png'))
 			elif item['type'] == 'video':
 				self.render_video(item)
 
