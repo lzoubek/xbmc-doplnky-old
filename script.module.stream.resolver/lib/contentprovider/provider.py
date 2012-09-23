@@ -118,3 +118,16 @@ class ContentProvider(object):
 			return url
 		return self.base_url+url.lstrip('./')
 
+	def _filter(self,result,item):
+		'''
+		Applies filter, if filter passes `item` is appended to `result`
+		
+		Args:
+			result (array) : target array
+			item (obj) : item that is being applied filter on
+		'''
+		if self.filter:
+			if self.filter(item):
+				result.append(item)
+		else:
+			result.append(item)

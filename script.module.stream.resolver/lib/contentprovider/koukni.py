@@ -63,11 +63,7 @@ class KoukniContentProvider(ContentProvider):
 			item['title'] = m.group('name')
 			item['img'] = self._url(m.group('logo'))
 			item['url'] = m.group('url')
-			if self.filter:
-				if self.filter(item):
-					result.append(item)
-			else:
-				result.append(item)
+			self._filter(result,item)
 		navurl = url
 		index = url.find('?')
 		if index > 0:

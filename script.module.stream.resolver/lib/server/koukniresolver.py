@@ -19,7 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,util,urllib2
+import re,util,urllib2,traceback
 __name__ = 'koukni.cz'
 def supports(url):
 	return not _regex(url) == None
@@ -36,7 +36,11 @@ def url(url):
 def resolve(url):
 	m = _regex(url)
 	if not m == None:
-		iframe = _iframe(url)
+		try:
+			iframe = _iframe(url)
+		except:
+			traceback.print_exc()
+			return
 		if iframe:
 			return iframe
 		else:
