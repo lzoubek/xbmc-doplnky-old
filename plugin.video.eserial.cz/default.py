@@ -35,7 +35,7 @@ class XBMCEserialContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
 	def search(self,keyword):
 		return 
 
-settings = {'downloads':__addon__.getSetting('downloads')}
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
 params = util.params()
 if params=={}:

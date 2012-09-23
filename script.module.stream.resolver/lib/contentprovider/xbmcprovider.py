@@ -18,7 +18,7 @@
 # *
 # */
 
-import sys,os,re,traceback,util,xbmcutil
+import sys,os,re,traceback,util,xbmcutil,resolver
 import xbmcplugin,xbmc,xbmcgui
 
 class XBMContentProvider(object):
@@ -42,7 +42,7 @@ class XBMContentProvider(object):
 	def check_setting_keys(self,keys):
 		for key in keys:
 			if not key in self.settings.keys():
-				raise Exception('Invalid settings passed - '+key+' setting is required');
+				raise Exception('Invalid settings passed - ['+key+'] setting is required');
 
 
 	def params(self):
@@ -157,7 +157,10 @@ class XBMContentProvider(object):
 	def render_dir(self,item):
 		params = self.params()
 		params.update({'list':item['url']})
-		xbmcutil.add_dir(item['title'],params)
+		title = item['title']
+		if title.find('$') == 0:
+			title = self.addon.getLocalizedString(int(title[1:]))
+		xbmcutil.add_dir(title,params)
 
 	def render_video(self,item):
 		params = self.params()
@@ -183,8 +186,15 @@ class XBMContentProvider(object):
 
 class XBMCMultiResolverContentProvider(XBMContentProvider):
 
+	def __init__(self,provider,settings,addon):
+		XBMContentProvider.__init__(self,provider,settings,addon)
+		self.check_setting_keys(['quality'])
+
 	def resolve(self,url):
 		def select_cb(resolved):
+			resolved = resolver.filter_by_quality(resolved,self.settings['quality'] or '0')
+			if len(resolved) == 1:
+				return resolved[0]
 			dialog = xbmcgui.Dialog()
 			ret = dialog.select(xbmcutil.__lang__(30005), ['%s [%s]'%(r['title'],r['quality']) for r in resolved])
 			if ret >= 0:

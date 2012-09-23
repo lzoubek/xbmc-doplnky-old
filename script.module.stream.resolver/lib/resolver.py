@@ -138,15 +138,14 @@ def findstreams(data,regexes):
 
 q_map = {'3':'720p','4':'480p','5':'360p'}
 
-def _filter_by_quality(resolved,q):
+def filter_by_quality(resolved,q):
 	util.info('filtering by quality setting '+q)
 	if q == '0':
-		# ask user to select
 		return resolved
 	sources = {}
 	ret = []
 	for item in resolved:
-		if item['name'] in sources.keys():
+		if item['surl'] in sources.keys():
 			sources[item['surl']].append(item)
 		else:
 			sources[item['surl']] = [item]
@@ -168,7 +167,6 @@ def _filter_by_quality(resolved,q):
 					ret.append(item)
 					added = True
 			if not added:
-				# stream of desired quality was not found - we add best quality anyway
 				util.debug('Desired quality %s not found, adding best found'%quality)
 				ret.append(sources[key][-1])
 	return ret

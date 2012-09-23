@@ -19,102 +19,22 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
+sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
+import os
+import xbmcaddon,xbmc
 
-import re,os,urllib,urllib2,shutil,traceback
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin,util,resolver,search
+import util,xbmcprovider,nastojaka
 
 __scriptid__   = 'plugin.video.nastojaka.cz'
 __scriptname__ = 'nastojaka.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
-BASE_URL='http://www.nastojaka.cz/'
 
-def _search_cb(what):
-	data = util.post(BASE_URL+'vyhledavani',{'btnsearch':'OK','txtsearch':what});
-	return show(data)
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
-def furl(url):
-	if url.startswith('http'):
-		return url
-	url = url.lstrip('./')
-	return BASE_URL+url
+params = util.params()
+if params=={}:
+        xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+xbmcprovider.XBMCMultiResolverContentProvider(nastojaka.NastojakaContentProvider(),settings,__addon__).run(params)
 
-def icon():
-	return os.path.join(__addon__.getAddonInfo('path'),'icon.png')
-
-def root():
-	search.item()
-	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'),menuItems={__addon__.getLocalizedString(30005):{'tag-add':''}})
-	util.add_dir(__language__(30005),{'show':'scenky/?sort=date'},icon())
-	util.add_dir(__language__(30006),{'show':'scenky/?sort=performer'},icon())
-	util.add_dir(__language__(30007),{'show':'scenky/?sort=rating'},icon())
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def list(url):
-	return show(util.request(furl(url)))
-
-def show(page):
-	data = util.substr(page,'<div id=\"search','<hr>')
-	for m in re.finditer('<div.+?class=\"scene[^>]*>.+?<img src="(?P<img>[^\"]+)\" alt=\"(?P<name>[^\"]+).+?<div class=\"sc-name\">(?P<author>[^<]+).+?<a href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL ):
-		name = "%s (%s)" % (m.group('name'),m.group('author'))
-		util.add_video(
-			name,
-			{'play':m.group('url')},
-			logo=furl(m.group('img')),
-			infoLabels={'Title':name},
-			menuItems={xbmc.getLocalizedString(33003):{'name':name,'download':m.group('url')}}
-			)
-	data = util.substr(page,'class=\"pages\">','</div>')
-	next = re.search('<a href=\"(?P<url>[^\"]+)\"[^<]+<img src=\"/images/page-right.gif',data)
-	prev = re.search('<a href=\"(?P<url>[^\"]+)\"[^<]+<img src=\"/images/page-left.gif',data)
-	if prev:
-		util.add_dir(__language__(30008),{'show':prev.group('url')},util.icon('prev.png'))
-	if next:
-		util.add_dir(__language__(30009),{'show':next.group('url')},util.icon('next.png'))
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def play(url):
-	stream = resolve(url)
-	if stream:
-		util.reportUsage(__scriptid__,__scriptid__+'/play')
-		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
-		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-		util.load_subtitles(stream['subs'])
-
-def resolve(url):
-	util.init_urllib()
-	data = util.request(furl(url))	
-	data = util.substr(data,'<div class=\"video','</div>')
-	resolved = resolver.findstreams(__addon__,data,['<embed( )src=\"(?P<url>[^\"]+)'])
-	print resolved
-	if resolved == None:
-		xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
-		return
-	if not resolved == {}:
-		return resolved
-	xbmcgui.Dialog().ok(__scriptname__,__language__(30001))
-
-def download(url,name):
-	downloads = __addon__.getSetting('downloads')
-	if '' == downloads:
-		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
-		return
-	stream = resolve(url)
-	if stream:
-		name+='.mp4'
-		util.reportUsage(__scriptid__,__scriptid__+'/download')
-		util.download(__addon__,name,stream['url'],os.path.join(downloads,name))
-
-p = util.params()
-if p=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-	root()
-if 'show' in p.keys():
-	list(p['show'])
-if 'play' in p.keys():
-	play(p['play'])
-if 'download' in p.keys():
-	download(p['download'],p['name'])
-search.main(__addon__,'search_history',p,_search_cb)
