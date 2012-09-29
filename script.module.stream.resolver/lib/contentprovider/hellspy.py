@@ -49,8 +49,32 @@ class HellspyContentProvider(ContentProvider):
 					return True
 		return False
 
-		
+	def list_favourites(self,url):
+		url = self._url(url)
+		page = util.request(url)
+		data = util.substr(page,'<div class=\"file-list file-list-vertical','<div id=\"layout-push')
+		result = []
+		for m in re.finditer('<div class=\"file-entry.+?<div class="preview.+?<div class=\"data.+?</div>',data, re.IGNORECASE|re.DOTALL):
+			entry = m.group(0)
+			item = self.video_item()
+			murl = re.search('<[hH]3><a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',entry)
+			item['url'] = murl.group('url')
+			item['title'] = murl.group('name')
+			mimg = re.search('<img src=\"(?P<img>[^\"]+)',entry)
+			if mimg:	
+				item['img'] = mimg.group('img')
+			msize = re.search('<span class=\"file-size[^>]+>(?P<size>[^<]+)',entry)
+			if msize:
+				item['size'] = msize.group('size').strip()
+			mtime = re.search('<span class=\"duration[^>]+>(?P<time>[^<]+)',entry)
+			if mtime:
+				item['length'] = mtime.group('time').strip()
+			self._filter(result,item)
+		return result
+
 	def list(self,url,filter=None):
+		if url.find('ucet/favourites') >= 0 and self.login():
+			return self.list_favourites(url)
 		url = self._url(url)
 		page = util.request(url)
 		data = util.substr(page,'<div class=\"file-list file-list-horizontal','<div id=\"push')
@@ -70,11 +94,7 @@ class HellspyContentProvider(ContentProvider):
 			mtime = re.search('<span class=\"duration[^>]+>(?P<time>[^<]+)',entry)
 			if mtime:
 				item['length'] = mtime.group('time').strip()
-			if self.filter:
-				if self.filter(item):
-					result.append(item)
-			else:
-				result.append(item)
+			self._filter(result,item)
 		# page navigation
 		data = util.substr(page,'<div class=\"paginator','</div')
 		mprev = re.search('<li class=\"prev[^<]+<a href=\"(?P<url>[^\"]+)',data)
@@ -92,7 +112,23 @@ class HellspyContentProvider(ContentProvider):
 		return result
 
 	def categories(self):
-		return []
+		result = []
+
+		item = self.dir_item()
+		item['type'] = 'nejstahovanejsi-soubory'
+		item['url'] = 'nejstahovanejsi-soubory'
+		result.append(item)
+
+		item = self.dir_item()
+		item['type'] = 'currentdownloads'
+		item['url'] = 'currentdownloads'
+		result.append(item)
+		
+		item = self.dir_item()
+		item['type'] = 'favourites'
+		item['url'] = 'ucet/favourites'
+		result.append(item)
+		return result
 
 	def resolve(self,item,captcha_cb=None):
 		item = item.copy()
@@ -112,3 +148,15 @@ class HellspyContentProvider(ContentProvider):
 			item['url'] = m.group('url')
 			item['surl'] = url
 			return item
+
+	def to_downloads(self,url):
+		if not self.login():
+			util.error('[hellspy] login failed, unable to add to downloads')
+		util.info('adding to downloads')
+		try:
+			util.request(self._url(url+'&do=downloadControl-favourite'))
+		except urllib2.HTTPError:
+			traceback.print_exc()
+			util.error('[hellspy] failed to add to downloads')
+			return
+		util.info('added, DONE')

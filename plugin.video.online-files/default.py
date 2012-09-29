@@ -57,6 +57,30 @@ def bezvadata_filter(item):
 	return True
 
 
+class XBMCHellspyContentProvider(xbmcprovider.XBMCLoginRequiredContentProvider):
+
+	def render_default(self,item):
+		params = self.params()
+		if item['type'] == 'nejstahovanejsi-soubory':
+			params.update({'list':item['url']})
+			xbmcutil.add_dir(__language__(30053),params,xbmcutil.icon('top.png'))
+		if item['type'] == 'currentdownloads':
+			params.update({'list':item['url']})
+			xbmcutil.add_dir(__language__(30054),params,xbmcutil.icon('top.png'))
+		if item['type'] == 'favourites':
+			params.update({'list':item['url']})
+			xbmcutil.add_dir(__language__(30055),params,xbmcutil.icon('top.png'))
+
+	def render_video(self,item):
+		params = self.params()
+		params.update({'to-downloads':item['url']})
+		item['menu'] = {__language__(30056):params}
+		return xbmcprovider.XBMCLoginRequiredContentProvider.render_video(self,item)
+
+	def run_custom(self,params):
+		if 'to-downloads' in params.keys():
+			self.provider.to_downloads(params['to-downloads'])
+
 settings = {
 	'downloads':__settings__('downloads'),
 	'download-notify':__settings__('download-notify'),
@@ -86,7 +110,7 @@ if __settings__('hellspy_enabled') == 'true':
 			'keep-searches':__settings__('hellspy_keep-searches')
 	}
 	extra.update(settings)
-	providers[p.name] = xbmcprovider.XBMCLoginRequiredContentProvider(p,extra,__addon__)
+	providers[p.name] = XBMCHellspyContentProvider(p,extra,__addon__)
 
 def icon(provider):
 	icon_file = os.path.join(__addon__.getAddonInfo('path'),'resources','icons',provider+'.png')

@@ -2,8 +2,17 @@
 <strings>
 	<string id="30000">Size of search history</string>
 	<string id="30001">Video is not available, check[CR]whether it works using web page.</string>
-	<string id="30011">Previous</string>
-	<string id="30012">Next</string>
+	<string id="30002">Enable service</string>
+	<string id="30003">Download using VIP account</string>
+	<string id="30004">Ask</string>
+	<string id="30005">Always</string>
+	<string id="30006">Never</string>
+	<string id="30007">Username</string>
+	<string id="30008">Password</string>
+	<string id="30009">bezvadata.cz</string>
+	<string id="30010">ulozto.cz</string>
+	<string id="30011">hellspy.cz</string>
+	<string id="30012">Would you like to use VIP account to get this file?</string>
 	<string id="30030">Downloads</string>
 	<string id="30031">Please setup downloads folder</string>
 	<string id="30032">Notify when downloading</string>
@@ -15,5 +24,10 @@
 
 	<string id="30050">Show adult only content</string>
 	<string id="30051">Do not show files with extensions</string>
+	<string id="30052">General</string>
+	<string id="30053">Most Downloaded</string>
+	<string id="30054">Downloading now</string>
+	<string id="30055">Saved to download later</string>
+	<string id="30056">Add to later downloads</string>
 	<string id="31000">Usage of plugin is tracked whenever you play or download video. We do NOT track what has been played</string>
 </strings>

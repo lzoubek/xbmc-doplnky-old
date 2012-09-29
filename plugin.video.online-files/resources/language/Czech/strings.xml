@@ -24,6 +24,10 @@
 	<string id="30050">Povolit zobrazování 18+ obsahu</string>
 	<string id="30051">Nezobrazovat soubory s příponou</string>
 	<string id="30052">Obecné</string>
+	<string id="30053">Nejstahovanější</string>
+	<string id="30054">Právě se stahuje</string>
+	<string id="30055">Ke stažení</string>
+	<string id="30056">Přidat ke stažení</string>
 
 	<string id="31000">Data o použití jsou zaslána v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem. Není odesílána informace o tom, co přehráváte.</string>
 </strings>

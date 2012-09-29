@@ -65,6 +65,8 @@ class XBMContentProvider(object):
 			return self.do_search(params['search'])
 		if 'search-remove' in params.keys():
 			return self.search_remove(params['search-remove'])
+		if self.run_custom:
+			return self.run_custom(params)
 
 	def search_list(self):
 		params = self.params()
@@ -128,7 +130,9 @@ class XBMContentProvider(object):
 			xbmcutil.load_subtitles(stream['subs'])
 
 	def resolve(self,url):
-		return self.provider.resolve({'url':url})
+		item = self.provider.video_item()
+		item.update({'url':url})
+		return self.provider.resolve(item)
 
 	def search(self,keyword):
 		self.list(self.provider.search(keyword))
@@ -153,6 +157,11 @@ class XBMContentProvider(object):
 				xbmcutil.add_dir(xbmcutil.__lang__(30013),params,xbmcutil.icon('top.png'))
 			elif item['type'] == 'video':
 				self.render_video(item)
+			else:
+				self.render_default(item)
+
+	def render_default(self,item):
+		raise Exception("Unable to render item "+item)
 
 	def render_dir(self,item):
 		params = self.params()
@@ -173,11 +182,14 @@ class XBMContentProvider(object):
 		else:
 			item['size'] = ' (%s)' % item['size']
 		title = '%s%s' % (item['title'],item['size'])
+		menuItems = {xbmc.getLocalizedString(33003):downparams}
+		if 'menu' in item.keys():
+			menuItems.update(item['menu'])
 		xbmcutil.add_video(title,
 			params,
 			item['img'],
 			infoLabels={'Title':item['title']},
-			menuItems={xbmc.getLocalizedString(33003):downparams}
+			menuItems=menuItems
 		)	
 	
 	def categories(self):
