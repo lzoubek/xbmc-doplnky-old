@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #/*
-# *      Copyright (C) 2011 Libor Zoubek
+# *      Copyright (C) 2012 Libor Zoubek
 # *
 # *
 # *  This Program is free software; you can redistribute it and/or modify

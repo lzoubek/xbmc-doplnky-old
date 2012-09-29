@@ -69,12 +69,25 @@ def _create_plugin_url(params,plugin=sys.argv[0]):
 
 def save_to_file(url,file):
 	try:
+		return save_data_to_file(request(url))
+	except:
+		traceback.print_exc()
+
+def save_data_to_file(data,file):
+	try:
 		f = open(file,'w')
-		f.write(request(url))
+		f.write(data)
 		f.close()
 		return True
 	except:
 		traceback.print_exc()
+def read_file(file):
+	if not os.path.exists(file):
+		return ''
+	f = open(file,'r')
+	data = f.read()
+	f.close()
+	return data
 
 def _substitute_entity(match):
         ent = match.group(3)

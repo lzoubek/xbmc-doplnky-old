@@ -26,7 +26,7 @@ class ContentProvider(object):
 	and must be testable without XBMC runtime. This is a basic/dummy implementation.
 	'''	
 	
-	def __init__(self,name,base_url,username,password,filter):
+	def __init__(self,name,base_url,username,password,filter,tmp_dir='.'):
 		'''
 		ContentProvider constructor
 		Args:
@@ -35,12 +35,14 @@ class ContentProvider(object):
 			username (str): login username
 			password (str): login password
 			filter (func{item}): function to filter results returned by search or list methods
+			tmp_dir (str): temporary dir where provider can store/cache files
 		'''
 		self.name=name
 		self.username=username
 		self.password=password
 		self.base_url=base_url
 		self.filter = filter
+		self.tmp_dir = tmp_dir
 
 	def capabilities(self):
 		'''

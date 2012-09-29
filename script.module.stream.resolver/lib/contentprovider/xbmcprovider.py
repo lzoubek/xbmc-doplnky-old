@@ -167,9 +167,18 @@ class XBMContentProvider(object):
 		params = self.params()
 		params.update({'list':item['url']})
 		title = item['title']
+		img = None
+		if 'img' in item.keys():
+			img = item['img']
 		if title.find('$') == 0:
 			title = self.addon.getLocalizedString(int(title[1:]))
-		xbmcutil.add_dir(title,params)
+		xbmcutil.add_dir(title,params,img,infoLabels=self._extract_infolabels(item))
+
+	def _extract_infolabels(self,item):
+		infoLabels = {}
+		if 'plot' in item.keys():
+			infoLabels['plot'] = item['plot']
+		return infoLabels
 
 	def render_video(self,item):
 		params = self.params()

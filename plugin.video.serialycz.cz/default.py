@@ -19,16 +19,18 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,os
-import xbmcaddon,util
-
+import os
+import xbmc,xbmcaddon,util,xbmcprovider
 __scriptid__   = 'plugin.video.serialycz.cz'
 __scriptname__ = 'serialycz.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-
 import serialy
-serialy.__scriptid__ = __scriptid__
-serialy.handle(util.params())
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
+
+params = util.params()
+if params=={}:
+	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+xbmcprovider.XBMCMultiResolverContentProvider(serialy.SerialyczContentProvider(tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile'))),settings,__addon__).run(params)
