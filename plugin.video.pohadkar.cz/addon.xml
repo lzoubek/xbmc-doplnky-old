@@ -18,5 +18,6 @@
     <description lang="en">Watch online tales mostly in czech language on pohadkar.cz</description>
     <description lang="cs">Sledujte online pohádky ze servru pohádkář.cz. Ideální pro zabavení dětí.</description>
     <platform>all</platform>
+	<broken>docasne odstaven</broken>
   </extension>
 </addon>

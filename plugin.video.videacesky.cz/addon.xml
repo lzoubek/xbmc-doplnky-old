@@ -18,5 +18,6 @@
     <description lang="en">Watch content from videacesky.cz</description>
     <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
     <platform>all</platform>
+	<broken>docasne odstaven</broken>
   </extension>
 </addon>

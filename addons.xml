@@ -105,6 +105,7 @@
     <description lang="en">Watch online tales mostly in czech language on pohadkar.cz</description>
     <description lang="cs">Sledujte online pohádky ze servru pohádkář.cz. Ideální pro zabavení dětí.</description>
     <platform>all</platform>
+	<broken>docasne odstaven</broken>
   </extension>
 </addon>
 
@@ -171,6 +172,7 @@
     <description lang="en">Watch content from videacesky.cz</description>
     <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
     <platform>all</platform>
+	<broken>docasne odstaven</broken>
   </extension>
 </addon>
 
