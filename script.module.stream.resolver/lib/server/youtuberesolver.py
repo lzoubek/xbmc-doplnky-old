@@ -59,14 +59,13 @@ def resolve(url):
 		request = urllib.urlencode({'video_id':m.group('id'),'el':'embedded','asv':'3','hl':'en_US','eurl':__eurl__})
 		data = util.request('http://www.youtube.com/get_video_info?%s' % request)
 		data = urllib.unquote(util.decode_html(data))
-		
 		if data.find('status=fail') > -1:
 			util.error('youtube resolver failed: '+data+' videoid:'+m.group('id'))
 		else:
 			# to avoid returning more than 1 url of same quality
 			qualities = []
 			resolved = []
-			for n in re.finditer('(=|,|\|)url=(?P<url>.+?)(,|\||fallback_host).+?itag=(?P<q>\d+)',data):
+			for n in re.finditer('itag=(?P<q>\d+)\&url=(?P<url>.+?)\&quality',data):
 				stream = urllib.unquote(n.group('url'))
 				quality = '???'
 				if n.group('q') in fmt_value.keys():
