@@ -221,7 +221,9 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
 			if ret >= 0:
 				return resolved[ret]
 
-		return self.provider.resolve({'url':url},select_cb=select_cb)
+		item = self.provider.video_item()
+		item.update({'url':url})
+		return self.provider.resolve(item,select_cb=select_cb)
 
 class XBMCLoginRequiredContentProvider(XBMContentProvider):
 
@@ -258,6 +260,8 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
 		return self.settings['vip'] == '1'
 
 	def resolve(self,url):
+		item = self.provider.video_item()
+		item.update({'url':url})
 		if not self.ask_for_account_type():
 			# set user/pass to null - user does not want to use VIP at this time
 			self.provider.username = None
@@ -266,7 +270,7 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
 			if not self.provider.login():
 				xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
 				return
-		return self.provider.resolve({'url':url},captcha_cb=self.ask_for_captcha)
+		return self.provider.resolve(item,captcha_cb=self.ask_for_captcha)
 
 class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
 
