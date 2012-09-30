@@ -20,87 +20,20 @@
 # *
 # */
 
-import urllib2,re,os,random
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin
-import util,resolver
+import os
+import xbmcaddon
+import util,xbmcprovider
 
 __scriptid__   = 'plugin.video.zkouknito.cz'
 __scriptname__ = 'zkouknito.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
-BASE_URL='http://zkouknito.cz/'
+sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
+import zkouknito
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
-def list_categories():
-	data = util.substr(util.request(BASE_URL+'videa'),'<ul class=\"category','</ul')
-	util.add_dir('Online TV',{'cat':'http://www.zkouknito.cz/online-tv'})
-	pattern='<a href=\"(?P<link>[^\"]+)[^>]+>(?P<cat>[^<]+)</a>'	
-	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		if m.group('cat').find('18+') > 0:
-			continue
-		util.add_dir(m.group('cat'),{'cat':BASE_URL+m.group('link')})
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def add_video(name,params,logo,infoLabels):
-	if not logo == '':
-		if logo.find('/') == 0:
-			logo = logo[1:]
-		if logo.find('http://') < 0:
-			logo = BASE_URL+logo
-	return util.add_video(name,params,logo,infoLabels)
-
-def list_category(url):
-	page = util.request(url)
-	q = url.find('?')
-	if q > 0:
-		url = url[:q]
-	data = util.substr(page,'<div id=\"videolist','<div class=\"paging-adfox\">')
-	pattern='<div class=\"img-wrapper\"><a href=\"(?P<url>[^\"]+)\" title=\"(?P<name>[^\"]+)(.+?)<img(.+?)src=\"(?P<img>[^\"]+)(.+?)<p class=\"dsc\">(?P<plot>[^<]+)'
-	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-		add_video(m.group('name'),{'play':BASE_URL+m.group('url')},m.group('img'),{'Plot':m.group('plot')})
-	data = util.substr(page,'<div class=\"jumpto\"','</div>')
-	print data
-	pages = re.search('<strong>([\d]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-	current = re.search('value=\"([\d]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-	
-	data = util.substr(page,'<p class=\"paging','</p>')
-	for m in re.finditer('<a href=\"(?P<url>[^\"]+)\"><img(.+?)alt=\"(?P<name>[^\"]+)\" />',data,re.IGNORECASE | re.DOTALL):
-		name = '[B] %s / %s - %s [/B]' % (current,pages,m.group('name'))
-		util.add_dir(name,{'cat':url+m.group('url')})
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def reportUsage():
-	host = 'zkounito.cz'
-	tc = 'UA-1904592-29'
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (__scriptid__,host,tc,__scriptid__+'/play'))
-	util.reportUsage(__scriptid__,__scriptid__+'/play')
-
-
-def play(url):
-	data = util.request(url)
-	data = util.substr(data,'<div class=\"player\"','</div>')
-	m = re.search('<param name=\"movie\" value=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-	if not m == None:
-		streams = resolver.resolve(m.group('url'))
-		if streams == None:
-			return 	xbmcgui.Dialog().ok(__scriptname__,__language__(30000))
-		if len(streams) > 0:
-			print 'Sending %s to player' % streams[0]
-			reportUsage()
-			li = xbmcgui.ListItem(path=streams[0],iconImage='DefaulVideo.png')
-			return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	n = re.search('<param name=\"url\" value=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-	if not n == None:
-		print 'Sending %s to player' % n.group('url')
-		reportUsage()
-		li = xbmcgui.ListItem(path=n.group('url'),iconImage='DefaulVideo.png')
-		return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-	
-params=util.params()
+params = util.params()
 if params=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-	list_categories()
-if 'cat' in params.keys():
-	list_category(params['cat'])
-if 'play' in params.keys():
-	play(params['play'])
+xbmcprovider.XBMCMultiResolverContentProvider(zkouknito.ZkouknitoContentProvider(),settings,__addon__).run(params)

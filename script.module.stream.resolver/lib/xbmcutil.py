@@ -62,8 +62,10 @@ def substr(data,start,end):
 
 def add_dir(name,params,logo='',infoLabels={},menuItems={}):
 	name = decode_html(name)
-	if not 'Title' in infoLabels:
-		infoLabels['Title'] = name
+	if not 'title' in infoLabels:
+		infoLabels['title'] = name
+	if logo == None:
+		logo = ''
 	liz=xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
         try:
 		liz.setInfo( type='Video', infoLabels=infoLabels )
