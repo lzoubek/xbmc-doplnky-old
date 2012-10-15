@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2
+import re,os,urllib,urllib2,traceback
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 
 __scriptid__   = 'plugin.video.online-files'
@@ -40,10 +40,13 @@ import xbmcprovider
 def search_cb(what):
 	for key in providers.keys():
 		p = providers[key]
-		result = p.provider.search(what)
-		for item in result:
-			item['title'] = '[%s] %s' % (p.provider.name,item['title'])
-		p.list(result)
+		try:
+			result = p.provider.search(what)
+			for item in result:
+				item['title'] = '[%s] %s' % (p.provider.name,item['title'])
+			p.list(result)
+		except:
+			traceback.print_exc()
 	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def bezvadata_filter(item):
@@ -114,7 +117,6 @@ if __settings__('hellspy_enabled') == 'true':
 
 def icon(provider):
 	icon_file = os.path.join(__addon__.getAddonInfo('path'),'resources','icons',provider+'.png')
-	print icon_file
 	if not os.path.isfile(icon_file):
 		return 'DefaultFolder.png'
 	return icon_file
