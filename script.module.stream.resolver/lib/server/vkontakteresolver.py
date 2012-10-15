@@ -33,12 +33,15 @@ def url(url):
 			oid = re.search('oid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			vtag = re.search('vtag=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+			max_hd = re.search('hd=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			url = '%su%s/video/%s' % (host,oid,vtag)
 			if no_flv != '1':
 				return [url+'.flv']
 			if no_flv == '1':
 				res=int(hd)
+				if (max_hd):
+					res = int(max_hd)
 				if res < 0:
 					res=0
 				resolutions=['240','360','480','720','1080']
@@ -53,12 +56,15 @@ def resolve(link):
 			oid = re.search('oid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			vtag = re.search('vtag=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+			max_hd = re.search('hd=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			url = '%su%s/video/%s' % (host,oid,vtag)
 			if no_flv != '1':
 				return [{'name':__name__,'quality':'???','url':url+'.flv','surl':link,'subs':''}]
 			if no_flv == '1':
 				res=int(hd)
+				if max_hd:
+					res=int(max_hd)
 				if res < 0:
 					return [{'name':__name__,'quality':'240p','url':url+'.flv','surl':link,'subs':''}]
 				resolutions=['240','360','480','720','1080']
