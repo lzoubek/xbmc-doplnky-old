@@ -117,7 +117,8 @@ def _create_plugin_url(params,plugin=sys.argv[0]):
 	url=[]
 	for key in params.keys():
 		value = decode_html(params[key])
-		value = value.encode('ascii','ignore')
+		#--value = value.encode('ascii','ignore')
+		value = value.encode('utf-8')
 		url.append(key+'='+value.encode('hex',)+'&')
 	return plugin+'?'+''.join(url)
 	

@@ -1,3 +1,6 @@
+[B]1.3.1:[/B]
+- vkontakte resolver now supports 720p videos
+- added videonet resolver (thanks to Ivo Brhel), rutube resolver
 [B]1.3.0:[/B]
 - introduced ContentProvider API
 - util.py splitted to util.py and xbmcutil.py (so we're now able to run tests in non-xbmc environment)
