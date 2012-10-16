@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.3.0"
+       version="1.3.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -82,6 +82,28 @@
     <summary lang="cs">movie-library.cz</summary>
     <description lang="en">Watch online content from bezvadata.cz</description>
     <description lang="cs">Sledujte nebo stahujte obsah ze servru bezvadata.cz. Stahování nebo přehrávání bez omezení rychlosti</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.rajfilmy.cz"
+       name="Rajfilmy.cz"
+       version="1.0.0"
+       provider-name="Ivo Brhel">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.2.7"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">rajfilmy.cz</summary>
+    <summary lang="cs">rajfilmy.cz</summary>
+    <description lang="en">Watch online www.rajfilmy.cz</description>
+    <description lang="cs">Sledujte online www.rajfilmy.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
