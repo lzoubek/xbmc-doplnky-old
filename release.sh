@@ -4,6 +4,8 @@
 TOOLS=$(dirname "$0")
 
 BUILD_DIR=repo
+echo "Cleaning up *.pyc files.."
+find . -name '*.pyc' | xargs rm -f
 
 if [ -z $1 ];
 then
