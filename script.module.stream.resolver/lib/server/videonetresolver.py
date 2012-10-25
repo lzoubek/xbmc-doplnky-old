@@ -57,15 +57,10 @@ def url(url):
 		if f:
 			return [f.group(1)]
 
-def resolve(link):
-	m = _regex(link)
-	if not m == None:
-		data = latin2text(util.request('%s%s%s?mode=play' % (m.group('url') ,m.group('html'),m.group('id'))))
-		f = re.search('<videos><video url=\'(.+?)[^ ] rating',data,re.IGNORECASE | re.DOTALL)
-		if f:
-			ret=[]
-			ret.append({'name':__name__,'quality':'1','url':f.group(1),'surl':link,'subs':''})
-			return ret
+def resolve(u):
+	stream = url(u)
+	if stream:
+		return [{'name':__name__,'quality':'480p','url':stream[0],'surl':u}]
 			
 			
 def _regex(url):

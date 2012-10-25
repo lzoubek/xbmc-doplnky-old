@@ -51,7 +51,10 @@ class RajfilmyContentProvider(ContentProvider):
 		
 	def film(self,page):
 		result=[]
-		data = util.substr(page,'<div class=\"content_box\">','<div class=\"clear\">')
+		if self.serial:
+			data = util.substr(page,'<div class=\"content_box\">','<div class=\"clear\"></div>')
+		else:
+			data = util.substr(page,'<div class=\"kategorie_box\">','<div id=\"menu_prave\">')
 		pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			if self.serial: 
@@ -141,7 +144,7 @@ class RajfilmyContentProvider(ContentProvider):
 			self.do='</div>'
                         return self.episodes(util.request(self._url(url[:5])))
 		if url.find('#last#') == 0:
-			self.od='<div class=\"content_box_nejnovej\">'
+			self.od='<div class=\"content_box_nejnovejsi\"><ol>'
 			self.do='</div>'
                         return self.episodes(util.request(self._url(url[:6])))
 		else:
