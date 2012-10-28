@@ -21,115 +21,119 @@
 import sys,os,util,re,traceback
 
 class ContentProvider(object):
-	'''
-	ContentProvider class provides an internet content. It should NOT have any xbmc-related imports
-	and must be testable without XBMC runtime. This is a basic/dummy implementation.
-	'''	
-	
-	def __init__(self,name,base_url,username,password,filter,tmp_dir='.'):
-		'''
-		ContentProvider constructor
-		Args:
-			name (str): name of provider
-			base_url (str): base url of site being accessed
-			username (str): login username
-			password (str): login password
-			filter (func{item}): function to filter results returned by search or list methods
-			tmp_dir (str): temporary dir where provider can store/cache files
-		'''
-		self.name=name
-		self.username=username
-		self.password=password
-		self.base_url=base_url
-		self.filter = filter
-		self.tmp_dir = tmp_dir
+    '''
+    ContentProvider class provides an internet content. It should NOT have any xbmc-related imports
+    and must be testable without XBMC runtime. This is a basic/dummy implementation.
+    '''	
 
-	def capabilities(self):
-		'''
-		This way class defines which capabilities it provides
-		'''
-		return ['login','search','resolve','categories']
+    def __init__(self,name,base_url,username,password,filter,tmp_dir='.'):
+        '''
+        ContentProvider constructor
+        Args:
+            name (str): name of provider
+            base_url (str): base url of site being accessed
+            username (str): login username
+            password (str): login password
+            filter (func{item}): function to filter results returned by search or list methods
+            tmp_dir (str): temporary dir where provider can store/cache files
+        '''
+        self.name=name
+        self.username=username
+        self.password=password
+        self.base_url=base_url
+        self.filter = filter
+        self.tmp_dir = tmp_dir
 
-	def video_item(self):
-		'''
-		returns empty video item - contains all required fields
-		'''
-		return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':'','img':'','length':'','quality':'???','subs':'','surl':''}
+    def capabilities(self):
+        '''
+        This way class defines which capabilities it provides
+        '''
+        return ['login','search','resolve','categories']
 
-	def dir_item(self):
-		'''
-			reutrns empty directory item
-		'''
-		return {'type':'dir','title':'','size':'0','url':''}
+    def video_item(self):
+        '''
+        returns empty video item - contains all required fields
+        '''
+        return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':'','img':'','length':'','quality':'???','subs':'','surl':''}
 
-	def login(self):
-		'''
-		A login method returns True on successfull login, False otherwise
-		'''
-		return False
+    def dir_item(self):
+        '''
+            reutrns empty directory item
+        '''
+        return {'type':'dir','title':'','size':'0','url':''}
 
-	def search(self,keyword):
-		'''
-		Search for a keyword on a site
-		Args:
-            		keyword (str)
+    def login(self):
+        '''
+        A login method returns True on successfull login, False otherwise
+        '''
+        return False
 
-		returns:
-			array of video or directory items
-		'''
-		return []
-	
-	def list(self,url):
-		'''
-		Lists content on given url
-		Args:
-            		url (str): either relative or absolute provider URL
+    def search(self,keyword):
+        '''
+        Search for a keyword on a site
+        Args:
+                    keyword (str)
 
-		Returns:
-			array of video or directory items
+        returns:
+            array of video or directory items
+        '''
+        return []
 
-		'''
-		return []
-	def categories(self):
-		'''
-		Lists categories on provided site
+    def list(self,url):
+        '''
+        Lists content on given url
+        Args:
+                    url (str): either relative or absolute provider URL
 
-		Returns:
-			array of video or directory items
-		'''
-		return []
+        Returns:
+            array of video or directory items
 
-	def resolve(self,item,captcha_cb=None,select_cb=None):
-		'''
-		Resolves given video item  to a downloable/playable file/stream URL
-	
-		Args:
-			url (str): relative or absolute URL to be resolved
-			captcha_cb(func{obj}): callback function when user input is required (captcha, one-time passwords etc).
-			function implementation must be Provider-specific
-		Returns:
-			None - if ``url`` was not resolved. Video item with 'url' key pointing to resolved target
-		'''
-		return None
+        '''
+        return []
+    def categories(self):
+        '''
+        Lists categories on provided site
 
-	def _url(self,url):
-		'''
-		Transforms relative to absolute url based on ``base_url`` class property
-		'''
-		if url.startswith('http'):
-			return url
-		return self.base_url+url.lstrip('./')
+        Returns:
+            array of video or directory items
+        '''
+        return []
 
-	def _filter(self,result,item):
-		'''
-		Applies filter, if filter passes `item` is appended to `result`
-		
-		Args:
-			result (array) : target array
-			item (obj) : item that is being applied filter on
-		'''
-		if self.filter:
-			if self.filter(item):
-				result.append(item)
-		else:
-			result.append(item)
+    def resolve(self,item,captcha_cb=None,select_cb=None):
+        '''
+        Resolves given video item  to a downloable/playable file/stream URL
+
+        Args:
+            url (str): relative or absolute URL to be resolved
+            captcha_cb(func{obj}): callback function when user input is required (captcha, one-time passwords etc).
+            function implementation must be Provider-specific
+        Returns:
+            None - if ``url`` was not resolved. Video item with 'url' key pointing to resolved target
+        '''
+        return None
+
+    def _url(self,url):
+        '''
+        Transforms relative to absolute url based on ``base_url`` class property
+        '''
+        if url.startswith('http'):
+            return url
+        return self.base_url+url.lstrip('./')
+
+    def _filter(self,result,item):
+        '''
+        Applies filter, if filter passes `item` is appended to `result`
+
+        Args:
+            result (array) : target array
+            item (obj) : item that is being applied filter on
+        '''
+        if self.filter:
+            if self.filter(item):
+                result.append(item)
+        else:
+            result.append(item)
+    def info(self,msg):
+        util.info('[%s] %s' % (self.name,msg)) 
+    def error(self,msg):
+        util.error('[%s] %s' % (self.name,msg)) 
