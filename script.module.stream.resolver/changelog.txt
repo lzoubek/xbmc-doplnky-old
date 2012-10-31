@@ -1,3 +1,6 @@
+[B]1.3.2:[/B]
+- fixed bezvadata content provider
+- added support for delayed file download (bezvadata uses it)
 [B]1.3.1:[/B]
 - vkontakte resolver now supports 720p videos
 - added videonet resolver (thanks to Ivo Brhel), rutube resolver

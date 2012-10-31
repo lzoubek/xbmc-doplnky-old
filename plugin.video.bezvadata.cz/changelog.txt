@@ -1,3 +1,6 @@
+[B]1.0.3:[/B]
+- opraveno stahování zatím bez možnosti přihlášení
+- přidány kategorie
 [B]1.0.2:[/B]
 - migrace na ContentProvider API
 [B]1.0.0:[/B]
