@@ -53,15 +53,16 @@ def create_filter():
 def filter(item):
 	return can_show(create_filter(),item)
 
-provider = bezvadata.BezvadataContentProvider(filter=filter)
+provider = bezvadata.BezvadataContentProvider(username='',password='',filter=filter,tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile')))
 
 settings = {
 	'downloads':__addon__.getSetting('downloads'),
 	'download-notify':__addon__.getSetting('download-notify'),
 	'download-notify-every':__addon__.getSetting('download-notify-every'),
+    'vip':'0'
 }
 
 p = util.params()
 if p=={}:
 	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-xbmcprovider.XBMContentProvider(provider,settings,__addon__).run(p)
+xbmcprovider.XBMCLoginOptionalDelayedContentProvider(provider,settings,__addon__).run(p)

@@ -93,12 +93,13 @@ settings = {
 providers = {}
 
 if __settings__('bezvadata_enabled') == 'true':
-	p = bezvadata.BezvadataContentProvider(filter=bezvadata_filter)
+	p = bezvadata.BezvadataContentProvider(username='',password='',filter=bezvadata_filter,tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile')))
 	extra = {
-			'keep-searches':__settings__('bezvadata_keep-searches')
+			'keep-searches':__settings__('bezvadata_keep-searches'),
+            'vip':'0'
 	}
 	extra.update(settings)
-	providers[p.name] = xbmcprovider.XBMContentProvider(p,extra,__addon__)
+	providers[p.name] = xbmcprovider.XBMCLoginOptionalDelayedContentProvider(p,extra,__addon__)
 if __settings__('ulozto_enabled') == 'true':
 	p = ulozto.UloztoContentProvider(__settings__('ulozto_user'),__settings__('ulozto_pass'))
 	extra = {

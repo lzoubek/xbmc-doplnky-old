@@ -30,13 +30,37 @@ class BezvadataContentProvider(ContentProvider):
         urllib2.install_opener(opener)
 
     def capabilities(self):
-        return ['search','resolve']
+        return ['search','resolve','categories']
 
     def search(self,keyword):
         return self.list('vyhledavani/?s='+urllib.quote(keyword))
 
+    def categories(self):
+        page = util.request(self.base_url)
+        page = util.substr(page,'<div class=\"stats','<footer>')
+        result = []
+        for m in re.finditer('<section class=\"(?P<type>[^\"]+)[^<]+<h3>(?P<title>[^<]+)',page, re.IGNORECASE|re.DOTALL):
+            item = self.dir_item()
+            item['title'] = m.group('title')
+            item['url'] = '#'+m.group('type')
+            result.append(item)
+        return result
+
+    def list_special(self,type):
+        page = util.request(self.base_url)
+        page = util.substr(page,'<section class=\"'+type,'</section>')
+        result = []
+        for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<title>[^<]+)',page, re.IGNORECASE|re.DOTALL):
+            item = self.video_item()
+            item['title'] = m.group('title')
+            item['url'] = m.group('url')
+            result.append(item)
+        return result
+
 
     def list(self,url):
+        if url.find('#') == 0:
+            return self.list_special(url[1:])
         page = util.request(self._url(url))
         ad = re.search('<a href=\"(?P<url>/vyhledavani/souhlas-zavadny-obsah[^\"]+)',page,re.IGNORECASE|re.DOTALL)
         if ad:
