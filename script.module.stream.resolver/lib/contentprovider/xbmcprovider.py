@@ -18,7 +18,7 @@
 # *
 # */
 
-import sys,os,re,traceback,util,xbmcutil,resolver
+import sys,os,re,traceback,util,xbmcutil,resolver,time
 import xbmcplugin,xbmc,xbmcgui
 
 class XBMContentProvider(object):
@@ -273,6 +273,30 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
                 xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
                 return
         return self.provider.resolve(item,captcha_cb=self.ask_for_captcha)
+
+class XBMCLoginOptionalDelayedContentProvider(XBMCLoginOptionalContentProvider):
+
+    def wait_cb(self,wait):
+        left = wait
+        msg = xbmcutil.__lang__(30014).encode('utf-8') 
+        while left > 0:
+            xbmc.executebuiltin("XBMC.Notification(%s,%s,1000,%s)" %(self.provider.name,msg % str(left),''))
+            left-=1
+            time.sleep(1)
+
+    def resolve(self,url):
+        item = self.provider.video_item()
+        item.update({'url':url})
+        if not self.ask_for_account_type():
+            # set user/pass to null - user does not want to use VIP at this time
+            self.provider.username = None
+            self.provider.password = None
+        else:
+            if not self.provider.login():
+                xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
+                return
+        return self.provider.resolve(item,captcha_cb=self.ask_for_captcha,wait_cb=self.wait_cb)
+
 
 class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
 
