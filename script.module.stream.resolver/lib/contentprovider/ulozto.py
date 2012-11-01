@@ -49,6 +49,9 @@ class UloztoContentProvider(ContentProvider):
             self.info('Login user=%s, pass=*****' % self.username)
             self.rh.throw = False
             page = util.request(self.base_url+'?do=web-login')
+            if page.find('href="/?do=web-logout') > 0:
+                self.info('Already logged in')
+                return True
             data = util.substr(page,'<li class=\"menu-username','</li')
             m = re.search('key=(?P<key>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
             if m:
