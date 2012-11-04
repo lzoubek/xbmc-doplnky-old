@@ -27,68 +27,71 @@ ADDONS = 1001
 
 class MainWindow ( xbmcgui.WindowXMLDialog ) :
 
-	def __init__( self, *args, **kwargs ):
-		super(xbmcgui.WindowXMLDialog, self).__init__(args,kwargs)
-		self.trSettings = tracker.TrackerSettings(__addon__)
+    def __init__( self, *args, **kwargs ):
+        super(xbmcgui.WindowXMLDialog, self).__init__(args,kwargs)
+        self.trSettings = tracker.TrackerSettings(__addon__)
 
-	def onFocus (self,controlId ):
-		self.controlId=controlId
+    def onFocus (self,controlId ):
+        self.controlId=controlId
 
-	def onInit (self):
-		self._refresh_addons()
-		self._refresh_addon_details()
+    def onInit (self):
+        self._refresh_addons()
+        self._refresh_addon_details()
 
-	def _refresh_addons(self):
-		list = self.getControl(ADDONS)
-		list.reset()
-		for add in self.trSettings.getSubscribers():
-			add_inst = xbmcaddon.Addon(id=add)
-			li = xbmcgui.ListItem(label=add_inst.getAddonInfo('name'),iconImage=add_inst.getAddonInfo('icon'))
-			li.setProperty('id',add)
-			enabled = self.trSettings.canDoReport(add)
-			if enabled:
-				enStr = __addon__.getLocalizedString(30004)
-			else:
-				enStr = __addon__.getLocalizedString(30005)
-			li.setProperty('enabled',enStr)
-			if enabled:
-				li.setProperty('isenabled','True')
-			termsID = self.trSettings.getTermsStringID(add)
-			if termsID < 0:
-				# use defaults
-				terms = __addon__.getLocalizedString(30000) % (add_inst.getAddonInfo('name'),'')
-			else:
-				terms = __addon__.getLocalizedString(30000)% (unicode(add_inst.getAddonInfo('name'),errors='replace'),add_inst.getLocalizedString(termsID))
-			li.setProperty('terms',terms)
-			list.addItem(li)
+    def _refresh_addons(self):
+        list = self.getControl(ADDONS)
+        list.reset()
+        for add in self.trSettings.getSubscribers():
+            add_inst = xbmcaddon.Addon(id=add)
+            if not str(add_inst.getAddonInfo('id')) == str(add):
+                print 'Skipping non-activated addon %s' % add
+                continue
+            li = xbmcgui.ListItem(label=add_inst.getAddonInfo('name'),iconImage=add_inst.getAddonInfo('icon'))
+            li.setProperty('id',add)
+            enabled = self.trSettings.canDoReport(add)
+            if enabled:
+                enStr = __addon__.getLocalizedString(30004)
+            else:
+                enStr = __addon__.getLocalizedString(30005)
+            li.setProperty('enabled',enStr)
+            if enabled:
+                li.setProperty('isenabled','True')
+            termsID = self.trSettings.getTermsStringID(add)
+            if termsID < 0:
+                # use defaults
+                terms = __addon__.getLocalizedString(30000) % (add_inst.getAddonInfo('name'),'')
+            else:
+                terms = __addon__.getLocalizedString(30000)% (unicode(add_inst.getAddonInfo('name'),errors='replace'),add_inst.getLocalizedString(termsID))
+            li.setProperty('terms',terms)
+            list.addItem(li)
 
-	def _refresh_addon_details(self):
-		selected = self.getControl(ADDONS).getSelectedItem()
+    def _refresh_addon_details(self):
+        selected = self.getControl(ADDONS).getSelectedItem()
 
-	def onAction(self, action):
-		#print 'Action id=%s buttonCode=%s amount1=%s amount2=%s' % (action.getId(),action.getButtonCode(),action.getAmount1(),action.getAmount2())
-		if action.getId() in [9,10]:
-			self.close()
-		if action.getId() in [3,4] and self.getFocusId() == ADDONS:
-			self._refresh_addon_details()
-			
-	def onClick( self, controlId ):
-		if controlId in [1003, 1001]:
-			selected_index = self.getControl(ADDONS).getSelectedPosition()
-			addon = self.getControl(ADDONS).getSelectedItem().getProperty('id')
-			add_inst = xbmcaddon.Addon(addon)
-			isenabled = self.getControl(ADDONS).getSelectedItem().getProperty('isenabled') == 'True'
-			addon_name = unicode(add_inst.getAddonInfo('name'),errors='replace')
-			if isenabled:
-				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30007) % addon_name))
-			else:
-				ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30006) % addon_name))
-			
-			confirmed = ret == 1
-			if confirmed:
-				self.trSettings.setCanReport(addon,not isenabled)
-				self.trSettings.save()
-				self._refresh_addons()
-				self.getControl(ADDONS).selectItem(selected_index)
-		elif controlId == 1000:
-			__addon__.openSettings()
+    def onAction(self, action):
+        #print 'Action id=%s buttonCode=%s amount1=%s amount2=%s' % (action.getId(),action.getButtonCode(),action.getAmount1(),action.getAmount2())
+        if action.getId() in [9,10,92]:
+            self.close()
+        if action.getId() in [3,4] and self.getFocusId() == ADDONS:
+            self._refresh_addon_details()
+
+    def onClick( self, controlId ):
+        if controlId in [1003, 1001]:
+            selected_index = self.getControl(ADDONS).getSelectedPosition()
+            addon = self.getControl(ADDONS).getSelectedItem().getProperty('id')
+            add_inst = xbmcaddon.Addon(addon)
+            isenabled = self.getControl(ADDONS).getSelectedItem().getProperty('isenabled') == 'True'
+            addon_name = unicode(add_inst.getAddonInfo('name'),errors='replace')
+            if isenabled:
+                ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30007) % addon_name))
+            else:
+                ret = xbmcgui.Dialog().yesno(__addon__.getAddonInfo('name'),(__addon__.getLocalizedString(30006) % addon_name))
+
+            confirmed = ret == 1
+            if confirmed:
+                self.trSettings.setCanReport(addon,not isenabled)
+                self.trSettings.save()
+                self._refresh_addons()
+                self.getControl(ADDONS).selectItem(selected_index)
+        elif controlId == 1000:
+            __addon__.openSettings()

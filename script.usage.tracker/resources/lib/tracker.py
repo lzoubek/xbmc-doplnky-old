@@ -22,11 +22,11 @@
 import simplejson as json
 import xbmc,os,random,sys,traceback
 
-import google
+import googletracker
 class TrackerSettings(object):
 
 	def __init__(self,addon):
-		self.services = [google]
+		self.services = [googletracker]
 		local = xbmc.translatePath(addon.getAddonInfo('profile'))
 		if not os.path.exists(local):
 			os.makedirs(local)
