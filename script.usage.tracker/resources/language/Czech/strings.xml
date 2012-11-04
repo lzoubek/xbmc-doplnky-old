@@ -11,7 +11,7 @@
 	<string id="30050">Globálně povolit zasílání a integraci s ostatními doplňky</string>
 	<string id="30052">Dotazovat na souhlas se zasíláním u nového doplňku</string>
 	<string id="30053"> - Povolit doplňku zasílání automaticky</string>
-	<string id="30054">Dotázat se vžcy když se doplněk pokusí zaslat report</string>
+	<string id="30054">Dotázat se vždy když se doplněk pokusí zaslat report</string>
 	<string id="200">Detaily zasílaných statistik:</string>
 	<string id="201">Zasílání povoleno:</string>
 	<string id="202">Změnit</string>
