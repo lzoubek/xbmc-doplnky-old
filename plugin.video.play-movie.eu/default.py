@@ -24,7 +24,7 @@ sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import re,os
 import xbmcaddon
 import util,xbmcprovider
-import rajfilmy
+import playmovie
 
 __scriptid__   = 'plugin.video.play-movie.eu'
 __scriptname__ = 'play-movie.eu'
@@ -36,6 +36,6 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 params = util.params()
 #if params=={}:
 #	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
-xbmcprovider.XBMCMultiResolverContentProvider(rajfilmy.RajfilmyContentProvider(),settings,__addon__).run(params)
+xbmcprovider.XBMCMultiResolverContentProvider(playmovie.PlaymovieContentProvider(),settings,__addon__).run(params)
 
 
