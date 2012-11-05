@@ -39,18 +39,6 @@ class HejbejseContentProvider(ContentProvider):
 		return ['resolve','cagegories']
 		
 		
-	def pcategories(self,page):
-		result=[]
-		data = util.substr(page,'</b> PODKATEGORIE</h3>','</div>')
-		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
-		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			item = self.dir_item()
-			item['title'] = m.group('name')
-			item['url'] = '#cat#'+m.group('url')
-			result.append(item)
-		return result
-	
-		
 	def categories(self):
 		result = []
 		item=self.dir_item()
@@ -63,10 +51,6 @@ class HejbejseContentProvider(ContentProvider):
 		item['url']  = '#last#'+self.base_url
 		result.append(item)
 		#
-		item=self.dir_item()
-		item['title']='[B]Podkategorie[/B]'
-		item['url']  = '#pcat#'+self.base_url
-		result.append(item)
 
 		data = util.substr(util.request(self.base_url),'</b> PROGRAMY</h3>','<div class="clear">')
 		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
@@ -91,33 +75,16 @@ class HejbejseContentProvider(ContentProvider):
 			#item['title'] = m.group('name')
 			item['title'] = name
 			item['url'] = m.group('url')
-			item['img'] = m.group('img')
+			item['img'] = self._url(m.group('img'))
 			self._filter(result,item)
 		return result
 
-	def show(self,page):
-		result = []
-		data = util.substr(page,'<div class="content_scroller">','<p>')
-		name = '---'
-		for m in re.finditer('<h2>(?P<name>.+?)</h2>',data,re.IGNORECASE | re.DOTALL ):
-			name = "%s" % (m.group('name'))
-		data = util.substr(page,'function startVideo','plugins: ')
-		for m in re.finditer('url:.*\"(?P<url>.+?)\",',data,re.IGNORECASE | re.DOTALL ):
-			item = self.video_item()
-			item['url'] = m.group('url')
-			item['title'] = name
-			self._filter(result,item)
-		return result
 	
 	def list(self,url):
-		#if url.find('#show#') == 0:
-                #        return self.show(util.request(self._url(url[6:])))
 		if url.find('#cat#') == 0:
 			self.od='<h3 class=\"title\"><b>hejbejseTV</b> </h3>'
 			self.do='</table>'
                         return self.episodes(util.request(self._url(url[5:])))
-		if url.find('#pcat#') == 0:
-                        return self.pcategories(util.request(self._url(url[6:])))
 		if url.find('#pop#') == 0:
 			self.od='</b> Oblíbená videa</h3>'
 			self.do='</table>'
