@@ -27,8 +27,6 @@ from provider import ContentProvider
 
 class PlaymovieContentProvider(ContentProvider):
 	
-	od=''
-	do=''
 
 	def __init__(self,username=None,password=None,filter=None):
 		ContentProvider.__init__(self,'play-movie.eu','http://www.play-movie.eu/',username,password,filter)
@@ -40,22 +38,26 @@ class PlaymovieContentProvider(ContentProvider):
 		
 
 	def search(self,keyword):
-		self.od='<div id=\"content\" class=\"narrowcolumn\">'
-		self.do='<div class=\"navigation\">'
-                return self.film(util.request(self._url('?s='+keyword)))
+                return self.film(util.request(self._url('index.php?search='+keyword+'&hledat=Hledat')))
 		
 			
 	def film(self,page):
 		result=[]
 		
-		data = util.substr(page,self.od,self.do)
-		#pattern='<img src=(?P<img>.+?)></div>.?div class=\'nazev-view\'><a href=\'(?P<url>.+?)\'.?>(?P<name>.+?)</a></div>'
-		pattern='<img src=(?P<img>.+?)></div>.*?class=\'nazev-view\'><a href=\'(?P<url>.+?)\'.?>(?P<name>.+?)</a></div>.*?class=\'popis-view\'>(?P<info>.+?)<'
+		data = util.substr(page,'<div id="font">','<div id="pravy">')
+		im = data.find('<img')
+		if im > 0:
+			pattern='<img src=(?P<img>.+?)></div>.*?class=\'nazev-view\'><a href=\'(?P<url>.+?)\'.?>(?P<name>.+?)</a></div>.*?class=\'popis-view\'>(?P<info>.+?)<'
+		else:
+			pattern='<a href=\'(?P<url>.+?)\'.?>(?P<name>.+?)</a>'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			item = self.video_item()
+			try:
+				item['img'] = m.group('img')
+			except:
+				pass
 			item['url'] = self._url(m.group('url'))
 			item['title'] = m.group('name')
-			item['img'] = m.group('img')
 			#item['plot']= m.group('info')
 			result.append(item)
 			
@@ -82,7 +84,6 @@ class PlaymovieContentProvider(ContentProvider):
 		pattern='a href="(?P<url>.+?)">(?P<name>.+?)</a>'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			item = self.dir_item()
-			#print m.group('url')
 			item['title']=m.group('name')
 			item['url'] = '#film#'+self._url(m.group('url'))
 			result.append(item)
@@ -103,39 +104,16 @@ class PlaymovieContentProvider(ContentProvider):
 		item['title']='Kategorie filmů'
 		item['url']  = '#cat#'+self.base_url
 		result.append(item)
-
-		#item=self.dir_item()
-		#item['title']='Filmy'
-		#item['url']  = '#film#'+self._url('filmy/')
-		#result.append(item)
-		
 		
 		return result
-	'''	
-	def episodes(self,page):
-		result = []
-		data = util.substr(page,self.od,self.do)
-		pattern='value=\"(?P<url>.+?)\">(?P<name>.+?)</option>'
-		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			item = self.dir_item()
-			item['title']=m.group('name').replace('&nbsp;','')
-			item['url'] = '#film#'+m.group('url')
-			result.append(item)
-		return result
-	'''	
+	
 	
 	def list(self,url):
 		if url.find('#film#') == 0:
-			self.od='<div id="font">'
-			self.do='<div id="pravy">'
                         return self.film(util.request(self._url(url[6:])))
 		if url.find('#cat#') == 0:
-			#self.od='<select name=\'gdtt-drop-gdtttermslist4'
-			#self.do='</select>'
                         return self.cat(util.request(self._url(url[5:])))
 		if url.find('#last#') == 0:
-			self.od='<div id="font">'
-			self.do='<div id="pravy">'
                         return self.film(util.request(self._url(url[6:])))
 		else:
                         raise Expception("Invalid url, I do not know how to list it :"+url)
