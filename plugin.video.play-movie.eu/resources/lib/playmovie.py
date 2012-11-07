@@ -130,13 +130,17 @@ class PlaymovieContentProvider(ContentProvider):
 			
 		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','href="(?P<url>http://(www.)?streamcloud\.eu.+?)"'])
                 result = []
-		for i in resolved:
-                        item = self.video_item()
-                        item['title'] = i['name']
-                        item['url'] = i['url']
-                        item['quality'] = i['quality']
-                        item['surl'] = i['surl']
-                        result.append(item)  
+                try:
+			for i in resolved:
+				item = self.video_item()
+				item['title'] = i['name']
+				item['url'] = i['url']
+				item['quality'] = i['quality']
+				item['surl'] = i['surl']
+				result.append(item)  
+		except:
+			print '===Unknown resolver==='
+			
                 if len(result)==1:
                         return result[0]
                 elif len(result) > 1 and select_cb:
