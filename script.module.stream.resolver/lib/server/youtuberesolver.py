@@ -23,7 +23,7 @@ import cgi
 import simplejson as json
 
 
-class YoutubePlayer():
+class YoutubePlayer(object):
     fmt_value = {
             5: "240p",
             18: "360p",
