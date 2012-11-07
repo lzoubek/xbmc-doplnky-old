@@ -266,7 +266,7 @@
 
 <addon id="script.usage.tracker"
        name="Usage Tracker"
-       version="0.9.3"
+       version="0.9.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
