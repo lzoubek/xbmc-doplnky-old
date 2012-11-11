@@ -35,7 +35,7 @@ def url(url):
 			hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			max_hd = re.search('hd=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			url = '%su%s/video/%s' % (host,oid,vtag)
+			url = '%su%s/videos/%s' % (host,oid,vtag)
 			if no_flv != '1':
 				return [url+'.flv']
 			if no_flv == '1':
@@ -58,7 +58,7 @@ def resolve(link):
 			hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			max_hd = re.search('hd=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
 			no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-			url = '%su%s/video/%s' % (host,oid,vtag)
+			url = '%su%s/videos/%s' % (host,oid,vtag)
 			if no_flv != '1':
 				return [{'name':__name__,'quality':'???','url':url+'.flv','surl':link,'subs':''}]
 			if no_flv == '1':
