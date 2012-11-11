@@ -54,7 +54,7 @@ class EserialContentProvider(ContentProvider):
 		result = []
 		for m in re.finditer('<div class=\'dily-vypis\'>(?P<show>.+?)<script>',data,re.IGNORECASE | re.DOTALL ):
 			show = m.group('show')
-			link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>[^<]*<br[^<]*<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
+			link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>[^<]*<br[^<].+?<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
 			if link:
 				vurl = re.sub('\?.*','',url)+link.group('url')
 				name = link.group('index') + link.group('name')
