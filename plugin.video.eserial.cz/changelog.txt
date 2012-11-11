@@ -1,3 +1,5 @@
+[B]1.0.3:[/B]
+- oprava listovani epizod
 [B]1.0.2:[/B]
 - migrace na stream.resolver 1.0.3
 [B]1.0.1:[/B]
