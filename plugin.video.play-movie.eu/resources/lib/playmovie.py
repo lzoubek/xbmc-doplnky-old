@@ -21,7 +21,7 @@
 # */
 
 import re,os,urllib,urllib2,cookielib
-import util,resolver, search
+import util,resolver
 
 from provider import ContentProvider
 
@@ -34,7 +34,7 @@ class PlaymovieContentProvider(ContentProvider):
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['resolve','categories']
+		return ['resolve','categories','search']
 		
 
 	def search(self,keyword):
@@ -92,8 +92,6 @@ class PlaymovieContentProvider(ContentProvider):
 	
 	def categories(self):
 		result = []
-		
-		search.item()
 		
 		item = self.dir_item()
 		item['type'] = 'new'

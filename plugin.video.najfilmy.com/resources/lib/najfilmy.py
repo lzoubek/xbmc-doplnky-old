@@ -21,7 +21,7 @@
 # */
 
 import re,os,urllib,urllib2,cookielib
-import util,resolver, search
+import util,resolver
 
 from provider import ContentProvider
 
@@ -36,7 +36,7 @@ class NajfilmyContentProvider(ContentProvider):
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['resolve','categories']
+		return ['search','resolve','categories']
 		
 	def getInfo(self,link):
 		data = util.request(link)
@@ -92,8 +92,6 @@ class NajfilmyContentProvider(ContentProvider):
 	
 	def categories(self):
 		result = []
-		
-		search.item()
 		
 		item = self.dir_item()
 		item['type'] = 'new'
