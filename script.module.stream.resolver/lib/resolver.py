@@ -113,6 +113,7 @@ def can_resolve(url):
 # @return None if at least 1 resoler failed to resolve and nothing else has been found
 # @return [] if no resolvable URLs or no resolvers for URL has been found
 def findstreams(data,regexes):
+    resolvables = {}
     resolved = []
     # keep list of found urls to aviod having duplicates
     urls = []
@@ -120,9 +121,11 @@ def findstreams(data,regexes):
     for regex in regexes:
         for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
             util.info('Found resolvable %s ' % match.group('url'))
-            streams = resolve2(match.group('url'))
+            resolvables[match.group('url')] = None
+    for rurl in resolvables:        
+            streams = resolve2(rurl)
             if streams == []:
-                util.debug('There was an error resolving '+match.group('url'))
+                util.debug('There was an error resolving '+rurl)
                 error = True
             if not streams == None:
                 if len(streams) > 0:
