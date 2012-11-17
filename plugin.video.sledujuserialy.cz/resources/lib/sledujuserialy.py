@@ -45,7 +45,7 @@ class SledujuserialyContentProvider(ContentProvider):
         pattern='<div.+?class=\"menu_click\" onclick=\"[^\']+\'(?P<url>[^\']+).+?<div.+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.dir_item()
-            item['title'] = m.group('name').decode('windows-1250').strip()
+            item['title'] = m.group('name').decode('windows-1250').encode('utf-8').strip()
             item['url'] = m.group('url')
             result.append(item)
         return result
@@ -58,7 +58,7 @@ class SledujuserialyContentProvider(ContentProvider):
         pattern = '<div style=\"background-image\: url\((?P<img>[^\)]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?title=\"(?P<name>[^\"]+)'
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.video_item()
-            item['title'] = m.group('name')
+            item['title'] = m.group('name').decode('windows-1250').encode('utf-8')
             item['url'] = m.group('url')
             item['img'] = self._url(m.group('img'))
             self._filter(result,item)
