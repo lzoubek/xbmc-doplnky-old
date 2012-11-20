@@ -75,7 +75,7 @@ def save_to_file(url,file):
 
 def save_data_to_file(data,file):
 	try:
-		f = open(file,'w')
+		f = open(file,'wb')
 		f.write(data)
 		f.close()
 		return True
