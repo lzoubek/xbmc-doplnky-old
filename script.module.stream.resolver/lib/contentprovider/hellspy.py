@@ -47,7 +47,7 @@ class HellspyContentProvider(ContentProvider):
             m = re.search('<form action=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
             if m:
                 login_url = self._url(m.group('url')).replace('&amp;','&')
-                data = util.post(login_url,{'username':self.username,'password':self.password,'pernament_login':'on','login':'1','redir_url':'http://www.hellspy.cz/?do=loginBox-login'})
+                data = util.post(login_url,{'username':self.username,'password':self.password,'pernament_login':'on','login':'1','redir_url':self.base_url+'?do=loginBox-login'})
                 if data.find('href="/?do=loginBox-logout') > 0:
                     return True
         return False
