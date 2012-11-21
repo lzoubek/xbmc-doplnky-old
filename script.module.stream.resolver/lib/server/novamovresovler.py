@@ -20,16 +20,17 @@
 import util,re
 __name__ = 'novamov'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
-def url(url):
-	if supports(url):
-		data = util.request(url)
-		m = re.search('flashvars.file=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL)
-		n = re.search('flashvars.filekey=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL)
-		if not m == None and not n == None:
-			data = util.request('http://www.novamov.com/api/player.api.php?key=%s&file=%s&user=undefined&pass=undefined&codes=1' % (n.group(1),m.group(1)))
-			return [re.search('url=([^\&]+)',data).group(1)]
+def resolve(url):
+    if supports(url):
+        data = util.request(url)
+        m = re.search('flashvars.file=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL)
+        n = re.search('flashvars.filekey=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL)
+        if not m == None and not n == None:
+            data = util.request('http://www.novamov.com/api/player.api.php?key=%s&file=%s&user=undefined&pass=undefined&codes=1' % (n.group(1),m.group(1)))
+            stream = re.search('url=([^\&]+)',data).group(1)
+            return [{'url':stream}]
 
 def _regex(url):
-	return re.search('novamov\.com',url,re.IGNORECASE | re.DOTALL)
+    return re.search('novamov\.com',url,re.IGNORECASE | re.DOTALL)

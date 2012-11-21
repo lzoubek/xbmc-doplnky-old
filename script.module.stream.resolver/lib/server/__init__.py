@@ -23,6 +23,9 @@
 ##########################################################3
 # all resolvers modules in this directory must have following methods:
 
+# __name__ - name of the resolver module - can override module filename
 # def supports(url) - returns true iff resolver is able to resolve url to stream otherwise false
-# def url(url) - returns array of all streams that were resolved
-#              - if resolving fails, nothing is returned
+# def resolve(url) - returns array of all hashmaps that were resolved
+#   - if resolving fails, nothing is returned
+#   - a hash MUST contain key 'url' - it's value is stream URL
+#   - optional keys are 'subs' (link to subtitle), 'quality' (quality string like '240p' or just 'HD'

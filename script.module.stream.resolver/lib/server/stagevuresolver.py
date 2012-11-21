@@ -22,15 +22,15 @@
 import re,util
 __name__ = 'stagevu'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if supports(url):
-		data = util.substr(util.request(url),'<body>','</script>')
-		m = re.search('url\[[\d]+\] = \'([^\']+)',data,re.IGNORECASE | re.DOTALL)
-		if not m == None:
-			return [m.group(1)]
+def resolve(url):
+    if supports(url):
+        data = util.substr(util.request(url),'<body>','</script>')
+        m = re.search('url\[[\d]+\] = \'([^\']+)',data,re.IGNORECASE | re.DOTALL)
+        if not m == None:
+            return [{'url':m.group(1)}]
 
 def _regex(url):
-	return re.search('(www\.)?stagevu.com/(.+?)uid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)
+    return re.search('(www\.)?stagevu.com/(.+?)uid=(?P<id>(.+?))',url,re.IGNORECASE | re.DOTALL)

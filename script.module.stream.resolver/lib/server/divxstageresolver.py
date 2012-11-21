@@ -19,16 +19,18 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re,util
+import re,util,resolver
 __name__ = 'divxstage'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if not _regex(url) == None:
-		data = util.substr(util.request(url),'<embed type=\"video/divx','>')
-		return [re.search('src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
+def resolve(url):
+    if not _regex(url) == None:
+        data = util.substr(util.request(url),'<embed type=\"video/divx','>')
+        link = re.search('src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL)
+        if link:
+            return [{'url':link.group(1)}]
 
 def _regex(url):
-	return re.search('embed.divxstage.eu/(.+?)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('embed.divxstage.eu/(.+?)',url,re.IGNORECASE | re.DOTALL)

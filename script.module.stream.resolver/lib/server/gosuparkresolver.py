@@ -25,17 +25,13 @@ def supports(url):
 	return not _regex(url) == None
 
 # returns the steam url
-def url(url):
+def resolve(url):
 	m = _regex(url)
 	if m:
 		data = util.request('http://gosupark.com/'+m.group('url'))
 		n = re.search('file: \"(.+?)\"',data,re.IGNORECASE | re.DOTALL)
 		if not n == None:
-			return [n.group(1).strip()]
+		    return [{'quality':'480p','url':n.group(1).strip()}]
 
-def resolve(u):
-	stream = url(u)
-	if stream:
-		return [{'name':__name__,'quality':'480p','url':stream[0],'surl':u}]
 def _regex(url):
 	return re.search('gosupark\.com/(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)

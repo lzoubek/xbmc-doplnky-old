@@ -9,13 +9,13 @@
 import re
 __name__='simple'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if supports(url):
-		return [url]
+def resolve(url):
+    if supports(url):
+        return [{'url':url}]
 
 def _regex(url):
-	return re.search('\.(flv|mp4|avi|wmv)$',url,re.IGNORECASE | re.DOTALL)
+    return re.search('\.(flv|mp4|avi|wmv)$',url,re.IGNORECASE | re.DOTALL)
 

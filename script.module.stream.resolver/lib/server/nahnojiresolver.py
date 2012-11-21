@@ -9,18 +9,17 @@
 import re,util
 __name__='nahnoji'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if supports(url):
-		if url.find('.flv') > -1:
-			return url
-		data = util.substr(util.request(url),'<body style','</a>')
-		pattern = 'href=\"(.+?)\"[^>]+>' 
-		match = re.compile(pattern).findall(data)
-		
-		return [match[0]]
+def resolve(url):
+    if supports(url):
+        if url.find('.flv') > -1:
+            return url
+        data = util.substr(util.request(url),'<body style','</a>')
+        pattern = 'href=\"(.+?)\"[^>]+>' 
+        match = re.compile(pattern).findall(data)
+        return [{'url':match[0]}]
 
 def _regex(url):
-	return re.search('nahnoji.cz/(.+?)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('nahnoji.cz/(.+?)',url,re.IGNORECASE | re.DOTALL)

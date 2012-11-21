@@ -22,19 +22,20 @@
 import re,util,urllib2,urlparse
 __name__ = 'moevideo'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
 def url(url):
-	m = _regex(url)
-	if m:
-		id = m.group('id')
-		post = {'r':'["tVL0gjqo5",["preview/flv_image",{"uid":"'+id+'"}],["preview/flv_link",{"uid":"'+id+'"}]]'}
-		data = util.post('http://api.letitbit.net',post)
-		data = data.replace('\\','')
-		print data
-		link = re.search('link\"\:\"(?P<link>[^\"]+)',data)
-		if link:
-			return [link.group('link')]
+    m = _regex(url)
+    if m:
+        id = m.group('id')
+        post = {'r':'["tVL0gjqo5",["preview/flv_image",{"uid":"'+id+'"}],["preview/flv_link",{"uid":"'+id+'"}]]'}
+        data = util.post('http://api.letitbit.net',post)
+        data = data.replace('\\','')
+        print data
+        link = re.search('link\"\:\"(?P<link>[^\"]+)',data)
+        if link:
+            return [{'url':link.group('link')}]
+
 def _regex(url):
-	return re.search('moevideo.net/video\.php\?file=(?P<id>[^\&]+)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('moevideo.net/video\.php\?file=(?P<id>[^\&]+)',url,re.IGNORECASE | re.DOTALL)

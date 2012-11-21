@@ -22,19 +22,19 @@
 import re,util,urllib
 __name__ = 'servertip'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if supports(url):
-		data = util.request(url)
-		data = util.substr(data,'<div id=\"player_code','</div')
-		try:
-			video_id = re.search('flv\|\|([^\|]+)',data).group(1)
-			return ['http://servertip.cz/cgi-bin/dl.cgi/%s/video.flv' % video_id]
-		except:
-			pass
+def resolve(url):
+    if supports(url):
+        data = util.request(url)
+        data = util.substr(data,'<div id=\"player_code','</div')
+        try:
+            video_id = re.search('flv\|\|([^\|]+)',data).group(1)
+            return [{'url':'http://servertip.cz/cgi-bin/dl.cgi/%s/video.flv' % video_id}]
+        except:
+            pass
 
 def _regex(url):
-	return re.search('servertip\.cz',url,re.IGNORECASE | re.DOTALL)
+    return re.search('servertip\.cz',url,re.IGNORECASE | re.DOTALL)
 

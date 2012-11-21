@@ -23,21 +23,21 @@
 import util,re
 __name__ = 'zideo'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
-def url(url):
-	m = _regex(url)
-	if not m == None:
-		url = re.sub('.*player.swf\?','',url)
-		data = util.request('http://www.zideo.nl/player/config?'+url)
-		try:
-			link = re.search('<file>([^<]+)',data).group(1)
-		#	hd = re.search('<hd\.state>([^<]+)',data).group(1)
-		#	if hd == 'true':
-		#		link = re.search('<hd\.file>([^<]+)',data).group(1)
-			return [link]
-		except:
-			pass
+def resolve(url):
+    m = _regex(url)
+    if not m == None:
+        url = re.sub('.*player.swf\?','',url)
+        data = util.request('http://www.zideo.nl/player/config?'+url)
+        try:
+            link = re.search('<file>([^<]+)',data).group(1)
+        #	hd = re.search('<hd\.state>([^<]+)',data).group(1)
+        #	if hd == 'true':
+        #		link = re.search('<hd\.file>([^<]+)',data).group(1)
+            return [{'url':link}]
+        except:
+            pass
 
 def _regex(url):
-	return re.search('http://(www\.)?zideo.nl/player.swf', url, re.IGNORECASE | re.DOTALL)
+    return re.search('http://(www\.)?zideo.nl/player.swf', url, re.IGNORECASE | re.DOTALL)

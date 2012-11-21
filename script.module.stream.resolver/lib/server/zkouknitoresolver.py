@@ -22,16 +22,16 @@
 import re,util
 __name__ = 'zkouknito'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	m = _regex(url)
-	if not m == None:
-		data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
-		f = re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL)
-		if f:
-			return [f.group(1)]
+def resolve(url):
+    m = _regex(url)
+    if not m == None:
+        data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
+        f = re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL)
+        if f:
+            return [{'url':f.group(1)}]
 
 def _regex(url):
-	return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)',url,re.IGNORECASE | re.DOTALL)

@@ -10,29 +10,19 @@ import re,util
 
 __name__='play.md'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
-# returns the steam url
-def url(link):
-	if _regex(link):
-		data = util.request(link)
-		url = re.search('base_url\: \"(?P<url>[^\"]+)',data)
-		file = re.search('file_name\: \"(?P<url>[^\"]+)',data)
-		res = re.search('resolutions\: \"(?P<url>[^\"]+)',data)
-		if url and file and res:
-			url = '%s/%s/%s' % (url.group('url'),res.group('url'),file.group('url'))
-			return [url]
 
 def resolve(link):
-	if _regex(link):
-		data = util.request(link)
-		url = re.search('base_url\: \"(?P<url>[^\"]+)',data)
-		file = re.search('file_name\: \"(?P<url>[^\"]+)',data)
-		res = re.search('resolutions\: \"(?P<url>[^\"]+)',data)
-		if url and file and res:
-			url = '%s/%s/%s' % (url.group('url'),res.group('url'),file.group('url'))
-			return [{'name':__name__,'quality':res.group('url'),'url':url,'surl':link,'subs':''}]
+    if _regex(link):
+        data = util.request(link)
+        url = re.search('base_url\: \"(?P<url>[^\"]+)',data)
+        file = re.search('file_name\: \"(?P<url>[^\"]+)',data)
+        res = re.search('resolutions\: \"(?P<url>[^\"]+)',data)
+        if url and file and res:
+            url = '%s/%s/%s' % (url.group('url'),res.group('url'),file.group('url'))
+            return [{'quality':res.group('url'),'url':url}]
 
 def _regex(url):
-	return re.search('play\.md',url,re.IGNORECASE | re.DOTALL)
+    return re.search('play\.md',url,re.IGNORECASE | re.DOTALL)
 

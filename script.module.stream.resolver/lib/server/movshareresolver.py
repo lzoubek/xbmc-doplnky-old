@@ -22,13 +22,14 @@
 import re,util
 __name__='movshare'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	if not _regex(url) == None:
-		data = util.substr(util.request(url),'<embed type=\"video/divx','>')
-		return [re.search('src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)]
+def resolve(url):
+    if not _regex(url) == None:
+        data = util.substr(util.request(url),'<embed type=\"video/divx','>')
+        stream = re.search('src=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+        return [{'url':stream}]
 
 def _regex(url):
-	return re.search('movshare.net/(.+?)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('movshare.net/(.+?)',url,re.IGNORECASE | re.DOTALL)

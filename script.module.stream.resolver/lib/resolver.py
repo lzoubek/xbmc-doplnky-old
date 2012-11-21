@@ -20,23 +20,6 @@
 
 import sys,os,util,re,traceback
 
-# dummy implementation of 2nd generation of resolving
-# this will be injected to each resolver, that does not have this method yet
-def _resolve(link):
-    resolved = []
-    streams = resolve(link)
-    if streams == None:
-        return None
-    for stream in streams:
-        item = {}
-        item['name'] = stream
-        item['url'] = stream
-        item['quality'] = '???'
-        item['surl'] = link
-        item['subs'] = ''
-        resolved.append(item)
-    return resolved
-
 sys.path.append( os.path.join ( os.path.dirname(__file__),'server') )
 
 RESOLVERS = []
@@ -48,31 +31,17 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
     exec 'import %s' % module
     resolver = eval(module)
     util.debug('found %s %s' % (resolver,dir(resolver)))
-    if not hasattr(resolver,'resolve'):
-        resolver.resolve = _resolve
+
+#    if not hasattr(resolver,'resolve'):
+#        resolver.resolve = _resolve
     RESOLVERS.append(resolver)
 del module
 util.debug('done')
 
+def item():
+    return {'name':'','url':'','quality':'','surl':'','subs':''}
 
-##
-# resolves given URL to list of streams 
-# @param url
-# @return [] iff resolver was found but failed
-# @return None iff no resolver was found
-# @return array of stream URL's 
 def resolve(url):
-    url = util.decode_html(url)
-    util.info('Resolving '+url)
-    resolver = _get_resolver(url)
-    if resolver == None:
-        return None
-    value = resolver.url(url)
-    if value == None:
-        return []
-    return value
-
-def resolve2(url):
     url = util.decode_html(url)
     util.info('Resolving '+url)
     resolver = _get_resolver(url)
@@ -86,10 +55,17 @@ def resolve2(url):
         traceback.print_exc()
     if value == None:
         return []
-    def fix_key(i):
-        if not 'subs' in i.keys():
-            i['subs'] = ''
-    [fix_key(i) for i in value]
+    default = item()
+    # fix  missing but required values 
+    def fix_stream(i,url,resolver,default):
+        if not 'name' in i.keys():
+            i['name'] = resolver.__name__
+        if not 'surl' in i.keys():
+            i['surl'] = url
+        for key in default.keys():
+            if not key in i.keys():
+                i[key] = default[key]
+    [fix_stream(i,url,resolver,default) for i in value]
     return sorted(value,key=lambda i:i['quality'])
 
 
@@ -123,7 +99,7 @@ def findstreams(data,regexes):
             util.info('Found resolvable %s ' % match.group('url'))
             resolvables[match.group('url')] = None
     for rurl in resolvables:        
-            streams = resolve2(rurl)
+            streams = resolve(rurl)
             if streams == []:
                 util.debug('There was an error resolving '+rurl)
                 error = True
@@ -194,7 +170,7 @@ def findstreams_multi(data,regexes):
     for regex in regexes:
         for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
             print 'Found resolvable %s ' % match.group('url')
-            streams = resolve2(match.group('url'))
+            streams = resolve(match.group('url'))
             if streams == []:
                 util.debug('There was an error resolving '+match.group('url'))
                 error = True

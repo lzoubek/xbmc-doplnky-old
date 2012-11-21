@@ -22,19 +22,19 @@
 import re,util
 __name__ = 'videoweed'
 def supports(data):
-	return not _regex(data) == None
+    return not _regex(data) == None
 
-def url(url):
-	if not _regex(url) == None:
-		data = util.request(url.replace('&#038;','&'))
-		data = util.substr(data,'flashvars','params')
-		domain = re.search('flashvars\.domain=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-		file = re.search('flashvars\.file=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-		key = re.search('flashvars\.filekey=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-		data = util.request('%s/api/player.api.php?key=%s&file=%s&user=undefined&codes=undefined&pass=undefined'% (domain,key,file))
-		m = re.search('url=(?P<url>[^\&]+)',data,re.IGNORECASE | re.DOTALL)
-		if not m == None:
-			return [m.group('url')]
+def resolve(url):
+    if not _regex(url) == None:
+        data = util.request(url.replace('&#038;','&'))
+        data = util.substr(data,'flashvars','params')
+        domain = re.search('flashvars\.domain=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+        file = re.search('flashvars\.file=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+        key = re.search('flashvars\.filekey=\"([^\"]+)',data,re.IGNORECASE | re.DOTALL).group(1)
+        data = util.request('%s/api/player.api.php?key=%s&file=%s&user=undefined&codes=undefined&pass=undefined'% (domain,key,file))
+        m = re.search('url=(?P<url>[^\&]+)',data,re.IGNORECASE | re.DOTALL)
+        if not m == None:
+            return [{'url':m.group('url')}]
 
 def _regex(data):
-	return re.search('http\://embed.videoweed.com(.+?)', data, re.IGNORECASE | re.DOTALL)
+    return re.search('http\://embed.videoweed.com(.+?)', data, re.IGNORECASE | re.DOTALL)

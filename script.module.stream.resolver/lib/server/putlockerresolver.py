@@ -37,7 +37,7 @@ def get_host(url):
 				
 				
 # returns the steam url
-def url(url):
+def resolve(url):
 	if not _regex(url) == None:
 		util.init_urllib()
 		web_url = get_host(url)
@@ -48,12 +48,12 @@ def url(url):
 			data = util.post(web_url,{'confirm':m.group('confirm'),'hash':m.group('hash')})
 			# now, we've got (flow)player
 			data = util.substr(data,'flowplayer(','</script>')
-			print data
 			n = re.search('playlist\: \'(?P<pls>[^\']+)',data,re.IGNORECASE | re.DOTALL)
 			if not n == None:
 				# now download playlist
 				xml = util.request('http://www.putlocker.com'+n.group('pls'))
-				return [re.search('url=\"([^\"]+)\" type=\"video',xml,re.IGNORECASE | re.DOTALL).group(1)]
+				stream = re.search('url=\"([^\"]+)\" type=\"video',xml,re.IGNORECASE | re.DOTALL).group(1)
+                return [{'url':stream}]
 				
 				
 def _regex(url):

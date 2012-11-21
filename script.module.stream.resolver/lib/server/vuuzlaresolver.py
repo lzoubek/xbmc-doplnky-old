@@ -10,20 +10,20 @@ import re,util
 
 __name__='vuuzla'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
-def url(url):
-	m = _regex(url)
-	if m:
-		data = util.request(url)
-		sid = re.search('sid=(?P<sid>[^\&]+)',data)
-		if sid:
-			data = util.request('http://www.vuuzla.com/app/deliver/playlist/%s?sid=%s' % (m.group('id'),sid.group('sid')))
-			link = re.search('<video.+?url=\"(?P<url>[^\"]+)',data)
-			if link:
-				return [link.group('url')]
+def resolve(url):
+    m = _regex(url)
+    if m:
+        data = util.request(url)
+        sid = re.search('sid=(?P<sid>[^\&]+)',data)
+        if sid:
+            data = util.request('http://www.vuuzla.com/app/deliver/playlist/%s?sid=%s' % (m.group('id'),sid.group('sid')))
+            link = re.search('<video.+?url=\"(?P<url>[^\"]+)',data)
+            if link:
+                return [{'url':link.group('url')}]
 
 def _regex(url):
-	return re.search('www\.vuuzla\.com.+?playerFrame/(?P<id>[^$]+)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('www\.vuuzla\.com.+?playerFrame/(?P<id>[^$]+)',url,re.IGNORECASE | re.DOTALL)
 

@@ -24,30 +24,6 @@ __name__ = 'vkontakte'
 def supports(url):
     return not _regex(url) == None
 
-def url(url):
-    if not _regex(url) == None:
-        data = util.request(url)
-        data = util.substr(data,'div id=\"playerWrap\"','<embed>')
-        if len(data) > 0:
-            host = re.search('host=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            oid = re.search('oid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            uid = re.search('uid=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            vtag = re.search('vtag=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            hd = re.search('hd_def=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            max_hd = re.search('hd=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            no_flv = re.search('no_flv=([^\&]+)',data,re.IGNORECASE | re.DOTALL).group(1)
-            url = '%su%s/videos/%s' % (host,uid,vtag)
-            if no_flv != '1':
-                return [url+'.flv']
-            if no_flv == '1':
-                res=int(hd)
-                if (max_hd):
-                    res = int(max_hd)
-                if res < 0:
-                    res=0
-                resolutions=['240','360','480','720','1080']
-                return [url+'.'+resolutions[res]+'.mp4']
-
 def resolve(link):
     if not _regex(link) == None:
         data = util.request(link)
