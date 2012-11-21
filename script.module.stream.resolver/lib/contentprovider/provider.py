@@ -40,6 +40,8 @@ class ContentProvider(object):
         self.name=name
         self.username=username
         self.password=password
+        if not base_url[-1] == '/':
+            base_url = base_url+'/'
         self.base_url=base_url
         self.filter = filter
         self.tmp_dir = tmp_dir
