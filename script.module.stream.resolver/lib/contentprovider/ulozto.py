@@ -198,7 +198,7 @@ class UloztoContentProvider(ContentProvider):
         sessid=[]
         for cookie in re.finditer('(ULOSESSID=[^\;]+)',headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL):
             sessid.append(cookie.group(1))
-        req.add_header('Cookie','uloz-to-id='+cid.group(1)+'; '+sessid[-1])
+        req.add_header('Cookie','uloztoid='+cid.group(1)+'; '+sessid[-1])
         try:
             resp = urllib2.urlopen(req)
             page = resp.read()
@@ -215,7 +215,7 @@ class UloztoContentProvider(ContentProvider):
         stream = self.rh.location
         # we did not get 302 but 200
         if stream == None:
-            util.debug('Captcha was invalid, retrying..')
+            util.info('Captcha was invalid, retrying..')
             return self._get_file_url_anonymous(page,post_url,headers,captcha_cb)
         if stream.find('full=y') > -1:
             util.error('[uloz.to] - out of free download slots, use payed account or try later')
