@@ -64,15 +64,9 @@ class XBMCHellspyContentProvider(xbmcprovider.XBMCLoginRequiredContentProvider):
 
 	def render_default(self,item):
 		params = self.params()
-		if item['type'] == 'nejstahovanejsi-soubory':
+		if item['type'] == 'top':
 			params.update({'list':item['url']})
-			xbmcutil.add_dir(__language__(30053),params,xbmcutil.icon('top.png'))
-		if item['type'] == 'currentdownloads':
-			params.update({'list':item['url']})
-			xbmcutil.add_dir(__language__(30054),params,xbmcutil.icon('top.png'))
-		if item['type'] == 'favourites':
-			params.update({'list':item['url']})
-			xbmcutil.add_dir(__language__(30055),params,xbmcutil.icon('top.png'))
+			xbmcutil.add_dir(item['title'],params,xbmcutil.icon('top.png'))
 
 	def render_video(self,item):
 		params = self.params()
@@ -109,7 +103,7 @@ if __settings__('ulozto_enabled') == 'true':
 	extra.update(settings)
 	providers[p.name] = xbmcprovider.XBMCLoginOptionalContentProvider(p,extra,__addon__)
 if __settings__('hellspy_enabled') == 'true':
-	p = hellspy.HellspyContentProvider(__settings__('hellspy_user'),__settings__('hellspy_pass'))
+	p = hellspy.HellspyContentProvider(__settings__('hellspy_user'),__settings__('hellspy_pass'),site_url=__settings__('hellspy_site_url'))
 	extra = {
 			'keep-searches':__settings__('hellspy_keep-searches')
 	}

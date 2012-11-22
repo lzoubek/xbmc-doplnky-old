@@ -21,6 +21,7 @@
 	</category>
 	<category label="30011">
 		<setting label="30002" id="hellspy_enabled" type="bool" default="true" />
+    <setting label="30013" id="hellspy_site_url" type="text" default="http://hellspy.cz" />
 		<setting label="30000" id="hellspy_keep-searches" type="text" default="20" />
 		<setting label="30007" id="hellspy_user" type="text" default="" />
 		<setting label="30008" id="hellspy_pass" type="text" default="" option="hidden" />
