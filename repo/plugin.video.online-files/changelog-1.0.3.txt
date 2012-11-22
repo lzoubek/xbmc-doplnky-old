@@ -1,0 +1,13 @@
+[B]1.0.3:[/B]
+- přidáno nové nastavení pro hellspy pro možnost použití slovenského mirroru http://stiahnito.sk
+- oprava přehrávání/stahování y ulozto
+- oprava zobrazování captcha na windows (bezvadata)
+[B]1.0.2:[/B]
+- verze++ kvuli update v stream.resolveru
+[B]1.0.1:[/B]
+- oprava stahování z bezvadata (zatím bez přihlášení)
+- přidáno logování, hlavně na ulozto
+- oprava hromadného vyhledávání, kdy chyba na některém servru neblokuje 
+vyhledávání na jiných
+[B]1.0.0:[/B]
+Initial version
