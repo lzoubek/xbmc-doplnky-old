@@ -26,8 +26,8 @@ from provider import ContentProvider
 
 class HellspyContentProvider(ContentProvider):
 
-    def __init__(self,username=None,password=None,filter=None):
-        ContentProvider.__init__(self,'hellspy.cz','http://hellspy.cz/',username,password,filter)
+    def __init__(self,username=None,password=None,filter=None,site_url='http://hellspy.cz/'):
+        ContentProvider.__init__(self,'hellspy.cz',site_url,username,password,filter)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
 
@@ -116,21 +116,16 @@ class HellspyContentProvider(ContentProvider):
 
     def categories(self):
         result = []
-
-        item = self.dir_item()
-        item['type'] = 'nejstahovanejsi-soubory'
-        item['url'] = 'nejstahovanejsi-soubory'
-        result.append(item)
-
-        item = self.dir_item()
-        item['type'] = 'currentdownloads'
-        item['url'] = 'currentdownloads'
-        result.append(item)
-
-        item = self.dir_item()
-        item['type'] = 'favourites'
-        item['url'] = 'ucet/favourites'
-        result.append(item)
+        page = util.request(self.base_url)
+        data = util.substr(page,'<div id=\"layout-menu','</div')
+        index = 0
+        for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^>]+>(?P<title>[^<]+)',data):
+            if index > 0 and index <= 3:
+                item = self.dir_item()
+                item['title'] = m.group('title')
+                item['url'] = m.group('url')
+                result.append(item)
+            index +=1
         return result
 
     def resolve(self,item,captcha_cb=None):
