@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.online-files"
        name="Soubory Online"
-       version="1.0.2"
+       version="1.0.3"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.3.3"/>
+    <import addon="script.module.stream.resolver" version="1.3.9"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -13,8 +13,8 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">movie-library.cz</summary>
-    <summary lang="cs">movie-library.cz</summary>
+    <summary lang="en">Files Online</summary>
+    <summary lang="cs">Soubory Online</summary>
     <description lang="en">Get access to various czech filesharing services</description>
     <description lang="cs">Získejte přístup k různým file-sharingovým službám</description>
     <platform>all</platform>
