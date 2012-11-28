@@ -67,8 +67,7 @@ class UloztoContentProvider(ContentProvider):
     def list(self,url):
         url = self._url(url)
         page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest','Referer':url,'Cookie':'uloz-to-id=1561277170;'})
-
-        script = util.substr(page,'</ul>','</script>')
+        script = util.substr(page,'var kn','</script>')
         keymap = None
         key = None
         k = re.search('{([^\;]+)"',script,re.IGNORECASE | re.DOTALL)
@@ -78,6 +77,7 @@ class UloztoContentProvider(ContentProvider):
         if j:
             key = j.group(1)
         if not (j and k):
+            self.error('error parsing page - unable to locate keys')
             return []
         burl = b64decode('I2h0dHA6Ly9jcnlwdG8tenNlcnYucmhjbG91ZC5jb20vYXBpL3YyL2RlY3J5cHQvP2tleT0lcyZ2YWx1ZT0lcwo=')
         data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
