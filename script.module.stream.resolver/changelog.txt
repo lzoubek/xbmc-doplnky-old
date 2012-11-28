@@ -1,3 +1,7 @@
+[B]1.3.10:[/B]
+- fixed #127 - searching does not work on frodo beta1
+- fixed ulozto to show search results again
+- fixed sledujuserialy resolver (to resolve mp4 videos)
 [B]1.3.9:[/B]
 - got rid of old resolver API
 - fixed ulozto provider to be able to retrieve non-VIP files again
