@@ -29,7 +29,7 @@ def resolve(url):
     if not m == None:
         data = util.request(url)
         if data.find('jwplayer(\'mediaplayer') > 0:
-            video = re.search('\'file\'\: \'(?P<url>.+?flv)',data)
+            video = re.search('\'file\'\: \'(?P<url>.+?[flv|mp4])',data)
             if video:
                 item = {}
                 item['url'] = video.group('url')
