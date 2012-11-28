@@ -70,7 +70,7 @@ class XBMContentProvider(object):
 
     def search_list(self):
         params = self.params()
-        params.update({'search':''})
+        params.update({'search':'#'})
         menuItems = self.params()
         xbmcutil.add_dir(xbmcutil.__lang__(30004),params,xbmcutil.icon('search.png'))
         for what in xbmcutil.get_searches(self.addon,self.provider.name):
@@ -84,7 +84,7 @@ class XBMContentProvider(object):
         xbmc.executebuiltin('Container.Refresh')
 
     def do_search(self,what):
-        if what == '':
+        if what == '' or what == '#':
             kb = xbmc.Keyboard('',xbmcutil.__lang__(30003),False)
             kb.doModal()
             if kb.isConfirmed():
@@ -102,7 +102,7 @@ class XBMContentProvider(object):
     def root(self):
         if 'search' in self.provider.capabilities():
             params = self.params()
-            params.update({'search-list':''})
+            params.update({'search-list':'#'})
             xbmcutil.add_dir(xbmcutil.__lang__(30003),params,xbmcutil.icon('search.png'))
         xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))	
         self.list(self.provider.categories())
