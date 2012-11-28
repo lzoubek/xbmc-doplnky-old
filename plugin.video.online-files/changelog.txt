@@ -1,3 +1,5 @@
+[B]1.0.4:[/B]
+- verze++ kvuli update v stream.resolveru
 [B]1.0.3:[/B]
 - přidáno nové nastavení pro hellspy pro možnost použití slovenského mirroru http://stiahnito.sk
 - oprava přehrávání/stahování y ulozto
