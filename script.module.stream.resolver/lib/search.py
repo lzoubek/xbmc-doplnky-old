@@ -30,7 +30,7 @@ def _list(addon,history,key,value):
 	if key:
 		params[key] = value
 		menuItems[key] = value
-	params['search'] = ''
+	params['search'] = '#'
 	xbmcutil.add_dir(xbmcutil.__lang__(30004),params,xbmcutil.icon('search.png'))
 	for what in xbmcutil.get_searches(addon,history):
 		params['search'] = what
@@ -43,7 +43,7 @@ def _remove(addon,history,search):
 	xbmc.executebuiltin('Container.Refresh')
 
 def _search(addon,history,what,update_history,callback):
-	if what == '':
+	if what == '' or what == '#':
 		kb = xbmc.Keyboard('',xbmcutil.__lang__(30003),False)
 		kb.doModal()
 		if kb.isConfirmed():
@@ -60,7 +60,7 @@ def _search(addon,history,what,update_history,callback):
 		callback(what)
 
 def item(items={},label=xbmcutil.__lang__(30003)):
-	items['search-list'] = ''
+	items['search-list'] = '#'
 	xbmcutil.add_dir(label,items,xbmcutil.icon('search.png'))
 
 def main(addon,history,p,callback,key=None,value=None):
