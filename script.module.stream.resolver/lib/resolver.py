@@ -32,10 +32,11 @@ for module in os.listdir(os.path.join(os.path.dirname(__file__),'server')):
     resolver = eval(module)
     util.debug('found %s %s' % (resolver,dir(resolver)))
 
-#    if not hasattr(resolver,'resolve'):
-#        resolver.resolve = _resolve
+    if not hasattr(resolver,'__priority__'):
+        resolver.__priority__ = 0
     RESOLVERS.append(resolver)
 del module
+RESOLVERS = sorted(RESOLVERS,key=lambda m: -m.__priority__)
 util.debug('done')
 
 def item():

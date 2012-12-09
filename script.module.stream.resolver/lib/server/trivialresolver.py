@@ -8,6 +8,7 @@
 # */
 import re
 __name__='simple'
+__priority__ = -1
 def supports(url):
     return not _regex(url) == None
 
