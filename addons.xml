@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.3.10"
+       version="1.3.11"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -155,11 +155,11 @@
 
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.3.7"/>
+    <import addon="script.module.stream.resolver" version="1.3.11"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -415,12 +415,9 @@
 </addon>
 
 <addon id="repository.xbmc.doplnky"
-       version="1.0.2"
+       version="1.0.3"
        name="XBMC Doplňky (CZ &amp; SK)"
        provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.addon" version="0.1"/>
-  </requires>
   <extension point="xbmc.addon.repository"
               name="repozitář českých a slovenských doplňků">
     <info compressed="false">http://xbmc-doplnky.googlecode.com/git/addons.xml</info>
@@ -430,14 +427,10 @@
   <extension point="xbmc.addon.metadata">
     <summary>XBMC Doplňky (CZ &amp; SK)</summary>
     <description>
-    	This repository contains mostly video addons for czech users.
-
-	Please send feedback, patches or fire any issues on http://xbmc-doplnky.googlecode.com
+    	This repository contains mostly video addons for czech users. [CR] Please send feedback, patches or fire any issues on http://xbmc-doplnky.googlecode.com
     </description>
     <description lang="cs">
-    	Tento repozitář obsahuje video doplňky pro česky a slovensky mluvící uživatele.
-
-	Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte http://xbmc-doplnky.googlecode.com.
+    	Tento repozitář obsahuje video doplňky pro česky a slovensky mluvící uživatele.[CR] Máte-li jakékoliv poznámky, náměty, doplňky k začlenění nebo chcete nahlásit chybu, navštivte http://xbmc-doplnky.googlecode.com.
     </description>
     <platform>all</platform>
   </extension>
