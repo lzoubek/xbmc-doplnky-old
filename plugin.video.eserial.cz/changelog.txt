@@ -1,4 +1,7 @@
 [B]1.0.3:[/B]
+- přidány 'Nejnovější episody'
+- přidána podpora přehrávání dalšího zrdoje (eserial)
+[B]1.0.3:[/B]
 - oprava listovani epizod
 [B]1.0.2:[/B]
 - migrace na stream.resolver 1.0.3
