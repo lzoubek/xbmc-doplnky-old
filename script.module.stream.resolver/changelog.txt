@@ -1,3 +1,8 @@
+[B]1.3.11:[/B]
+- sledujuserialy resolver resolves mp4 videos as well
+- fixed #127 - searching does not work on frodo beta1
+- added eserialresolver
+- resolvers have now priority (higher=resolver is asked fist)
 [B]1.3.10:[/B]
 - fixed #127 - searching does not work on frodo beta1
 - fixed ulozto to show search results again
