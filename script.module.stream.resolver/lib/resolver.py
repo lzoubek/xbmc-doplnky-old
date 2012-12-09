@@ -40,7 +40,7 @@ RESOLVERS = sorted(RESOLVERS,key=lambda m: -m.__priority__)
 util.debug('done')
 
 def item():
-    return {'name':'','url':'','quality':'','surl':'','subs':''}
+    return {'name':'','url':'','quality':'???','surl':'','subs':''}
 
 def resolve(url):
     url = util.decode_html(url)
