@@ -31,98 +31,47 @@ class HejbejseContentProvider(ContentProvider):
 	do=''
 
 	def __init__(self,username=None,password=None,filter=None):
-		ContentProvider.__init__(self,'hejbejse.tv','http://www.hejbejse.tv/',username,password,filter)
+		ContentProvider.__init__(self,'hejbejse.tv','http://www.kynychova.cz/',username,password,filter)
 		opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['resolve','cagegories']
+		return ['resolve','categories']
 		
 		
 	def categories(self):
 		result = []
-		item=self.dir_item()
-		item['title']='[B]Oblíbená videa[/B]'
-		item['url']  = '#pop#'+self.base_url
-		result.append(item)
 		#
-		item=self.dir_item()
-		item['title']='[B]Poslední videa[/B]'
-		item['url']  = '#last#'+self.base_url
-		result.append(item)
-		#
-
-		data = util.substr(util.request(self.base_url),'</b> PROGRAMY</h3>','<div class="clear">')
+		data = util.substr(util.request(self.base_url+'index.php?id=17'),'<div id="sidebar">','</div>')
 		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			item = self.dir_item()
+			item = self.video_item()
 			item['title'] = m.group('name')
-			item['url'] = '#cat#'+m.group('url')
+			item['url'] = m.group('url')
 			result.append(item)
 		return result
 		
-	def episodes(self,page):
-		result = []
-		data = util.substr(page,self.od,self.do)
-		pattern = '<a href=\"(?P<url>.+?)\"[\s|\S]*?<img.*?src=\"(?P<img>.+?)\"[\s|\S]*?<strong[^>]+>(?P<name>.*?)</strong>' 
-		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			if (m.group('name')==''): 
-				name='---'
-			else:
-				name=m.group('name')
-			
-			item = self.video_item()
-			#item['title'] = m.group('name')
-			item['title'] = name
-			item['url'] = m.group('url')
-			item['img'] = self._url(m.group('img'))
-			self._filter(result,item)
-		return result
-
-	
-	def list(self,url):
-		if url.find('#cat#') == 0:
-			self.od='<h3 class=\"title\"><b>hejbejseTV</b> </h3>'
-			self.do='</table>'
-                        return self.episodes(util.request(self._url(url[5:])))
-		if url.find('#pop#') == 0:
-			self.od='</b> Oblíbená videa</h3>'
-			self.do='</table>'
-                        return self.episodes(util.request(self._url(url[:5])))
-		if url.find('#last#') == 0:
-			self.od='</b> Poslední videa</h3>'
-			self.do='</table>'
-                        return self.episodes(util.request(self._url(url[:6])))
-		else:
-                        raise Expception("Invalid url, I do not know how to list it :"+url)
-
-                        
+                       
 	
 	def resolve(self,item,captcha_cb=None,select_cb=None):
 		item = item.copy()
 		url = self._url(item['url'])
-		hdata = util.request(url)
-		
-		data = util.substr(hdata,'<div class="content_scroller">','<p>')
-		name = 'Film'
-		for m in re.finditer('<h2>(?P<name>.+?)</h2>',data,re.IGNORECASE | re.DOTALL ):
-			name = "%s" % (m.group('name'))
-		
-		data = util.substr(hdata,'function startVideo','plugins: ')
-		resolved = resolver.findstreams(data,['url:.*\"(?P<url>.+?)\",'])
-		
+		data = util.request(url)
+		data = util.substr(data,'<div id="content">','<div class="clear">')
+		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
                 result = []
-		for i in resolved:
-                        item = self.video_item()
-                        #item['title'] = i['name']
-                        item['title'] = name
-                        item['url'] = i['url'].replace(' ','%20')
-                        item['quality'] = i['quality']
-                        item['surl'] = i['surl']
-                        result.append(item)  
+                try:
+			for i in resolved:
+				item = self.video_item()
+				item['title'] = i['name']
+				item['url'] = i['url']
+				item['quality'] = i['quality']
+				item['surl'] = i['surl']
+				result.append(item)  
+		except:
+			print '===Unknown resolver==='
+			
                 if len(result)==1:
                         return result[0]
                 elif len(result) > 1 and select_cb:
                         return select_cb(result)
-	
-
