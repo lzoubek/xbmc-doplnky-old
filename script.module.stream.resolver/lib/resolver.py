@@ -80,6 +80,11 @@ def _get_resolver(url):
 # returns true iff we are able to resolve stream by given URL
 def can_resolve(url):
     return not _get_resolver(url) == None
+
+def filter_resolvable(url):
+    if url.find('facebook') > 0 or url.find('yield') > 0:
+        return
+    return url.strip('\'\"')
 ##
 # finds streams in given data according to given regexes
 # respects caller addon's setting about quality, asks user if needed
@@ -97,8 +102,10 @@ def findstreams(data,regexes):
     error = False
     for regex in regexes:
         for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
-            util.info('Found resolvable %s ' % match.group('url'))
-            resolvables[match.group('url')] = None
+            url = filter_resolvable(match.group('url'))
+            if url:
+                util.info('Found resolvable %s ' % url)
+                resolvables[url] = None
     for rurl in resolvables:        
             streams = resolve(rurl)
             if streams == []:
@@ -114,7 +121,7 @@ def findstreams(data,regexes):
         return {}
     resolved = sorted(resolved,key=lambda i:i['quality'])
     resolved = sorted(resolved,key=lambda i:len(i['quality']))
-    resolved.reverse()
+ #   resolved.reverse()
     return resolved
 
 q_map = {'3':'720p','4':'480p','5':'360p'}
@@ -125,6 +132,7 @@ def filter_by_quality(resolved,q):
         return resolved
     sources = {}
     ret = []
+    # first group streams by source url
     for item in resolved:
         if item['surl'] in sources.keys():
             sources[item['surl']].append(item)
@@ -139,6 +147,7 @@ def filter_by_quality(resolved,q):
         for key in sources.keys():
             ret.append(sources[key][0])
     else:
+        # we try to select sources of desired qualities
         quality = q_map[q]
         # 3,4,5 are 720,480,360
         for key in sources.keys():
@@ -150,6 +159,10 @@ def filter_by_quality(resolved,q):
             if not added:
                 util.debug('Desired quality %s not found, adding best found'%quality)
                 ret.append(sources[key][-1])
+    # sort results again, so best quality streams appear first
+    ret = sorted(ret,key=lambda i:i['quality'])
+    if not q == '2': # no need to reverse if user wants worst quality
+        ret.reverse()
     return ret
 
 

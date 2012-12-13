@@ -213,8 +213,10 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
 
     def resolve(self,url):
         def select_cb(resolved):
-            resolved = resolver.filter_by_quality(resolved,self.settings['quality'] or '0')
-            if len(resolved) == 1:
+            quality = self.settings['quality'] or '0'
+            resolved = resolver.filter_by_quality(resolved,quality)
+            # if user requested something but 'ask me' or filtered result is exactly 1
+            if len(resolved) == 1 or int(quality) > 0:
                 return resolved[0]
             dialog = xbmcgui.Dialog()
             ret = dialog.select(xbmcutil.__lang__(30005), ['%s [%s]'%(r['title'],r['quality']) for r in resolved])
