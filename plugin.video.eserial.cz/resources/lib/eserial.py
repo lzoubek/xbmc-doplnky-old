@@ -133,6 +133,7 @@ class EserialContentProvider(ContentProvider):
             item['url'] = i['url']
             item['quality'] = i['quality']
             item['surl'] = i['surl']
+            item['subs'] = i['subs']
             result.append(item)	
         if len(result)==1:
             return result[0]
