@@ -15,8 +15,12 @@ def supports(url):
 def resolve(url):
     m = _regex(url)
     if m:
-        print 'yes'
-        return [{'url':m.group('url')}]
+        stream = re.search('(?P<url>.+?)(\&|$)',m.group('url')).group('url')
+        show = re.search('serial=(?P<url>.+?)(\&|$)',m.group('url'))
+        tit = re.search('srt=(?P<url>.+?)(\&|$)',m.group('url'))
+        if show and tit:
+            return [{'url':stream,'subs':'http://www.eserial.cz/%s/tits/%s.srt' % (show.group('url'),tit.group('url'))}]
+        return [{'url':stream}]
 
 def _regex(url):
     return re.search('eserial\.cz/video\.php\?file=(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)

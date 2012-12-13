@@ -121,7 +121,7 @@ def findstreams(data,regexes):
         return {}
     resolved = sorted(resolved,key=lambda i:i['quality'])
     resolved = sorted(resolved,key=lambda i:len(i['quality']))
- #   resolved.reverse()
+    resolved.reverse()
     return resolved
 
 q_map = {'3':'720p','4':'480p','5':'360p'}
@@ -141,11 +141,11 @@ def filter_by_quality(resolved,q):
     if q == '1':
         # always return best quality from each source
         for key in sources.keys():
-            ret.append(sources[key][-1])
+            ret.append(sources[key][0])
     elif q == '2':
         #always return worse quality from each source
         for key in sources.keys():
-            ret.append(sources[key][0])
+            ret.append(sources[key][-1])
     else:
         # we try to select sources of desired qualities
         quality = q_map[q]
@@ -161,8 +161,9 @@ def filter_by_quality(resolved,q):
                 ret.append(sources[key][-1])
     # sort results again, so best quality streams appear first
     ret = sorted(ret,key=lambda i:i['quality'])
-    if not q == '2': # no need to reverse if user wants worst quality
+    if not q == '2':
         ret.reverse()
+    print ret
     return ret
 
 
