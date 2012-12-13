@@ -36,10 +36,10 @@ class SledujuserialyContentProvider(ContentProvider):
 
     def categories(self):
         result = []
-#		item = self.dir_item()
-#		item['type'] = 'new'
-#		item['url'] = 'category/new-episode'
-#		result.append(item)
+        item = self.dir_item()
+        item['type'] = 'new'
+        item['url'] = 'simpsonovi/dnes-pridane'
+        result.append(item)
         page = util.request(self.base_url)
         data = util.substr(page,'<h2 class=\"vyber_serialu','<div class=\"levy_blok')
         pattern='<div.+?class=\"menu_click\" onclick=\"[^\']+\'(?P<url>[^\']+).+?<div.+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
@@ -50,9 +50,24 @@ class SledujuserialyContentProvider(ContentProvider):
             result.append(item)
         return result
 
+    def list_new(self,url):
+        result = []
+
+        page = util.request(self._url(url))
+        data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
+        pattern = '<div title=\"(?P<name>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?src=\"(?P<img>[^\"]+)'
+        for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+            item = self.video_item()
+            item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
+            item['url'] = m.group('url')
+            item['img'] = self._url(m.group('img'))
+            self._filter(result,item)
+        return result
 
     def list(self,url):
         result = []
+        if url.find('dnes-pridane') > 0:
+            return self.list_new(url)
         page = util.request(self._url(url))
         data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
         pattern = '<div style=\"background-image\: url\((?P<img>[^\)]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?title=\"(?P<name>[^\"]+)'
