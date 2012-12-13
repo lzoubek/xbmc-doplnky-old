@@ -1,0 +1,4 @@
+[B]1.0.1:[/B]
+- přidán seznam dnes přidaných dílů
+[B]1.0.0:[/B]
+Initial version
