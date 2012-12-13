@@ -1,4 +1,6 @@
-[B]1.0.3:[/B]
+[B]1.0.5:[/B]
+- podpora titulku
+[B]1.0.4:[/B]
 - přidány 'Nejnovější episody'
 - přidána podpora přehrávání dalšího zrdoje (eserial)
 [B]1.0.3:[/B]
