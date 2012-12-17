@@ -29,7 +29,6 @@ class RajfilmyContentProvider(ContentProvider):
 	
 	od=''
 	do=''
-	serial=False
 
 	def __init__(self,username=None,password=None,filter=None):
 		ContentProvider.__init__(self,'rajfilmy.cz','http://www.rajfilmy.cz/',username,password,filter)
@@ -37,44 +36,45 @@ class RajfilmyContentProvider(ContentProvider):
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['resolve','categories']
+		return ['resolve','categories','search']
 		
-	def getInfo(self,link):
-		data = util.request(link)
-		data = util.substr(data,'<p id=\"file_rating\">','<div class=\"clear\">')
-		pattern = 'id=\"file_rating\">(?P<rating>.+?)</p>[\s|\S]*?<p>(?P<info>.+?)</p>[\s|\S]*?<p class=\"file_info\">Přidáno: (?P<date>.+?)</p>'
-		m = re.search(pattern, data, re.IGNORECASE | re.DOTALL)
-		if not m == None:
-			return m.group('rating'),m.group('info'),m.group('date')
-		else:
-			return '','',''
+	def search(self,keyword):
+		data = util.post(self._url('search.php'),{'t':keyword,'submit':'Hledat'})
+                return self.film(data)
+		
 		
 	def film(self,page):
 		result=[]
-		if self.serial:
-			data = util.substr(page,'<div class=\"content_box\">','<div class=\"clear\"></div>')
-		else:
-			data = util.substr(page,'<div class=\"kategorie_box\">','<div id=\"menu_prave\">')
-		pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+		data = util.substr(page,'<div id="main_contents">','<div class="category_outer">')
+		pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)[\s|\S]*?<p class=\"popis\">(?P<info>.+?)</p>[\s|\S]*?<div class=\"rok2\">(?P<year>.*?)</div>[\s|\S]*?<div class=\"zanr2\">(?P<genre>.+?)</div>'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			if self.serial: 
-				item = self.dir_item()
-				item['url'] = '#film#'+m.group('url')
-			else:
-				item = self.video_item()
-				item['url'] = m.group('url')
-				
+			item = self.video_item()
+			item['url']   = m.group('url')
 			item['title'] = m.group('name')
-			item['img'] = m.group('img')
+			item['img']   = m.group('img')
+			'''
+			item['plot']  = m.group('info')
+			try:
+				item['year']  = int(m.group('year'))
+			except:
+				pass
+			item['genre'] = m.group('genre')
+			'''
 			result.append(item)
-			
-		data = util.substr(page,'<div class=\"pagination\">','</div>')
+		
+		pg='long'
+		if page.find('<div class="arrow_nav">')>0:
+			data = util.substr(page,'<div class="arrow_nav">','</div>')
+			pg='small'
+		else:
+			data = util.substr(page,'<div class=\"pagination\">','</div>')
 		pattern = '<a[\s|\S]*?href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			
 			if m.group('name') == '&rsaquo;':
 				#print '--dalsi strana'
 				next_page = m.group('url')[41:].replace('.html','')
+				next_page = next_page.replace('/','')
 				next_url  = m.group('url')
 			if m.group('name') == '&lrsaquo':
 				#print '--predchozi strana'
@@ -82,11 +82,17 @@ class RajfilmyContentProvider(ContentProvider):
 			if m.group('name')== '&rsaquo;&rsaquo;':
 				#print '--posledni strana'
 				last_page = m.group('url')[41:].replace('.html','')
-			
+				last_page = last_page.replace('/','')
+			if m.group('name') == 'Další &gt;':
+				next_page = 'Další >>'
+				next_url  = m.group('url').replace('&amp;','&')
 		try:	
 			
 			item = self.dir_item()
-			item['title'] = 'Přejít na stranu '+ next_page+' z '+ str(last_page)
+			if pg=='long':
+				item['title'] = 'Přejít na stranu '+ next_page+' z '+ str(last_page)
+			else:
+				item['title'] = next_page
 			item['url'] = '#film#'+next_url
 			result.append(item)
 			
@@ -94,59 +100,81 @@ class RajfilmyContentProvider(ContentProvider):
 			pass
 		
 		return result
+		
+	def cat_det(self,page):
+		result = []
 
+		data = util.substr(page,'<ul class="nav_menu">','</div>')
+		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
+		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
+			item = self.dir_item()
+			item['title'] = m.group('name')
+			item['url'] = '#film#'+m.group('url')
+			result.append(item)
+		
+		return result
 	
 	def categories(self):
 		result = []
 
 		item = self.dir_item()
 		item['type'] = 'top'
-		item['url']  = '#pop#'+self.base_url
+		item['url']  = '#top#'+self.base_url
 		result.append(item)
 		
 		item = self.dir_item()
 		item['type'] = 'new'
-		item['url']  = '#last#'+self.base_url
+		item['url']  = '#new#'+self.base_url
 		result.append(item)
-		
+
 		item=self.dir_item()
-		item['title']='Filmy'
-		item['url']  = '#film#'+self._url('kategorie/7/Filmy/1.html')
+		item['title']='Kategorie filmu'
+		item['url']  = '#cat#'+self.base_url
 		result.append(item)
-		
-		item=self.dir_item()
-		item['title']='Serialy'
-		item['url']  = '#serial#'+self._url('kategorie/17/Seriály/1.html')
-		result.append(item)
+
+		data = util.substr(util.request(self.base_url),'<div class="kategorie">Kategorie</div>','<!-- BLUEBOARD SHOUTBOARD -->')
+		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
+		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
+			if m.group('url').find('rnotéka')>0:
+				continue
+			item = self.dir_item()
+			item['title'] = m.group('name')
+			if (m.group('url').find('Filmy')>0) or (m.group('url').find('Děti')>0):
+				item['url'] = '#film#'+self._url(m.group('url'))
+			else:
+				#item['url'] = '#serial#'+m.group('url')
+				continue
+			#item['url'] = '#none#'+m.group('url')
+			result.append(item)
 		
 		return result
+		
 		
 	def episodes(self,page):
 		result = []
 		data = util.substr(page,self.od,self.do)
-		pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)' 
+		pattern = '<img src="(?P<img>.+?)".+?/>[\s|\S]*?<a.+?href="(?P<url>.+?)">(?P<name>.+?)</a>'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			item = self.video_item()
 			item['title'] = m.group('name')
 			item['url'] = m.group('url')
+			item['img'] = m.group('img')
 			result.append(item)
 		return result
 	
 	def list(self,url):
+		if url.find('#cat#') == 0:
+                        return self.cat_det(util.request(self._url(url[5:])))
 		if url.find('#film#') == 0:
-			self.serial=False
                         return self.film(util.request(self._url(url[6:])))
-		if url.find('#serial#') == 0:
-			self.serial=True
-                        return self.film(util.request(self._url(url[8:])))
-		if url.find('#pop#') == 0:
-			self.od='<div class=\"content_box_nejpopul\">'
-			self.do='</div>'
+		if url.find('#top#') == 0:
+			self.od='<div class="content_box_nejpopul">'
+			self.do='<div class="rozdeleni">Nejnovější</div>'
                         return self.episodes(util.request(self._url(url[:5])))
-		if url.find('#last#') == 0:
-			self.od='<div class=\"content_box_nejnovejsi\"><ol>'
-			self.do='</div>'
-                        return self.episodes(util.request(self._url(url[:6])))
+		if url.find('#new#') == 0:
+			self.od='<div class="content_box_nejnovejsi">'
+			self.do='<div class="rozdeleni">Top uživatelé</div>'
+                        return self.episodes(util.request(self._url(url[:5])))
 		else:
                         raise Expception("Invalid url, I do not know how to list it :"+url)
 
@@ -163,10 +191,9 @@ class RajfilmyContentProvider(ContentProvider):
 		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','(?P<url>\"http://www.youtube.com/[^\"]+)'])
                 result = []
 		for i in resolved:
-			print i
                         item = self.video_item()
                         item['title'] = i['name']
-                        item['url'] = i['url']
+                        item['url'] = i['url'] 
                         item['quality'] = i['quality']
                         item['surl'] = i['surl']
                         result.append(item)  
