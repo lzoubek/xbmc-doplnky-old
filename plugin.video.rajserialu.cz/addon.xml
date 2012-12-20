@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.rajfilmy.cz"
-       name="Rajfilmy.cz"
-       version="1.0.2"
+<addon id="plugin.video.rajserialu.cz"
+       name="Rajserialu.cz"
+       version="1.0.0"
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -13,10 +13,10 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">rajfilmy.cz</summary>
-    <summary lang="cs">rajfilmy.cz</summary>
-    <description lang="en">Watch online www.rajfilmy.cz</description>
-    <description lang="cs">Sledujte online www.rajfilmy.cz</description>
+    <summary lang="en">rajserialu.cz</summary>
+    <summary lang="cs">rajserialu.cz</summary>
+    <description lang="en">Watch online www.rajserialu.cz</description>
+    <description lang="cs">Sledujte online www.rajserialu.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
