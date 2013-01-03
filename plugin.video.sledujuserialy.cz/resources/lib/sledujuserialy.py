@@ -38,46 +38,49 @@ class SledujuserialyContentProvider(ContentProvider):
         result = []
         item = self.dir_item()
         item['type'] = 'new'
-        item['url'] = 'simpsonovi/dnes-pridane'
+        item['url'] = 'simpsonovi/nejnovejsi'
         result.append(item)
         page = util.request(self.base_url)
         data = util.substr(page,'<h2 class=\"vyber_serialu','<div class=\"levy_blok')
         pattern='<div.+?class=\"menu_click\" onclick=\"[^\']+\'(?P<url>[^\']+).+?<div.+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.dir_item()
-            item['title'] = m.group('name').decode('windows-1250').encode('utf-8').strip()
+#            item['title'] = m.group('name').decode('windows-1250').encode('utf-8').strip()
+            item['title'] = m.group('name').strip()
             item['url'] = m.group('url')
             result.append(item)
         return result
 
     def list_new(self,url):
         result = []
-
-        page = util.request(self._url(url))
-        data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
-        pattern = '<div title=\"(?P<name>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?src=\"(?P<img>[^\"]+)'
-        for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-            item = self.video_item()
-            item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
-            item['url'] = m.group('url')
-            item['img'] = self._url(m.group('img'))
-            self._filter(result,item)
+        for lasturl in ['simpsonovi/nejnovejsi','simpsonovi/nejnovejsi/vcera','simpsonovi/nejnovejsi/predevcirem']:
+            page = util.request(self._url(lasturl))
+            data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
+            pattern = '<div title=\"(?P<name>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?src=\"(?P<img>[^\"]+)'
+            for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+                item = self.video_item()
+#                item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
+                item['title'] = m.group('name')
+                item['url'] = m.group('url')
+                item['img'] = self._url(m.group('img'))
+                self._filter(result,item)
         return result
 
     def list(self,url):
         result = []
-        if url.find('dnes-pridane') > 0:
+        if url.find('nejnovejsi') > 0:
             return self.list_new(url)
         page = util.request(self._url(url))
         data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
         pattern = '<div style=\"background-image\: url\((?P<img>[^\)]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?title=\"(?P<name>[^\"]+)'
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.video_item()
-            item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
+            #item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
+            item['title'] = m.group('name')
             item['url'] = m.group('url')
             item['img'] = self._url(m.group('img'))
             self._filter(result,item)
-        next = re.search(u'<a href=\"(?P<url>[^\"]+)\" title=\"Dále\"',data)
+        next = re.search('<a href=\"(?P<url>[^\"]+)\" title=\"Dále\"',page)
         if next:
             item = self.dir_item()
             item['type'] = 'next'
