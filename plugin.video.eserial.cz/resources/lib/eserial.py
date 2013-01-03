@@ -52,7 +52,6 @@ class EserialContentProvider(ContentProvider):
     def episodes(self,url):
         data = util.request(self._url(url))
         result = []
-        print url
         for m in re.finditer('<div class=\'dily-vypis\'>(?P<show>.+?)</div>',data,re.IGNORECASE | re.DOTALL ):
             show = m.group('show')
             link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>.+?<div[^<].+?<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
@@ -82,7 +81,6 @@ class EserialContentProvider(ContentProvider):
                 item['show'] = link.group('sname').strip()
                 item['epid'] = link.group('name2')
                 item['epname'] = link.group('name')
-                print item
                 self._filter(result,item)
         return result
 
