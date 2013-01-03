@@ -41,7 +41,7 @@ class EserialContentProvider(ContentProvider):
         for m in re.finditer('<a href=\'(?P<url>[^\']+)[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
             item = self.dir_item()
             item['title'] = m.group('name')
-            item['url'] = '#list#'+url+m.group('url')
+            item['url'] = '#list#'+m.group('url')
             if self.filter:
                 if self.filter(item):
                     result.append(item)
@@ -52,16 +52,17 @@ class EserialContentProvider(ContentProvider):
     def episodes(self,url):
         data = util.request(self._url(url))
         result = []
-        for m in re.finditer('<div class=\'dily-vypis\'>(?P<show>.+?)<script>',data,re.IGNORECASE | re.DOTALL ):
+        print url
+        for m in re.finditer('<div class=\'dily-vypis\'>(?P<show>.+?)</div>',data,re.IGNORECASE | re.DOTALL ):
             show = m.group('show')
-            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>[^<]*<br[^<].+?<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
+            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>.+?<div[^<].+?<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
             if link:
-                vurl = re.sub('\?.*','',url)+link.group('url')
+                vurl = link.group('url')
                 name = link.group('index') + link.group('name')
                 item = self.video_item()
                 item['title'] = name
                 item['url'] = vurl
-                item['img'] = self._url(link.group('img'))
+                item['img'] = self._url(link.group('img').strip('\'\"'))
                 self._filter(result,item)
         return result
 
@@ -71,16 +72,17 @@ class EserialContentProvider(ContentProvider):
         data = util.substr(data,'<head>','</body>')
         for m in re.finditer('<div class=\'dily-vypis\'>(?P<ep>.+?)</center>',data,re.IGNORECASE | re.DOTALL ):
             ep = m.group('ep')
-            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>.+?<center>(?P<name>[^<]+)<div[^<]+</div>(?P<name2>[^<]+).+?<a href=\'(?P<surl>[^\'])[^>]*>(?P<sname>[^<]+)',ep)
+            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>.+?<center>(?P<name>[^<]+)<div[^<]+</div><img[^>]+>(?P<name2>[^<]+).+?<a href=\'(?P<surl>[^\'])[^>]*>(?P<sname>[^<]+)',ep)
             if link:
                 name = '%s - %s %s' % (link.group('sname'),link.group('name2'),link.group('name'))
                 item = self.video_item()
                 item['title'] = name
                 item['url'] = link.group('url')
-                item['img'] = self._url(link.group('img'))
+                item['img'] = self._url(link.group('img').strip('\'\"'))
                 item['show'] = link.group('sname').strip()
                 item['epid'] = link.group('name2')
                 item['epname'] = link.group('name')
+                print item
                 self._filter(result,item)
         return result
 
@@ -97,16 +99,16 @@ class EserialContentProvider(ContentProvider):
 
     def categories(self):
         data = util.request(self.base_url)
-        data = util.substr(data,'<div id=\"stred','<div id=\'patka>')
+        data = util.substr(data,'<div id=\"stred','</center>')
         result = []
         item = self.dir_item()
         item['type'] = 'new'
-        item['url'] = '#new#himym/index.php?novinky'
+        item['url'] = '#new#himym/novinky'
         result.append(item)
         
-        for m in re.finditer('<a href=\'(?P<url>[^\']+)[^<]+<img src=\'(?P<img>[^\']+)[^<]+</a>[^<]*<br[^<]*<a[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
+        for m in re.finditer('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>[^<]*<div[^<]*<a[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
             item = self.dir_item()
-            item['img'] = self._url(m.group('img'))
+            item['img'] = self._url(m.group('img').strip('\'\"'))
             item['title'] = m.group('name')
             item['url'] = '#show#'+m.group('url')
             result.append(item)
@@ -121,8 +123,7 @@ class EserialContentProvider(ContentProvider):
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',
             '<object(.+?)data=\"(?P<url>[^\"]+)',
-            '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
-            '<iframe(.+?)src=(?P<url>[^ ]+)'
+            '<iframe(.+?)src=[\"\' ](?P<url>.+?)[\'\" ]',
             ])
         result = []
         if not resolved:
