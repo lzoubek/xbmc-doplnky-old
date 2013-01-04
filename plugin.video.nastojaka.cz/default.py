@@ -21,7 +21,7 @@
 # */
 sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import os
-import xbmcaddon,xbmc
+import xbmcaddon,xbmc,xbmcutil
 
 import util,xbmcprovider,nastojaka
 
@@ -35,6 +35,6 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 params = util.params()
 if params=={}:
-        xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 xbmcprovider.XBMCMultiResolverContentProvider(nastojaka.NastojakaContentProvider(),settings,__addon__).run(params)
 

@@ -64,5 +64,5 @@ settings = {
 
 p = util.params()
 if p=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting(__scriptid__)
 xbmcprovider.XBMCLoginOptionalDelayedContentProvider(provider,settings,__addon__).run(p)

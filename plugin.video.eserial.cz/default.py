@@ -21,7 +21,7 @@
 # */
 sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import eserial
-import xbmcprovider,xbmcaddon
+import xbmcprovider,xbmcaddon,xbmcutil
 import util
 
 __scriptid__   = 'plugin.video.eserial.cz'
@@ -39,5 +39,5 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 params = util.params()
 if params=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 XBMCEserialContentProvider(eserial.EserialContentProvider(),settings,__addon__).run(params)

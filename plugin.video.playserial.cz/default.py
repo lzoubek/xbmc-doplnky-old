@@ -23,7 +23,7 @@ sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 
 import re,os
 import xbmcaddon
-import util,xbmcprovider
+import util,xbmcprovider,xbmcutil
 import playserial
 
 __scriptid__   = 'plugin.video.playserial.cz'
@@ -35,5 +35,5 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 params = util.params()
 if params=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 xbmcprovider.XBMCMultiResolverContentProvider(playserial.PlayserialContentProvider(),settings,__addon__).run(params)

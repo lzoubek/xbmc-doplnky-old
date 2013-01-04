@@ -125,7 +125,7 @@ def root():
 
 params = util.params()
 if params=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 	root()
 elif 'cp' in params.keys():
 	cp = params['cp']

@@ -26,6 +26,8 @@ import simplejson as json
 import util
 UA='Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 
+sys.path.append( os.path.join ( os.path.dirname(__file__),'usage') )
+import utmain
 __addon__      = xbmcaddon.Addon(id='script.module.stream.resolver')
 __lang__   = __addon__.getLocalizedString
 ##
@@ -124,9 +126,15 @@ def _create_plugin_url(params,plugin=sys.argv[0]):
 	return plugin+'?'+''.join(url)
 	
 def reportUsage(addonid,action):
-	host = 'xbmc-doplnky.googlecode.com'
-	tc = 'UA-3971432-4'
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?id=%s&host=%s&tc=%s&action=%s)' % (addonid,host,tc,action))
+    host = 'xbmc-doplnky.googlecode.com'
+    tc = 'UA-3971432-4'
+    try:
+        utmain.main({'id':addonid,'host':host,'tc':tc,'action':action})
+    except:
+        pass
+
+def init_usage_reporting(addonid):
+    utmain.main({'do':'reg','id':addonid})
 
 def save_to_file(url,file):
 	try:
@@ -148,7 +156,6 @@ def load_subtitles(url):
 		player = xbmc.Player()
 		count = 0
 		max_count = 99
-		print local
 		while not player.isPlaying() and count < max_count:
 			count+=1
 			xbmc.sleep(200)

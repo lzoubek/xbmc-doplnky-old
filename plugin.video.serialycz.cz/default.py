@@ -20,7 +20,7 @@
 # *
 # */
 import os
-import xbmc,xbmcaddon,util,xbmcprovider
+import xbmc,xbmcaddon,util,xbmcprovider,xbmcutil
 __scriptid__   = 'plugin.video.serialycz.cz'
 __scriptname__ = 'serialycz.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
@@ -32,5 +32,5 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 params = util.params()
 if params=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 xbmcprovider.XBMCMultiResolverContentProvider(serialy.SerialyczContentProvider(tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile'))),settings,__addon__).run(params)

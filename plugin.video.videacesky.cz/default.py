@@ -21,7 +21,7 @@
 # */
 
 import re,os,urllib
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin
+import xbmcaddon,xbmc,xbmcgui,xbmcplugin,xbmcutil
 import util,resolver
 import youtuberesolver as youtube
 
@@ -122,7 +122,7 @@ def download(url,name):
 
 p = util.params()
 if p=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 	categories()
 	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 if 'top' in p.keys():

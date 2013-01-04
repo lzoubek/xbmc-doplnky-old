@@ -22,7 +22,7 @@
 
 import os
 import xbmcaddon
-import util,xbmcprovider
+import util,xbmcprovider,xbmcutil
 
 __scriptid__   = 'plugin.video.zkouknito.cz'
 __scriptname__ = 'zkouknito.cz'
@@ -35,5 +35,5 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 params = util.params()
 if params=={}:
-	xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+	xbmcutil.init_usage_reporting( __scriptid__)
 xbmcprovider.XBMCMultiResolverContentProvider(zkouknito.ZkouknitoContentProvider(),settings,__addon__).run(params)

@@ -33,5 +33,5 @@ settings = {'downloads':__addon__.getSetting('downloads')}
 
 params = util.params()
 if params=={}:
-        xbmc.executebuiltin('RunPlugin(plugin://script.usage.tracker/?do=reg&cond=31000&id=%s)' % __scriptid__)
+    xbmcutil.init_usage_reporting( __scriptid__)
 xbmcprovider.XBMContentProvider(koukni.KoukniContentProvider(),settings,__addon__).run(params)
