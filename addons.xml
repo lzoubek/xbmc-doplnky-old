@@ -177,7 +177,7 @@
 
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.5"
+       version="1.0.6"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -482,7 +482,7 @@
 
 <addon id="plugin.video.sledujuserialy.cz"
        name="sledujuserialy.cz"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
