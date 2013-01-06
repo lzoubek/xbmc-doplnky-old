@@ -97,7 +97,7 @@ class EserialContentProvider(ContentProvider):
 
     def categories(self):
         data = util.request(self.base_url)
-        data = util.substr(data,'<div id=\"stred','</center>')
+        data = util.substr(data,'<div id=\"stred','<div id=\"patka')
         result = []
         item = self.dir_item()
         item['type'] = 'new'
