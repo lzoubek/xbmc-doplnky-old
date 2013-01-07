@@ -22,21 +22,21 @@
 import re,util
 __name__ = 'gosupark'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
 def resolve(url):
-	m = _regex(url)
-	if m:
+    m = _regex(url)
+    if m:
         #http://gosupark.com/embed-j3erxu8i2o30-630x320.html
         data = util.request('http://gosupark.com/'+m.group('url'))
-		n = re.search('file: \"(.+?)\"',data,re.IGNORECASE | re.DOTALL)
+        n = re.search('file: \"(.+?)\"',data,re.IGNORECASE | re.DOTALL)
         quality = '???'
         q = re.search('x(\d+)\.html',url)
         if q:
             quality = q.group(1)+'p'
-		if not n == None:
-		    return [{'quality':quality,'url':n.group(1).strip()}]
+        if not n == None:
+            return [{'quality':quality,'url':n.group(1).strip()}]
 
 def _regex(url):
-	return re.search('gosupark\.com/(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)
+    return re.search('gosupark\.com/(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)
