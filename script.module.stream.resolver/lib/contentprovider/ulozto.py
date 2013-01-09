@@ -116,6 +116,8 @@ class UloztoContentProvider(ContentProvider):
     def resolve(self,item,captcha_cb=None):
         item = item.copy()
         url = item['url']
+        if url.startswith('http://www.ulozto.sk'):
+            url = 'http://www.ulozto.cz' + url[20:]
         if url.startswith('#'):
             ret = json.loads(util.request(url[1:]))
             if not ret['result'] == 'null':
@@ -176,7 +178,7 @@ class UloztoContentProvider(ContentProvider):
 
     def _get_file_url_anonymous(self,page,post_url,headers,captcha_cb):
 
-        captcha_id = re.search('<input type=\"hidden\" id=\"captcha_id\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL).group(1)
+        captcha_id = re.search('<input type=\"hidden\" name=\"captcha_id\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL).group(1)
         # ask callback to provide captcha code
         self.info('Asking for captcha')
         code = captcha_cb({'id':captcha_id,'img': 'http://img.uloz.to/captcha/%s.png' % captcha_id})
@@ -187,7 +189,7 @@ class UloztoContentProvider(ContentProvider):
         ts = re.search('<input type=\"hidden\" name=\"ts\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
         cid = re.search('<input type=\"hidden\" name=\"cid\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
         sign = re.search('<input type=\"hidden\" name=\"sign\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
-        key = re.search('<input type=\"hidden\" id=\"captcha_key\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+        key = re.search('<input type=\"hidden\" name=\"captcha_key\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
         if not (sign and ts and cid and key):
             util.error('[uloz.to] - unable to parse required params from page, plugin needs fix')
             return
