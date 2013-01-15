@@ -19,7 +19,7 @@ def resolve(url):
         show = re.search('serial=(?P<url>.+?)(\&|$)',m.group('url'))
         tit = re.search('srt=(?P<url>.+?)(\&|$)',m.group('url'))
         if show and tit:
-            return [{'url':stream,'subs':'http://www.eserial.cz/%s/tits/%s.srt' % (show.group('url'),tit.group('url'))}]
+            return [{'url':stream,'subs':'http://www.eserial.cz/titulky/%s/%s.srt' % (show.group('url'),tit.group('url'))}]
         return [{'url':stream}]
 
 def _regex(url):
