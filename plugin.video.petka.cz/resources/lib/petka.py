@@ -52,17 +52,16 @@ class PetkaContentProvider(ContentProvider):
 		state = data['state']
 		nextpg= data['next_page']
 		
-		pattern = '<a.+?href="(?P<url>[^"]+)".*?><img src="(?P<img>.[^"]+)".*?alt="(?P<name>[^"]+)".*?/></a>' 
+		pattern = '<img src="(?P<img>.[^"]+)"[\s|\S]*?<div class="info">[\s|\S]*?<span>(?P<datum>.[^<]+)</span>.*?<a.+?href="(?P<url>[^"]+)".*?>(?P<name>[^<]+)</a>' 
 		for m in re.finditer(pattern,data['data'].encode('utf-8'),re.IGNORECASE | re.DOTALL ):
 			item = self.video_item()
 			item['url']   = m.group('url')
-			item['title'] = m.group('name')
+			item['title'] = '%s %s' % (m.group('datum').replace(' ',''),m.group('name'))
 			item['img']   = m.group('img')
 			result.append(item)
 			
 		if nextpg:
 			next_page = 'Další >>'
-			#next_url  = '%s?strana=%d' % (nurl,pg+1)
 			next_url  = '%s#%d' % (nurl,pg+1) 
 			   
 			try:	
@@ -81,11 +80,11 @@ class PetkaContentProvider(ContentProvider):
 	def film(self,page):
 		result=[]
 		data = util.substr(page,'<div id="episodesAll" class="episodes tabContent">','<div id="episodesTop"')
-		pattern = '<a.+?href="(?P<url>[^"]+)".*?><img src="(?P<img>.[^"]+)".*?alt="(?P<name>[^"]+)".*?/></a>' 
+		pattern = '<img src="(?P<img>.[^"]+)"[\s|\S]*?<div class="info">[\s|\S]*?<span>(?P<datum>.[^<]+)</span>.*?<a.+?href="(?P<url>[^"]+)".*?>(?P<name>[^<]+)</a>' 
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
 			item = self.video_item()
 			item['url']   = m.group('url')
-			item['title'] = m.group('name')
+			item['title'] = '%s %s' % (m.group('datum').replace(' ',''),m.group('name'))
 			item['img']   = m.group('img')
 			result.append(item)
 		
@@ -95,7 +94,6 @@ class PetkaContentProvider(ContentProvider):
 			if m.group('page') != '':
 				#print '--dalsi strana'
 				next_page = 'Další >>'
-				#next_url  = '%s?strana=%d' % (m.group('url'),int(m.group('page'))+1)
 				next_url  = '%s#%d' % (m.group('url'),int(m.group('page'))+1) 
 				
 		try:	
@@ -113,9 +111,7 @@ class PetkaContentProvider(ContentProvider):
 		
 	
 	def categories(self):
-		#result = []
                 result = self.episodes(util.request(self.base_url))
-		
 		return result
 		
 		
@@ -155,9 +151,7 @@ class PetkaContentProvider(ContentProvider):
 		url = self._url(item['url'])
 		#print 'URL: '+url
 		hdata = util.request(url)
-		
 		data = util.substr(hdata,'<div id="bigPlayer">','</div>')
-		
 		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','(?P<url>\"http://www.youtube.com/[^\"]+)'])
                 result = []
 		for i in resolved:
