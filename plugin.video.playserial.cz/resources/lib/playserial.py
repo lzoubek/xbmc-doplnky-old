@@ -31,7 +31,7 @@ class PlayserialContentProvider(ContentProvider):
     do=''
 
     def __init__(self,username=None,password=None,filter=None):
-        ContentProvider.__init__(self,'playserial.cz','http://playserial.cz/',username,password,filter)
+        ContentProvider.__init__(self,'playserial.cz','http://playserial.eu/',username,password,filter)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
 
