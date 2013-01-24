@@ -1,8 +1,13 @@
+[B]1.0.4:[/B]
+- opravy chyb 
+- serialy zpet v pluginu
+[B]1.0.3:[/B]
+- zmeny obsahu url
 [B]1.0.2:[/B]
-- opravy chyb (Ivo)
+- opravy chyb 
 - pridano vyhledavani
 - serialy v samostatnem pluginu
 [B]1.0.1:[/B]
-- opravy chyb (Ivo)
+- opravy chyb 
 [B]1.0.0:[/B]
 Initial version
