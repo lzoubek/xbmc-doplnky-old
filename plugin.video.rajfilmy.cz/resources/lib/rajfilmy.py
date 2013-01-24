@@ -29,6 +29,7 @@ class RajfilmyContentProvider(ContentProvider):
 	
 	od=''
 	do=''
+	serial=False
 
 	def __init__(self,username=None,password=None,filter=None):
 		ContentProvider.__init__(self,'rajfilmy.cz','http://www.rajfilmy.cz/',username,password,filter)
@@ -42,26 +43,44 @@ class RajfilmyContentProvider(ContentProvider):
 		data = util.post(self._url('search.php'),{'t':keyword,'submit':'Hledat'})
                 return self.film(data)
 		
+	def getInfo(self,link):
+		data = util.request(link)
+		data = util.substr(data,'<p id=\"file_rating\">','<div class=\"clear\">')
+		pattern = 'id=\"file_rating\">(?P<rating>.+?)</p>[\s|\S]*?<p>(?P<info>.+?)</p>[\s|\S]*?<p class=\"file_info\">Přidáno: (?P<date>.+?)</p>'
+		m = re.search(pattern, data, re.IGNORECASE | re.DOTALL)
+		if not m == None:
+			return m.group('rating'),m.group('info'),m.group('date')
+		else:
+			return '','',''
 		
 	def film(self,page):
 		result=[]
+		
 		data = util.substr(page,'<div id="main_contents">','<div class="category_outer">')
-		pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)[\s|\S]*?<p class=\"popis\">(?P<info>.+?)</p>[\s|\S]*?<div class=\"rok2\">(?P<year>.*?)</div>[\s|\S]*?<div class=\"zanr2\">(?P<genre>.+?)</div>'
+		if self.serial:
+			pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
+		else:
+			pattern = '<img src=\"(?P<img>[^\"]+)\"[\s|\S]*?<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)[\s|\S]*?<p class=\"popis\">(?P<info>.+?)</p>[\s|\S]*?<div class=\"rok2\">(?P<year>.*?)</div>[\s|\S]*?<div class=\"zanr2\">(?P<genre>.+?)</div>'
 		for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-			item = self.video_item()
-			item['url']   = m.group('url')
+			if self.serial: 
+				item = self.dir_item()
+				item['url'] = '#film#'+m.group('url')
+			else:
+				item = self.video_item()
+				item['url'] = m.group('url')
+				
 			item['title'] = m.group('name')
-			item['img']   = m.group('img')
-			'''
-			item['plot']  = m.group('info')
+			item['img'] = m.group('img')
+			
 			try:
+				item['plot']  = m.group('info')
 				item['year']  = int(m.group('year'))
+				item['genre'] = m.group('genre')
 			except:
 				pass
-			item['genre'] = m.group('genre')
-			'''
+			
 			result.append(item)
-		
+			
 		pg='long'
 		if page.find('<div class="arrow_nav">')>0:
 			data = util.substr(page,'<div class="arrow_nav">','</div>')
@@ -73,16 +92,16 @@ class RajfilmyContentProvider(ContentProvider):
 			
 			if m.group('name') == '&rsaquo;':
 				#print '--dalsi strana'
-				next_page = m.group('url')[41:].replace('.html','')
-				next_page = next_page.replace('/','')
+				next_page = m.group('url')
+				next_page = next_page.split('/')[-1].replace('.html','')
 				next_url  = m.group('url')
 			if m.group('name') == '&lrsaquo':
 				#print '--predchozi strana'
 				prev_url = m.group('url')
 			if m.group('name')== '&rsaquo;&rsaquo;':
 				#print '--posledni strana'
-				last_page = m.group('url')[41:].replace('.html','')
-				last_page = last_page.replace('/','')
+				last_page = m.group('url')
+				last_page = last_page.split('/')[-1].replace('.html','')
 			if m.group('name') == 'Další &gt;':
 				next_page = 'Další >>'
 				next_url  = m.group('url').replace('&amp;','&')
@@ -99,8 +118,9 @@ class RajfilmyContentProvider(ContentProvider):
 		except:
 			pass
 		
-		return result
 		
+		return result
+
 	def cat_det(self,page):
 		result = []
 
@@ -126,7 +146,7 @@ class RajfilmyContentProvider(ContentProvider):
 		item['type'] = 'new'
 		item['url']  = '#new#'+self.base_url
 		result.append(item)
-
+		
 		item=self.dir_item()
 		item['title']='Kategorie filmu'
 		item['url']  = '#cat#'+self.base_url
@@ -141,14 +161,16 @@ class RajfilmyContentProvider(ContentProvider):
 			item['title'] = m.group('name')
 			if (m.group('url').find('Filmy')>0) or (m.group('url').find('Děti')>0):
 				item['url'] = '#film#'+self._url(m.group('url'))
+			elif  (m.group('url').find('Seriály')>0):
+				item['url'] = '#serial#'+self._url(m.group('url'))
 			else:
-				#item['url'] = '#serial#'+m.group('url')
 				continue
-			#item['url'] = '#none#'+m.group('url')
+			
 			result.append(item)
 		
-		return result
 		
+		
+		return result
 		
 	def episodes(self,page):
 		result = []
@@ -166,7 +188,11 @@ class RajfilmyContentProvider(ContentProvider):
 		if url.find('#cat#') == 0:
                         return self.cat_det(util.request(self._url(url[5:])))
 		if url.find('#film#') == 0:
+			self.serial=False
                         return self.film(util.request(self._url(url[6:])))
+		if url.find('#serial#') == 0:
+			self.serial=True
+                        return self.film(util.request(self._url(url[8:])))
 		if url.find('#top#') == 0:
 			self.od='<div class="content_box_nejpopul">'
 			self.do='<div class="rozdeleni">Nejnovější</div>'
@@ -191,9 +217,10 @@ class RajfilmyContentProvider(ContentProvider):
 		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','(?P<url>\"http://www.youtube.com/[^\"]+)'])
                 result = []
 		for i in resolved:
+			print i
                         item = self.video_item()
                         item['title'] = i['name']
-                        item['url'] = i['url'] 
+                        item['url'] = i['url']
                         item['quality'] = i['quality']
                         item['surl'] = i['surl']
                         result.append(item)  
