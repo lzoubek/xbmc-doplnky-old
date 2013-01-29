@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.4.2"
+       version="1.4.3"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -176,11 +176,11 @@
 
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.8"
+       version="1.0.9"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.4.1" />
+    <import addon="script.module.stream.resolver" version="1.4.3" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -307,24 +307,6 @@
   </extension>
 </addon>
 
-<addon id="script.usage.tracker"
-       name="Usage Tracker"
-       version="0.9.5"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-  </requires>
-  <extension point="xbmc.python.script"
-             library="default.py" />
-  <extension point="xbmc.addon.metadata">
-    <summary>module for plugin usage tracking, currently supports google analytics</summary>
-    <description>module for plugin usage tracking, currently supports google analytics</description>
-    <license>GNU GPL</license>
-    <platform>all</platform>
-  </extension>
-   <broken>Addon byl presunut to script.module.stream.resolver</broken>
-</addon>
-
 <addon id="plugin.video.rajserialu.cz"
        name="Rajserialu.cz"
        version="1.0.1"
@@ -432,29 +414,6 @@
     <description lang="en">Watch online content from zkouknito.cz</description>
     <description lang="cs">Sledujte online obsah ze servru zkouknito.cz</description>
     <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.movie-library.cz"
-       name="movie-library.cz"
-       version="1.2.7"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.4.1" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">movie-library.cz</summary>
-    <summary lang="cs">movie-library.cz</summary>
-    <description lang="en">Watch online content from movie-library.cz</description>
-    <description lang="cs">Sledujte online obsah ze servru movie-library.cz Plugin podporuje přehrávání a stahování videí ze servru uloz.to bez nutnosti video stahovat nebo pokaždé opisovat kontrolní kód!!. Dále je možné vyhledávat videa jak na movie-library.cz tak přímo na ulozto.cz a taky stahovat videa na disk.</description>
-    <platform>all</platform>
-	<broken>Server movie-library.cz byl zrusen</broken>
   </extension>
 </addon>
 
