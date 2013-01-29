@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.4.3"
+       version="1.4.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -59,6 +59,28 @@
     <summary>xbmc-doplnky plugins common python modules mainly for resolving stream URLs</summary>
     <description>Common python modules pack that is used by xbmc-doplnky plugins</description>
     <license>GNU GPL</license>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.befun.cz"
+       name="befun.cz"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.stream.resolver" version="1.4.4" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">befun.cz</summary>
+    <summary lang="cs">befun.cz</summary>
+    <description lang="en">Watch online HD movies and series from befun.cz</description>
+    <description lang="cs">Sledujte online HD filmy seriály se servru befun.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
