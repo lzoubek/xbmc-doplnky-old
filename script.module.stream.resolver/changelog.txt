@@ -1,3 +1,5 @@
+[B]1.4.4:[/B]
+- added munkvideo resolver
 [B]1.4.3:[/B]
 - fixed eserial resolver to load subs correctly #136
 [B]1.3.12:[/B]
