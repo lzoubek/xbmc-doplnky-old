@@ -1,3 +1,5 @@
+[B]1.0.9:[/B]
+- oprava zobrazeni titulku
 [B]1.0.6:[/B]
 - oprava dle zmen na webu
 [B]1.0.6:[/B]
