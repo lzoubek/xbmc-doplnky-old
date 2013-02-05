@@ -42,13 +42,17 @@ class SledujuserialyContentProvider(ContentProvider):
         result.append(item)
         page = util.request(self.base_url)
         data = util.substr(page,'<h2 class=\"vyber_serialu','<div class=\"levy_blok')
-        pattern='<div.+?class=\"menu_click\" onclick=\"[^\']+\'(?P<url>[^\']+).+?<div.+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
+        pattern='<a href=\"(?P<url>[^\"]+).+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.dir_item()
 #            item['title'] = m.group('name').decode('windows-1250').encode('utf-8').strip()
             item['title'] = m.group('name').strip()
             item['url'] = m.group('url')
             result.append(item)
+        item = self.dir_item()
+        item['title'] = 'Simpsonovi'
+        item['url'] = 'simpsonovi'
+        result.append(item)
         return result
 
     def list_new(self,url):

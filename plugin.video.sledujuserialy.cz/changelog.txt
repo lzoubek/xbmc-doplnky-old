@@ -1,3 +1,5 @@
+[B]1.0.3:[/B]
+- opraveno nesprávné listování epizod #137
 [B]1.0.2:[/B]
 - opraveno zobrazování nově přidaných dílů
 - opraveno chybějící tlačítko "Next" při listování v dílech
