@@ -2,11 +2,11 @@
 <addons>
 <addon id="plugin.video.playserial.cz"
        name="PlaySerialCZ"
-       version="1.0.4"
+       version="1.0.6"
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.4.1" />
+    <import addon="script.module.stream.resolver" version="1.4.2" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -109,7 +109,7 @@
 
 <addon id="plugin.video.rajfilmy.cz"
        name="Rajfilmy.cz"
-       version="1.0.3"
+       version="1.0.4"
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -176,11 +176,11 @@
 
 <addon id="plugin.video.petka.cz"
        name="Petka.cz"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.4.1" />
+    <import addon="script.module.stream.resolver" version="1.4.2" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -325,28 +325,6 @@
     <summary lang="cs">play-movie.eu</summary>
     <description lang="en">Watch online www.play-movie.eu</description>
     <description lang="cs">Sledujte online www.play-movie.eu</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.rajserialu.cz"
-       name="Rajserialu.cz"
-       version="1.0.1"
-       provider-name="Ivo Brhel">
-  <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.4.1" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">rajserialu.cz</summary>
-    <summary lang="cs">rajserialu.cz</summary>
-    <description lang="en">Watch online www.rajserialu.cz</description>
-    <description lang="cs">Sledujte online www.rajserialu.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
