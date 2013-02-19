@@ -154,7 +154,7 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.10"
+       version="1.1.11"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
