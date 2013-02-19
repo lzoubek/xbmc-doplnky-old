@@ -40,7 +40,7 @@ class SerialyczContentProvider(ContentProvider):
         item['type'] = 'new'
         item['url'] = 'category/new-episode'
         result.append(item)
-        data = util.substr(util.request(self.base_url),'<div id=\"primary\"','</div>')
+        data = util.substr(util.request(self.base_url),'<div id=\"primary\"','<div id=\"secondary')
         pattern='<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
         for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
             image,plot = self._get_meta(m.group('name'),m.group('url'))

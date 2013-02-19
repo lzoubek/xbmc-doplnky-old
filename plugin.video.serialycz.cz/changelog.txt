@@ -1,3 +1,5 @@
+[B]1.1.11:[/B]
+- oprava #143 - nejsou vidět žádné seriály
 [B]1.1.10:[/B]
 - oprava #133 chyba přehrávání dílů obsahujících '×' v url
 [B]1.1.8:[/B]
