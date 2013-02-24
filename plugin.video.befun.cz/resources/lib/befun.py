@@ -38,7 +38,23 @@ class BefunContentProvider(ContentProvider):
         return self.list_page('vyhledat/results?q='+keyword+'&c=filmy','<h2>Výsledky vyhledávání</h2>','</section')
 
     def list(self,url):
+        if url.find('#cat#') == 0:
+            return self._categories(url[5:])
+        if url.find('#show#') == 0:
+            return self.list_episodes(url[6:])
         return self.list_page(url,'<!-- Movies','</section')
+
+    def list_episodes(self,url):
+        page = util.request(self._url(url))
+        page = util.substr(page,'<h3>Epizody','</article>')
+        result = []
+        for m in re.finditer('<li class=\"controls[^<]+<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)',page,re.IGNORECASE|re.DOTALL):
+            item = self.video_item()
+            item['url'] = m.group(1)
+            item['title'] = m.group('name')
+            self._filter(result,item)
+        return result
+
 
     def list_page(self,url,start,end):
         page = util.request(self._url(url))
@@ -62,16 +78,30 @@ class BefunContentProvider(ContentProvider):
             result.append(item)
         return result
 
-    def categories(self):
-        data = util.request(self.base_url)
+    def _categories(self,url):
+        data = util.request(self._url(url))
         data = util.substr(data,'<ul id=\"menu_kategorie','</ul')
+        prefix = ''
+        if url.find('serialy') >= 0:
+            prefix = '#show#'
         result = []
-        
-        for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
+        for m in re.finditer('<a href=\"(?P<url>[^\"]+)[^<]+<span[^>]*>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
             item = self.dir_item()
             item['title'] = m.group('name')
-            item['url'] = m.group('url')
+            item['url'] = prefix+m.group('url')
             result.append(item)
+        return result
+
+    def categories(self):
+        result = []
+        item = self.dir_item()
+        item['title'] = 'Filmy'
+        item['url'] = '#cat#filmy'
+        result.append(item)
+        item = self.dir_item()
+        item['title'] = 'Seriály'
+        item['url'] = '#cat#serialy'
+        result.append(item)
         return result
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
@@ -79,7 +109,7 @@ class BefunContentProvider(ContentProvider):
         url = self._url(item['url'])
         data = util.request(self._url(item['url']))	
         data = util.substr(data,'<div class=\"video','</div')
-        sosac = re.search('\"(http\://movies\.sosac\.ph[^\"]+)',data,re.DOTALL)
+        sosac = re.search('\"(http\://[\w]+\.sosac\.ph[^\"]+)',data,re.DOTALL)
         if sosac:
             data = util.request(sosac.group(1))
         resolved = resolver.findstreams(data,[
