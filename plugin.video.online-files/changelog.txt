@@ -1,3 +1,5 @@
+[B]1.0.7:[/B]
+- ulozto nyní umožňuje vyhledávát všechny typy souborů a filtrovat dle přípony
 [B]1.0.4:[/B]
 - verze++ kvuli update v stream.resolveru
 [B]1.0.3:[/B]
