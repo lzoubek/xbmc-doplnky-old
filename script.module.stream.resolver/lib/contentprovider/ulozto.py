@@ -28,6 +28,7 @@ class UloztoContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None):
         ContentProvider.__init__(self,'ulozto.cz','http://www.ulozto.cz/',username,password,filter)
+        self.search_type=''
         self.cp = urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar())
         self.rh = UloztoHTTPRedirectHandler()
         self.rh.throw = False
@@ -42,7 +43,9 @@ class UloztoContentProvider(ContentProvider):
         urllib2.install_opener(opener)
 
     def search(self,keyword):
-        return self.list(self.base_url+'hledej/?media=video&q='+urllib.quote(keyword))
+        print 'searching for...'
+        print [self.search_type]
+        return self.list(self.base_url+'hledej/?'+self.search_type+'q='+urllib.quote(keyword))
 
     def login(self):
         if self.username and self.password and len(self.username)>0 and len(self.password)>0:
@@ -82,20 +85,21 @@ class UloztoContentProvider(ContentProvider):
         burl = b64decode('I2h0dHA6Ly9jcnlwdG8tenNlcnYucmhjbG91ZC5jb20vYXBpL3YyL2RlY3J5cHQvP2tleT0lcyZ2YWx1ZT0lcwo=')
         data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
         result = []
-        for m in re.finditer('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<span class=\"fileSize[^>]+>(?P<size>[^<]+)<span class=\"fileTime[^>]+>(?P<time>[^<]+)',data, re.IGNORECASE|re.DOTALL):
+        for m in re.finditer('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<div class=\"fileInfo(?P<info>.+?)</div>',data, re.IGNORECASE |  re.DOTALL):
+            info = m.group('info')
             value = keymap[m.group('key')]
             iurl = burl % (keymap[key],value)
             item = self.video_item()
             item['title'] = m.group('name')
-            item['size'] = m.group('size').strip()
-            item['length'] = m.group('time')
+            size = re.search('<span class=\"fileSize[^>]+>(?P<size>[^<]+)',info, re.IGNORECASE|re.DOTALL)
+            if size:
+                item['size'] = size.group('size').strip()
+            time = re.search('<span class=\"fileTime[^>]+>(?P<time>[^<]+)',info, re.IGNORECASE|re.DOTALL)
+            if time:
+                item['length'] = time.group('time')
             item['url'] = iurl
             item['img'] = m.group('logo')
-            if self.filter:
-                if self.filter(item):
-                    result.append(item)
-            else:
-                result.append(item)
+            self._filter(result,item)
         # page navigation
         data = util.substr(page,'<div class=\"paginator','</div')
         mprev = re.search('<a href=\"(?P<url>[^\"]+)\" class=\"prev',data)
