@@ -59,6 +59,13 @@ def bezvadata_filter(item):
 		return False
 	return True
 
+def ulozto_filter(item):
+	ext_filter = __settings__('ulozto_ext-filter').split(',')
+	ext_filter =  ['.'+f.strip() for f in ext_filter]
+	extension = os.path.splitext(item['title'])[1]
+	if extension in ext_filter:
+		return False
+	return True
 
 class XBMCHellspyContentProvider(xbmcprovider.XBMCLoginRequiredContentProvider):
 
@@ -78,6 +85,18 @@ class XBMCHellspyContentProvider(xbmcprovider.XBMCLoginRequiredContentProvider):
 		if 'to-downloads' in params.keys():
 			self.provider.to_downloads(params['to-downloads'])
 
+class XBMCUloztoContentProvider(xbmcprovider.XBMCLoginOptionalContentProvider):
+
+    def __init__(self,provider,settings,addon):
+        xbmcprovider.XBMCLoginOptionalContentProvider.__init__(self,provider,settings,addon)
+        self.check_setting_keys(['vip','search-type'])
+        search_type = ''
+        search_types = {'0':'','1':'media=video&','2':'media=image&','3':'media=music&','4':'media=document&'}
+        print 'setting is '+str(settings['search-type'])
+        if settings['search-type'] in search_types.keys():
+            search_type = search_types[settings['search-type']]
+        provider.search_type = search_type
+
 settings = {
 	'downloads':__settings__('downloads'),
 	'download-notify':__settings__('download-notify'),
@@ -95,13 +114,14 @@ if __settings__('bezvadata_enabled') == 'true':
 	extra.update(settings)
 	providers[p.name] = xbmcprovider.XBMCLoginOptionalDelayedContentProvider(p,extra,__addon__)
 if __settings__('ulozto_enabled') == 'true':
-	p = ulozto.UloztoContentProvider(__settings__('ulozto_user'),__settings__('ulozto_pass'))
+	p = ulozto.UloztoContentProvider(__settings__('ulozto_user'),__settings__('ulozto_pass'),filter=ulozto_filter)
 	extra = {
 			'vip':__settings__('ulozto_usevip'),
-			'keep-searches':__settings__('ulozto_keep-searches')
+			'keep-searches':__settings__('ulozto_keep-searches'),
+			'search-type':__settings__('ulozto_search-type')
 	}
 	extra.update(settings)
-	providers[p.name] = xbmcprovider.XBMCLoginOptionalContentProvider(p,extra,__addon__)
+	providers[p.name] = XBMCUloztoContentProvider(p,extra,__addon__)
 if __settings__('hellspy_enabled') == 'true':
 	p = hellspy.HellspyContentProvider(__settings__('hellspy_user'),__settings__('hellspy_pass'),site_url=__settings__('hellspy_site_url'))
 	extra = {
