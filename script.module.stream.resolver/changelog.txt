@@ -1,3 +1,5 @@
+[B]1.4.5:[/B]
+- ulozto provider can now search for all file types
 [B]1.4.4:[/B]
 - added munkvideo resolver
 [B]1.4.3:[/B]
