@@ -8,6 +8,8 @@
 # */
 import re,util
 __name__='nahnoji'
+__priiority__=-1
+
 def supports(url):
     return not _regex(url) == None
 
