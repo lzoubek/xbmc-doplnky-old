@@ -1,5 +1,7 @@
 import sys,os,urllib2
 import unittest
+filename = os.path.dirname( os.path.realpath(__file__) )
+sys.path.append( os.path.join ( filename,'..' ) )
 import providertestcase
 import ulozto
 
@@ -10,7 +12,7 @@ class UloztoProviderTest(providertestcase.ProviderTestCase):
     def setUp(self):
         self.provider_class = ulozto.UloztoContentProvider
         self.cp = self.provider_class(self.username,self.password)
-        self.list_urls=['http://www.ulozto.cz/hledej/?pos=2&media=video&q=avengers']
+        self.list_urls=['http://www.ulozto.cz/hledej/?media=video&q=avengers']
         self.search_keywords=['lidice']
         self.resolve_items = [{'url':'http://www.ulozto.cz/xiurFab/icq-dll'}]
 
@@ -51,6 +53,3 @@ class UloztoProviderTest(providertestcase.ProviderTestCase):
         response.close()
         print(' * DONE')
         self.assertTrue(len(data)>10000,'Sample file was retrieved')
-
-if __name__ == '__main__':
-    unittest.main()

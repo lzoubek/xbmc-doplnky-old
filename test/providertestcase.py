@@ -1,9 +1,32 @@
 import sys,os,urllib2
 import ConfigParser
 import unittest
-sys.path.append( os.path.join ( '..', '..','script.module.stream.resolver','lib') )
-sys.path.append( os.path.join ( '..', '..','script.module.stream.resolver','lib','contentprovider') )
+
+filename = os.path.dirname( os.path.realpath(__file__) )
+sys.path.append( os.path.join ( filename, '..','script.module.stream.resolver','lib') )
+sys.path.append( os.path.join ( filename , '..','script.module.stream.resolver','lib','contentprovider') )
 import provider
+import util
+
+def import_dir(lib):
+    if os.path.exists(lib):
+        sys.path.append(lib)
+        for module in os.listdir(lib):
+            if module == '__init__.py' or module[-3:] != '.py':
+                continue
+            module = module[:-3]
+            try:
+                exec 'import %s' % module
+                util.debug('imported %s' % module)
+            except:
+#                traceback.print_exc()
+                util.error('Failed to import %s' % module)
+
+for addon in os.listdir(os.path.join(os.path.realpath(filename),'..')):
+    if addon.find('plugin.video')>=0:
+        lib = os.path.join(filename,'..',addon,'resources','lib')
+        import_dir(lib)       
+
 
 # to be updated by child class
 CONFIG_FILE = 'test.config'
@@ -32,22 +55,12 @@ class ProviderTestCase(unittest.TestCase):
         if 'search' in self.cp.capabilities():
             for keyword in self.search_keywords:
                 result = self.cp.search(keyword)
-                self.assertTrue(len(result)>0,'Search method must return non-empty array')
+                self.assertTrue(len(result)>0,'Search method must return non-empty array for keyword \'%s\'' % keyword)
 
     def test_provider_list(self):
         for url in self.list_urls:
             result = self.cp.list(url)
-            self.assertTrue(len(result)>0,'Search method must return non-empty array')
-            next = None
-            prev = None
-            for item in result:
-                if 'next' == item['type']:
-                    next = item
-                if 'prev' == item['type']:
-                    prev = item
-            self.assertIsNotNone(prev,'Previous navigation item must be returned')
-            self.assertIsNotNone(next,'Next navigation item must be returned')
-            self.assertNotEqual(prev['url'],next['url'],'Prev and Next URL must NOT be same')
+            self.assertTrue(len(result)>0,'List method must return non-empty array for \'%s\''% url)
 
     def test_provider_list_filtered(self):
         def filter(item):
@@ -61,8 +74,10 @@ class ProviderTestCase(unittest.TestCase):
             self.assertTrue(count == 0,'Provider must return 0 video items when when filtering that stops everyting is applied')
 
     def test_provider_resolve(self):
+        def select_cb(items):
+            return items[0]
         for item in self.resolve_items:
-            resolved = self.cp.resolve(item,None)
+            resolved = self.cp.resolve(item,None,select_cb)
             self.assertIsNotNone(resolved,'a resolved item was returned')
             self.assertTrue(len(resolved['url']) > 0, ' a non-empty result URL was returned')
             #print(' * Downloading sample file '+resolved['url'])
