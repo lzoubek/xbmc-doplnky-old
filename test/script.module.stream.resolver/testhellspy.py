@@ -15,6 +15,7 @@ class HellspyTest(providertestcase.ProviderTestCase):
         self.list_urls=['http://www.hellspy.cz/search/?p=2&q=avengers']
         self.search_keywords=['lidice']
         self.resolve_items = [{'url':'http://www.hellspy.cz/ve-stinu-2012-dvdrip-xvid-ac3-cz-avi/10608051?_ds=4'}]
+        self.categories_list = False
 
 
 if __name__ == '__main__':

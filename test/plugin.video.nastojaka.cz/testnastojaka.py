@@ -8,10 +8,11 @@ import nastojaka
 
 class NastojakaProviderTestCase(providertestcase.ProviderTestCase):
 
-	def setUp(self):
-		self.provider_class = nastojaka.NastojakaContentProvider
-		self.cp = self.provider_class()
-		self.list_urls=['scenky/?page=15&sort=performer']
-		self.resolve_items = [{'url':'scenky/287-stara-a-tchyne/'}]
-		self.search_keywords = ['matonoha']
+    def setUp(self):
+        self.provider_class = nastojaka.NastojakaContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['scenky/?page=15&sort=performer']
+        self.resolve_items = [{'url':'scenky/287-stara-a-tchyne/'}]
+        self.search_keywords = ['matonoha']
+        self.categories_list = False
 

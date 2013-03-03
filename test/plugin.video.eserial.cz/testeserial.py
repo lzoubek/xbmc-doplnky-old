@@ -13,3 +13,4 @@ class EserialProviderTestCase(providertestcase.ProviderTestCase):
         self.cp = self.provider_class()
         self.list_urls=['#show#http://www.eserial.cz/alcatraz/','#list#http://www.eserial.cz/anatomie-lzi/serie/2']
         self.resolve_items = [{'url':'http://www.eserial.cz/anatomie-lzi/video/3673'}]
+        self.categories_list = True

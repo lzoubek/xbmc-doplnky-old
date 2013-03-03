@@ -14,8 +14,9 @@ class BezvadataTest(providertestcase.ProviderTestCase):
         self.cp = self.provider_class(self.username,self.password)
         self.list_urls=['http://bezvadata.cz/vyhledavani/?s=video&page=2']
         self.search_keywords=['jachyme hod ho do stroje']
+        self.categories_list = False
 
-    def test_provider_resolve(self):
+    def test_resolve(self):
         self.cp = self.provider_class()
         self.count = -1
         def callback(params):

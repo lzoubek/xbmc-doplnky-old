@@ -15,8 +15,9 @@ class UloztoProviderTest(providertestcase.ProviderTestCase):
         self.list_urls=['http://www.ulozto.cz/hledej/?media=video&q=avengers']
         self.search_keywords=['lidice']
         self.resolve_items = [{'url':'http://www.ulozto.cz/xiurFab/icq-dll'}]
+        self.categories_list = False
 
-    def test_provider_resolve(self):
+    def test_resolve(self):
         self.cp = self.provider_class()
         self.count = -1
         def callback(params):

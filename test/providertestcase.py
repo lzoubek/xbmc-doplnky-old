@@ -56,18 +56,35 @@ class ProviderTestCase(unittest.TestCase):
         self.list_urls=[]
         self.resolve_items = []
 
-    def test_provider_search(self):
+    def test_search(self):
         if 'search' in self.cp.capabilities():
             for keyword in self.search_keywords:
                 result = self.cp.search(keyword)
                 self.assertTrue(len(result)>0,'Search method must return non-empty array for keyword \'%s\'' % keyword)
 
-    def test_provider_list(self):
+    def test_categories(self):
+        if 'categories' in self.cp.capabilities() and self.categories_list:
+            count = 0
+            for item in self.cp.categories():
+                if item['type'] == 'dir':
+                    count+=1
+            print 'Listed %d categories' % count
+            self.assertTrue(count>0,'At least one category item is listed')
+
+    def test_new_items(self):
+        if 'categories' in self.cp.capabilities():
+            for item in self.cp.categories():
+                if item['type'] == 'new':
+                    data = self.cp.list(item['url'])
+                    print 'Listed %d latest items' % len(data)
+                    self.assertTrue(len(data) > 0, 'At least 1 new/latest item is listed')
+
+    def test_list(self):
         for url in self.list_urls:
             result = self.cp.list(url)
             self.assertTrue(len(result)>0,'List method must return non-empty array for \'%s\''% url)
 
-    def test_provider_list_filtered(self):
+    def test_list_filtered(self):
         def filter(item):
             return False
         for url in self.list_urls:
@@ -78,7 +95,7 @@ class ProviderTestCase(unittest.TestCase):
                     count+=1
             self.assertTrue(count == 0,'Provider must return 0 video items when when filtering that stops everyting is applied')
 
-    def test_provider_resolve(self):
+    def test_resolve(self):
         def select_cb(items):
             return items[0]
         for item in self.resolve_items:
@@ -93,15 +110,15 @@ class ProviderTestCase(unittest.TestCase):
             #print(' * DONE')
             #self.assertTrue(len(data)>10000,'Sample file was retrieved')
 
-    def test_provider_login(self):
+    def test_login(self):
         if 'login' in self.cp.capabilities():
             self.assertTrue(self.cp.login(),'login() must return true when valid credentials were provided')
             self.assertTrue(self.cp.login(),'login() must return true even when we are already logged in')
 
-    def test_provider_invalid_login(self):
+    def test_invalid_login(self):
         self.assertFalse(self.provider_class('foo','bar').login(),'login() must return false when invalid credentials were provided')
 
-    def test_provider_login_no_credentials(self):
+    def test_login_no_credentials(self):
         self.assertFalse(self.provider_class().login(),'login() must return false when no credentials were provided')
 
 
