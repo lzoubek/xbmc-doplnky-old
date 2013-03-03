@@ -50,6 +50,11 @@ class ProviderTestCase(unittest.TestCase):
         cls.username = config.get('Credentials','username')
         cls.password = config.get('Credentials','password')
 
+    def setUp(self):
+        self.provider_class = provider.ContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=[]
+        self.resolve_items = []
 
     def test_provider_search(self):
         if 'search' in self.cp.capabilities():
