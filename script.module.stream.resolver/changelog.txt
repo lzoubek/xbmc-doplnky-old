@@ -1,3 +1,6 @@
+[B]1.4.6:[/B]
+- fixed youtube resolver
+- subtitles now work in munkvideo resolver
 [B]1.4.5:[/B]
 - ulozto provider can now search for all file types
 [B]1.4.4:[/B]
