@@ -128,7 +128,7 @@ class HellspyContentProvider(ContentProvider):
             index +=1
         return result
 
-    def resolve(self,item,captcha_cb=None):
+    def resolve(self,item,captcha_cb=None,select_cb=None):
         item = item.copy()
         url = self._url(item['url'])
         if not self.login():

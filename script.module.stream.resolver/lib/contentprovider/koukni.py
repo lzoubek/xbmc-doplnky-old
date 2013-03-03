@@ -85,7 +85,7 @@ class KoukniContentProvider(ContentProvider):
 
 
 
-	def resolve(self,item,captcha_cb=None):
+	def resolve(self,item,captcha_cb=None,select_cb=None):
 		item = item.copy()
 		url = self._url(item['url'])
 		data = util.request(url)
