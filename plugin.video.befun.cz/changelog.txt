@@ -1,3 +1,5 @@
+[B]1.0.2:[/B]
+- oprava načítání titulků z munkvideo
 [B]1.0.1:[/B]
 - přidány seriály
 [B]1.0.0:[/B]
