@@ -41,9 +41,9 @@ def request(url,headers={}):
     debug('len(data) %s' % len(data))
     return data
 
-def post(url,data):
+def post(url,data,headers={}):
     postdata = urllib.urlencode(data)
-    req = urllib2.Request(url,postdata)
+    req = urllib2.Request(url,postdata,headers)
     req.add_header('User-Agent',UA)
     response = urllib2.urlopen(req)
     data = response.read()
