@@ -59,13 +59,12 @@ class YoutubePlayer(object):
 
     def __init__(self):
         pass
-
     def extractFlashVars(self, data):
         flashvars = {}
         found = False
 
         for line in data.split("\n"):
-            if line.strip().startswith("var swf = \""):
+            if line.strip().startswith("yt.playerConfig = "):
                 found = True
                 p1 = line.find("=")
                 p2 = line.rfind(";")
@@ -76,28 +75,22 @@ class YoutubePlayer(object):
 
         if found:
             data = json.loads(data)
-            data = data[data.find("flashvars"):]
-            data = data[data.find("\""):]
-            data = data[:1 + data[1:].find("\"")]
-
-            for k, v in cgi.parse_qs(data).items():
-                flashvars[k] = v[0]
+            flashvars = data["args"]
 
         return flashvars
 
-    def scrapeWebPageForVideoLinks(self, result, videoid):
-        links = {}
 
+    def scrapeWebPageForVideoLinks(self, result, video):
+        links = {}
         flashvars = self.extractFlashVars(result)
         if not flashvars.has_key(u"url_encoded_fmt_stream_map"):
-            return (links, video)
+            return links
 
         if flashvars.has_key(u"ttsurl"):
             video[u"ttsurl"] = flashvars[u"ttsurl"]
 
         for url_desc in flashvars[u"url_encoded_fmt_stream_map"].split(u","):
             url_desc_map = cgi.parse_qs(url_desc)
-
             if not (url_desc_map.has_key(u"url") or url_desc_map.has_key(u"stream")):
                 continue
 
@@ -105,7 +98,12 @@ class YoutubePlayer(object):
             url = u""
             if url_desc_map.has_key(u"url"):
                 url = urllib.unquote(url_desc_map[u"url"][0])
-            elif url_desc_map.has_key(u"stream"):
+            elif url_desc_map.has_key(u"conn") and url_desc_map.has_key(u"stream"):
+                url = urllib.unquote(url_desc_map[u"conn"][0])
+                if url.rfind("/") < len(url) -1:
+                    url = url + "/"
+                url = url + urllib.unquote(url_desc_map[u"stream"][0])
+            elif url_desc_map.has_key(u"stream") and not url_desc_map.has_key(u"conn"):
                 url = urllib.unquote(url_desc_map[u"stream"][0])
 
             if url_desc_map.has_key(u"sig"):
@@ -164,6 +162,7 @@ def resolve(url):
                 item['surl'] = url
                 item['subs'] = ''
         resolved.append(item)
+        print resolved
         return resolved
 
 def _regex(url):
