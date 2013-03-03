@@ -172,7 +172,10 @@ class XBMContentProvider(object):
             img = item['img']
         if title.find('$') == 0:
             title = self.addon.getLocalizedString(int(title[1:]))
-        xbmcutil.add_dir(title,params,img,infoLabels=self._extract_infolabels(item))
+        menuItems = {}
+        if 'menu' in item.keys():
+            menuItems.update(item['menu'])
+        xbmcutil.add_dir(title,params,img,infoLabels=self._extract_infolabels(item),menuItems=menuItems)
 
     def _extract_infolabels(self,item):
         infoLabels = {}
