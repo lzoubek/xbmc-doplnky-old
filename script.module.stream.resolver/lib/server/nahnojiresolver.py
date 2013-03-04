@@ -11,17 +11,25 @@ __name__='nahnoji'
 __priiority__=-1
 
 def supports(url):
-    return not _regex(url) == None
+	return not _regex(url) == None
 
 # returns the steam url
-def resolve(url):
-    if supports(url):
-        if url.find('.flv') > -1:
-            return url
-        data = util.substr(util.request(url),'<body style','</a>')
-        pattern = 'href=\"(.+?)\"[^>]+>' 
-        match = re.compile(pattern).findall(data)
-        return [{'url':match[0]}]
+def url(url):
+	#if supports(url):
+	m = _regex(url)
+	if not m == None:
+		ur = m.group('url')
+		if ur.find('.flv') > -1:
+			return [ur]
+		data = util.substr(util.request(ur),'<body style','</a>')
+		pattern = 'href=\"(.+?)\"[^>]+>' 
+		match = re.compile(pattern).findall(data)
+		return [match[0]]
+
+def resolve(u):
+	stream = url(u)
+	if stream:
+		return [{'name':__name__,'quality':'360p','url':stream[0],'surl':u}]
 
 def _regex(url):
-    return re.search('nahnoji.cz/(.+?)',url,re.IGNORECASE | re.DOTALL)
+	return re.search('(?P<url>http://nahnoji.cz/[^\"|\'|\\\]+)',url,re.IGNORECASE | re.DOTALL)

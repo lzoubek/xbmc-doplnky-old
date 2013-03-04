@@ -36,7 +36,7 @@ class NajfilmyContentProvider(ContentProvider):
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['search','resolve','categories']
+		return ['search','categories']
 		
 	def getInfo(self,link):
 		data = util.request(link)
@@ -156,8 +156,9 @@ class NajfilmyContentProvider(ContentProvider):
 		hdata = util.request(url)
 		
 		data = util.substr(hdata,'<div class=\"AWD_like_button','<div class=\"postmetadata\">')
+		
 			
-		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','href="(?P<url>http://(www.)?streamcloud\.eu.+?)"'])
+		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=["|\'](?P<url>.+?)["|\']','href="(?P<url>http://(www.)?streamcloud\.eu.+?)"'])
                 result = []
 		for i in resolved:
                         item = self.video_item()
