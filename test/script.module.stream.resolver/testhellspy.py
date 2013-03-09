@@ -14,7 +14,7 @@ class HellspyTest(providertestcase.ProviderTestCase):
         self.cp = self.provider_class(self.username,self.password)
         self.list_urls=['http://www.hellspy.cz/search/?p=2&q=avengers']
         self.search_keywords=['lidice']
-        self.resolve_items = [{'url':'http://www.hellspy.cz/ve-stinu-2012-dvdrip-xvid-ac3-cz-avi/10608051?_ds=4'}]
+        self.resolve_items = [{'url':'http://www.hellspy.cz/icq-7-4-exe/7348078'}]
         self.categories_list = False
 
 
