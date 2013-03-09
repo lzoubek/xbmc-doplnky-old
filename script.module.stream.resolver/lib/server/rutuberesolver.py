@@ -38,4 +38,4 @@ def resolve(u):
 	if stream:
 		return [{'name':__name__,'quality':'640p','url':stream[0],'surl':u}]
 def _regex(url):
-	return re.search('rutube\.ru/embed/(?P<id>[^$]+)',url,re.IGNORECASE | re.DOTALL)
+	return re.search('rutube\.ru/(video/embed|embed)/(?P<id>[^$]+)',url,re.IGNORECASE | re.DOTALL)
