@@ -26,6 +26,7 @@ def resolve(url):
             rn = rn.group(1).split(',')
             index = 0
             result = []
+            headers = {'Referer':'me'}
             for stream in streams:
                 q = rn[index]
                 if q == 'HD':
@@ -33,9 +34,9 @@ def resolve(url):
                 else:
                     q = '???'
                 if len(subs) > 0:
-                    result.append({'url':stream,'quality':q,'subs':subs})
+                    result.append({'url':stream,'quality':q,'subs':subs,'headers':headers})
                 else:
-                    result.append({'url':stream,'quality':q})
+                    result.append({'url':stream,'quality':q,'headers':headers})
                 index+=1
             return result
 
