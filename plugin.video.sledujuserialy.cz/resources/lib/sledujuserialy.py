@@ -96,7 +96,7 @@ class SledujuserialyContentProvider(ContentProvider):
         item = item.copy()
         url = self._url(item['url'])
         data = util.substr(util.request(url),'<a name=\"video\"','<div class=\"line_line')
-        resolved = resolver.findstreams(data+url,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
+        resolved = resolver.findstreams(data+url,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','<object.*?data=(?P<url>.+?)</object>'])
         result = []
         if not resolved:
             util.info('Nothing resolved :-(')
@@ -108,6 +108,7 @@ class SledujuserialyContentProvider(ContentProvider):
             item['quality'] = i['quality']
             item['surl'] = i['surl']
             item['subs'] = i['subs']
+            item['headers'] = i['headers']
             result.append(item)     
         if len(result)==1:
             return result[0]
