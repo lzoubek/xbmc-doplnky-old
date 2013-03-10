@@ -1,3 +1,8 @@
+[B]1.5.0:[/B]
+- added resolvers flashx, videomail (ivo, mx3L)
+- resolvers can now return headers (if required for playing/downloading)
+- ContentProviders can now raise ResolveException
+- ulozto provider raises ResolveException when ulozto server is overloaded
 [B]1.4.6:[/B]
 - fixed youtube resolver
 - subtitles now work in munkvideo resolver
