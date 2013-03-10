@@ -127,9 +127,9 @@ class SerialyczContentProvider(ContentProvider):
             item['surl'] = i['surl']
             item['headers'] = i['headers']
             result.append(item)     
-            if len(result)==1:
-                return result[0]
-            elif len(result) > 1 and select_cb:
-                return select_cb(result)
+        if len(result)==1:
+            return result[0]
+        elif len(result) > 1 and select_cb:
+            return select_cb(result)
 
 
