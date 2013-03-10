@@ -69,7 +69,7 @@ def _create_plugin_url(params,plugin=sys.argv[0]):
 
 def save_to_file(url,file):
     try:
-        return save_data_to_file(request(url))
+        return save_data_to_file(request(url),file)
     except:
         traceback.print_exc()
 
@@ -78,6 +78,7 @@ def save_data_to_file(data,file):
         f = open(file,'wb')
         f.write(data)
         f.close()
+        info('File %s saved' % file)
         return True
     except:
         traceback.print_exc()
