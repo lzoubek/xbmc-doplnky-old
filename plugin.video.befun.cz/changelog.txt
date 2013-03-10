@@ -1,3 +1,5 @@
+[B]1.0.3:[/B]
+- u stahování nyní vždy funguje notifikace
 [B]1.0.2:[/B]
 - oprava načítání titulků z munkvideo
 [B]1.0.1:[/B]

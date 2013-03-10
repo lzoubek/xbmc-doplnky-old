@@ -128,6 +128,7 @@ class BefunContentProvider(ContentProvider):
             item['quality'] = i['quality']
             item['surl'] = i['surl']
             item['subs'] = i['subs']
+            item['headers'] = i['headers']
             result.append(item)	
         if len(result)==1:
             return result[0]
