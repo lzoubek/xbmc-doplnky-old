@@ -118,6 +118,7 @@ class XBMContentProvider(object):
         if stream:
             if not 'headers' in stream.keys():
                 stream['headers'] = {}
+            print stream
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
             if not stream['subs'] == '':
                 util.save_to_file(stream['subs'],os.path.join(downloads,name+'.srt'))
