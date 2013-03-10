@@ -20,6 +20,9 @@
 
 import sys,os,util,re,traceback
 
+class ResolveException(Exception):
+    pass
+
 class ContentProvider(object):
     '''
     ContentProvider class provides an internet content. It should NOT have any xbmc-related imports

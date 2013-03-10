@@ -21,6 +21,7 @@
 import sys,os,re,traceback,util,xbmcutil,resolver,time
 import xbmcplugin,xbmc,xbmcgui
 
+from provider import ResolveException
 class XBMContentProvider(object):
     '''
     ContentProvider class provides an internet content. It should NOT have any xbmc-related imports
@@ -115,24 +116,42 @@ class XBMContentProvider(object):
             return
         stream = self.resolve(url)
         if stream:
+            if not 'headers' in stream.keys():
+                stream['headers'] = {}
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
             if not stream['subs'] == '':
                 util.save_to_file(stream['subs'],os.path.join(downloads,name+'.srt'))
-            xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name))
+            xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name),headers=stream['headers'])
 
     def play(self,url):
         stream = self.resolve(url)
         if stream:
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/play')
+            if 'headers' in stream.keys():
+                for header in stream['headers']:
+                    stream['url'] += '|%s=%s' % (header,stream['headers'][header])
             print 'Sending %s to player' % stream['url']
             li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
             xbmcutil.load_subtitles(stream['subs'])
 
+    def _handle_exc(self,e):
+        msg = e.message
+        if msg.find('$') == 0:
+            try:
+                msg = self.addon.getLocalizedString(int(msg[1:]))
+            except:
+                pass
+        xbmcgui.Dialog().ok(self.provider.name,msg)
+        
+        
     def resolve(self,url):
         item = self.provider.video_item()
         item.update({'url':url})
-        return self.provider.resolve(item)
+        try:
+            return self.provider.resolve(item)
+        except ResolveException, e:
+            self._handle_exc(e)
 
     def search(self,keyword):
         self.list(self.provider.search(keyword))
@@ -228,7 +247,10 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
 
         item = self.provider.video_item()
         item.update({'url':url})
-        return self.provider.resolve(item,select_cb=select_cb)
+        try:
+            return self.provider.resolve(item,select_cb=select_cb)
+        except ResolveException, e:
+            self._handle_exc(e)
 
 class XBMCLoginRequiredContentProvider(XBMContentProvider):
 
@@ -278,7 +300,10 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
             if not self.provider.login():
                 xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
                 return
-        return self.provider.resolve(item,captcha_cb=self.ask_for_captcha)
+        try:
+            return self.provider.resolve(item,captcha_cb=self.ask_for_captcha)
+        except ResolveException, e:
+            self._handle_exc(e)
 
 class XBMCLoginOptionalDelayedContentProvider(XBMCLoginOptionalContentProvider):
 
@@ -301,7 +326,10 @@ class XBMCLoginOptionalDelayedContentProvider(XBMCLoginOptionalContentProvider):
             if not self.provider.login():
                 xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
                 return
-        return self.provider.resolve(item,captcha_cb=self.ask_for_captcha,wait_cb=self.wait_cb)
+        try:
+            return self.provider.resolve(item,captcha_cb=self.ask_for_captcha,wait_cb=self.wait_cb)
+        except ResolveException, e:
+            self._handle_exc(e)
 
 
 class CaptchaDialog ( xbmcgui.WindowXMLDialog ):

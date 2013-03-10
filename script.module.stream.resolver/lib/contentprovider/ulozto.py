@@ -23,6 +23,7 @@ import re,urllib,urllib2,cookielib,random,util,sys,os,traceback
 import simplejson as json
 from base64 import b64decode
 from provider import ContentProvider
+from provider import ResolveException
 
 class UloztoContentProvider(ContentProvider):
 
@@ -221,6 +222,9 @@ class UloztoContentProvider(ContentProvider):
         stream = self.rh.location
         # we did not get 302 but 200
         if stream == None:
+            if page.find('overloaded') > 0:
+                self.error('server is overloaded, please wait some time or use VIP account')
+                raise ResolveException('Chyba: ULozto server je pretizen')
             util.info('Captcha was invalid, retrying..')
             return self._get_file_url_anonymous(page,post_url,headers,captcha_cb)
         if stream.find('full=y') > -1:
