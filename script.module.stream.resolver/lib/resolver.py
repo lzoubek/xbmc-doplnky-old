@@ -40,7 +40,7 @@ RESOLVERS = sorted(RESOLVERS,key=lambda m: -m.__priority__)
 util.debug('done')
 
 def item():
-    return {'name':'','url':'','quality':'???','surl':'','subs':''}
+    return {'name':'','url':'','quality':'???','surl':'','subs':'','headers':{}}
 
 def resolve(url):
     url = util.decode_html(url)
@@ -163,7 +163,6 @@ def filter_by_quality(resolved,q):
     ret = sorted(ret,key=lambda i:i['quality'])
     if not q == '2':
         ret.reverse()
-    print ret
     return ret
 
 
