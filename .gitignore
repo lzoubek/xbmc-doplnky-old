@@ -1,3 +1,5 @@
 *.swp
 *.py[oc]
 test/**/*.config
+test/**/*.txt
+test/**/*.url
