@@ -118,10 +118,13 @@ class XBMContentProvider(object):
         if stream:
             if not 'headers' in stream.keys():
                 stream['headers'] = {}
-            print stream
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
             if not stream['subs'] == '':
                 util.save_to_file(stream['subs'],os.path.join(downloads,name+'.srt'))
+            dot = name.find('.')
+            if dot <= 0:
+                # name does not contain extension, append some
+                name+='.mp4'
             xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name),headers=stream['headers'])
 
     def play(self,url):
