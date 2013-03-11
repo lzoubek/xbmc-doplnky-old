@@ -19,5 +19,10 @@
 	<string id="30054">720p</string>
 	<string id="30055">480p</string>
 	<string id="30056">360p</string>
+	<string id="30057">Řazení filmů</string>
+	<string id="30058">Nejnovější</string>
+	<string id="30059">Nejstarší</string>
+	<string id="30060">Nejlepší</string>
+	<string id="30061">Nejsledovanější</string>
 	<string id="31000">Data o použití jsou zaslána pouze v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem.</string>
 </strings>

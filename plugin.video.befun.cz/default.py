@@ -30,9 +30,15 @@ __scriptname__ = 'befun.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
-settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
+order_map = {'0':'','1':'inverse=0','2':'order=rating','3':'order=seen'}
+order_by = order_map[__addon__.getSetting('order-by')]
+
+
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality'),'order-by':order_by}
 
 params = util.params()
 if params=={}:
     xbmcutil.init_usage_reporting( __scriptid__)
-xbmcprovider.XBMCMultiResolverContentProvider(befun.BefunContentProvider(),settings,__addon__).run(params)
+provider = befun.BefunContentProvider()
+provider.order_by = order_by
+xbmcprovider.XBMCMultiResolverContentProvider(provider,settings,__addon__).run(params)

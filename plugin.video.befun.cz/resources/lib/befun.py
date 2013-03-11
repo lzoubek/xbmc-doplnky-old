@@ -30,6 +30,7 @@ class BefunContentProvider(ContentProvider):
         ContentProvider.__init__(self,'befun.cz','http://befun.cz/',username,password,filter)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
+        self.order_by = ''
 
     def capabilities(self):
         return ['categories','resolve','search']
@@ -38,6 +39,11 @@ class BefunContentProvider(ContentProvider):
         return self.list_page('vyhledat/results?q='+keyword+'&c=filmy','<h2>Výsledky vyhledávání</h2>','</section')
 
     def list(self,url):
+        if url.find(self.order_by) < 0:
+            if url.find('?') > 0:
+                url+='&'+self.order_by
+            else:
+                url+='?'+self.order_by
         if url.find('#cat#') == 0:
             url = url[5:]
             return self._categories(util.request(self._url(url)),url)
@@ -74,7 +80,7 @@ class BefunContentProvider(ContentProvider):
         if next:
             item = self.dir_item()
             item['type'] = 'next'
-            item['url'] = next.group('url')
+            item['url'] = next.group('url').replace('&amp;','&')
             result.append(item)
         return result
 
@@ -100,11 +106,11 @@ class BefunContentProvider(ContentProvider):
         result = []
         item = self.dir_item()
         item['title'] = 'Filmy'
-        item['url'] = '#cat#filmy'
+        item['url'] = '#cat#filmy/'
         result.append(item)
         item = self.dir_item()
         item['title'] = 'Seriály'
-        item['url'] = '#cat#serialy'
+        item['url'] = '#cat#serialy/'
         result.append(item)
         return result
 
