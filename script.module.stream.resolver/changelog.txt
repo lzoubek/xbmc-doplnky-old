@@ -1,3 +1,5 @@
+[B]1.5.1:[/B]
+- when downloaded file does not have extension, it is autoappened (.mp4)
 [B]1.5.0:[/B]
 - added resolvers flashx, videomail (ivo, mx3L)
 - resolvers can now return headers (if required for playing/downloading)
