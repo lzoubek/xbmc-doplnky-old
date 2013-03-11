@@ -31,7 +31,7 @@ class SerialyczContentProvider(ContentProvider):
         urllib2.install_opener(opener)
 
     def capabilities(self):
-        return ['resolve','cagegories']
+        return ['resolve','categories']
 
 
     def categories(self):
