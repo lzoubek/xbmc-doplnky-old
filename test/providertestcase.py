@@ -70,6 +70,8 @@ class ProviderTestCase(unittest.TestCase):
                     count+=1
             print 'Listed %d categories' % count
             self.assertTrue(count>0,'At least one category item is listed')
+        else:
+            print 'Provider does not support categories'
 
     def test_new_items(self):
         if 'categories' in self.cp.capabilities():

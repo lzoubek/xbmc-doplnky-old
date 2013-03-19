@@ -16,7 +16,7 @@ class BezvadataTest(providertestcase.ProviderTestCase):
         self.search_keywords=['jachyme hod ho do stroje']
         self.categories_list = False
 
-    def test_resolve(self):
+    def _test_resolve(self):
         self.cp = self.provider_class()
         self.count = -1
         def callback(params):
