@@ -15,6 +15,7 @@ class BezvadataTest(providertestcase.ProviderTestCase):
         self.list_urls=['http://bezvadata.cz/vyhledavani/?s=video&page=2']
         self.search_keywords=['jachyme hod ho do stroje']
         self.categories_list = False
+        self.resolve_items = []
 
     def _test_resolve(self):
         self.cp = self.provider_class()
