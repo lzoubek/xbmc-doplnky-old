@@ -36,7 +36,7 @@ class BefunContentProvider(ContentProvider):
         return ['categories','resolve','search']
 
     def search(self,keyword):
-        return self.list_page('vyhledat/results?q='+keyword+'&c=filmy','<h2>Výsledky vyhledávání</h2>','</section')
+        return self.list_page(util.request(self._url('vyhledat/results?q='+keyword+'&c=filmy')),'<h2>Výsledky vyhledávání</h2>','</section')
 
     def list(self,url):
         if url.find(self.order_by) < 0:
