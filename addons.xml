@@ -65,7 +65,7 @@
 
 <addon id="plugin.video.befun.cz"
        name="befun.cz"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
