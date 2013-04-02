@@ -19,6 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
+import os
 sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import eserial
 import xbmcprovider,xbmcaddon,xbmcutil

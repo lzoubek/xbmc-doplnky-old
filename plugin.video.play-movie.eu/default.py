@@ -19,9 +19,10 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
+import os
 sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 
-import re,os
+import re
 import xbmcaddon
 import util,xbmcprovider,xbmcutil
 import playmovie

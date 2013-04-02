@@ -4,8 +4,8 @@
        version="1.0.7"
        provider-name="Libor Zoubek">
   <requires>
-    <import addon="xbmc.python" version="1.0"/>
-    <import addon="script.module.stream.resolver" version="1.5.2" />
+    <import addon="xbmc.python" version="2.0" />
+    <import addon="script.module.stream.resolver" version="1.5.3" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"

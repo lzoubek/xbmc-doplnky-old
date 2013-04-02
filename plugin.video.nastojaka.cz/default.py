@@ -19,8 +19,8 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import os
+sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import xbmcaddon,xbmc,xbmcutil
 
 import util,xbmcprovider,nastojaka

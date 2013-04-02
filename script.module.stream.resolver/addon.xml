@@ -4,7 +4,7 @@
        version="1.5.2"
        provider-name="Libor Zoubek">
   <requires>
-    <import addon="xbmc.python" version="1.0"/>
+    <import addon="xbmc.python" version="2.0" />
     <import addon="script.module.simplejson" version="2.0.10" />
   </requires>
   <extension point="xbmc.python.module"
