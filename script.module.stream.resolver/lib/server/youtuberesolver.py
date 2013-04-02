@@ -59,14 +59,15 @@ class YoutubePlayer(object):
 
     def __init__(self):
         pass
+    
     def extractFlashVars(self, data):
         flashvars = {}
         found = False
 
         for line in data.split("\n"):
-            if line.strip().startswith("yt.playerConfig = "):
+            if line.strip().find(";ytplayer.config = ") > 0:
                 found = True
-                p1 = line.find("=")
+                p1 = line.find(";ytplayer.config = ") + len(";ytplayer.config = ") - 1
                 p2 = line.rfind(";")
                 if p1 <= 0 or p2 <= 0:
                     continue
@@ -78,7 +79,6 @@ class YoutubePlayer(object):
             flashvars = data["args"]
 
         return flashvars
-
 
     def scrapeWebPageForVideoLinks(self, result, video):
         links = {}
