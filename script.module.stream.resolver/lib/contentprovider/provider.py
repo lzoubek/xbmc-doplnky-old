@@ -29,7 +29,7 @@ class ContentProvider(object):
     and must be testable without XBMC runtime. This is a basic/dummy implementation.
     '''	
 
-    def __init__(self,name,base_url,username,password,filter,tmp_dir='.'):
+    def __init__(self,name='dummy',base_url='/',username=None,password=None,filter=None,tmp_dir='.'):
         '''
         ContentProvider constructor
         Args:
@@ -51,9 +51,10 @@ class ContentProvider(object):
 
     def capabilities(self):
         '''
-        This way class defines which capabilities it provides
+        This way class defines which capabilities it provides ['login','search','resolve','categories']
+        It may also contain '!download' when provider does not support downloading
         '''
-        return ['login','search','resolve','categories']
+        return []
 
     def video_item(self):
         '''

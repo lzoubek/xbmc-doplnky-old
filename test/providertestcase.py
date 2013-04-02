@@ -55,6 +55,7 @@ class ProviderTestCase(unittest.TestCase):
         self.cp = self.provider_class()
         self.list_urls=[]
         self.resolve_items = []
+        self.search_keywords = []
 
     def test_search(self):
         if 'search' in self.cp.capabilities():
