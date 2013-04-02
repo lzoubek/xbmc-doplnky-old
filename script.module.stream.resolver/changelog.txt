@@ -1,3 +1,5 @@
+[B]1.5.2:[/B]
+- fixed youtube resolver
 [B]1.5.1:[/B]
 - when downloaded file does not have extension, it is autoappened (.mp4)
 [B]1.5.0:[/B]
