@@ -22,51 +22,49 @@
 import re,util,urllib2,traceback
 __name__ = 'koukni.cz'
 def supports(url):
-	return not _regex(url) == None
+    return not _regex(url) == None
 
 # returns the steam url
 def url(url):
-	m = _regex(url)
-	if not m == None:
-		iframe = _iframe(url)
-		if iframe:
-			return iframe[0]['url']
-		else:
-			return [url]
+    m = _regex(url)
+    if not m == None:
+        iframe = _iframe(url)
+        if iframe:
+            return iframe[0]['url']
+        else:
+            return [url]
 def resolve(url):
-	m = _regex(url)
-	if not m == None:
-		try:
-			iframe = _iframe(url)
-		except:
-			traceback.print_exc()
-			return
-		if iframe:
-			return iframe
-		else:
-			return [{'name':__name__,'quality':'720p','url':url,'surl':url}]
+    m = _regex(url)
+    if not m == None:
+        try:
+            iframe = _iframe(url)
+        except:
+            traceback.print_exc()
+            return
+        if iframe:
+            return iframe
+        else:
+            return [{'name':__name__,'quality':'720p','url':url,'surl':url}]
 
 def _furl(url):
-	if url.startswith('http'):
-		return url
-	url = url.lstrip('./')
-	return 'http://www.koukni.cz/'+url
+    if url.startswith('http'):
+        return url
+    url = url.lstrip('./')
+    return 'http://www.koukni.cz/'+url
 
 def _iframe(url):
-	iframe = re.search('(\d+)$',url,re.IGNORECASE | re.DOTALL)
-	if iframe:
-		data = util.request(url)
-		video = re.search('=\"player\" href=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
-		subs = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-		if video:
-			req = urllib2.Request(_furl(video.group('url')))
-			req.add_header('User-Agent',util.UA)
-			response = urllib2.urlopen(req)
-			response.close()
-			ret = {'name':__name__,'quality':'720p','url':response.geturl(),'surl':url}
-			if subs:
-				ret['subs'] = _furl(subs.group('url'))
-			return [ret]
+    iframe = re.search('(\d+)$',url,re.IGNORECASE | re.DOTALL)
+    if iframe:
+        data = util.request(url)
+        video = re.search('clip.+?url\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+        conn = re.search('netConnectionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+        subs = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+        if video and conn:
+            ret = {'name':__name__,'quality':'720p','surl':url}
+            ret['url'] = '%s playpath=%s' % (conn.group('url'),video.group('url'))
+            if subs:
+                ret['subs'] = _furl(subs.group('url'))
+            return [ret]
 
 def _regex(url):
-	return re.search('(www\.)?koukni.cz/(.+?)',url,re.IGNORECASE | re.DOTALL)
+    return re.search('(www\.)?koukni.cz/(.+?)',url,re.IGNORECASE | re.DOTALL)
