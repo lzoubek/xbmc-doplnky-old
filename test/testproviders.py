@@ -56,3 +56,13 @@ class NastojakaProviderTestCase(ProviderTestCase):
         self.search_keywords = ['matonoha']
         self.categories_list = False
 
+from koukni import KoukniContentProvider
+class KoukniProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = KoukniContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['http://koukni.cz/serialz']
+        self.resolve_items = [{'url':'http://koukni.cz/82917405'}]
+        self.search_keywords = ['big bang theory']
+        self.categories_list = True
