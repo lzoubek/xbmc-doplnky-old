@@ -89,7 +89,7 @@ class PlayserialContentProvider(ContentProvider):
             self.do='</div>'
             return self.show(util.request(self._url(url[6:])))
         if url.find('#new#') == 0:
-            self.od='<h1><center>Naposledy přidáno: </center></h1>'
+            self.od='<center>Nejnovější epizody'
             self.do='<script language="JavaScript">'
             return self.show(util.request(self._url(url[:5])))
         if url.find('#cat#') == 0:
