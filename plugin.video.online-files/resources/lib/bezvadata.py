@@ -132,6 +132,7 @@ class BezvadataContentProvider(ContentProvider):
                     req.add_header('User-Agent',util.UA)    
                     resp = urllib2.urlopen(req)
                     item['url'] = resp.geturl()
+                    resp.close()
                     return item
 
                     
