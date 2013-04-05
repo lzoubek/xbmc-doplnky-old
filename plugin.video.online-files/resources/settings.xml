@@ -28,4 +28,8 @@
 		<setting label="30007" id="hellspy_user" type="text" default="" />
 		<setting label="30008" id="hellspy_pass" type="text" default="" option="hidden" />
 	</category>
+	<category label="30014">
+		<setting label="30002" id="fastshare_enabled" type="bool" default="true" />
+		<setting label="30000" id="fastshare_keep-searches" type="text" default="20" />
+	</category>
 </settings>

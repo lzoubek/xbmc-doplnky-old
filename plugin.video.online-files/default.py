@@ -21,6 +21,7 @@
 # */
 
 import re,os,urllib,urllib2,traceback
+sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin
 
 __scriptid__   = 'plugin.video.online-files'
@@ -32,7 +33,7 @@ __settings__   = __addon__.getSetting
 import util,search
 
 import xbmcutil
-import bezvadata,hellspy,ulozto
+import bezvadata,hellspy,ulozto,fastshare
 import xbmcprovider
 
 	
@@ -129,6 +130,16 @@ if __settings__('hellspy_enabled') == 'true':
 	}
 	extra.update(settings)
 	providers[p.name] = XBMCHellspyContentProvider(p,extra,__addon__)
+
+if __settings__('fastshare_enabled') == 'true':
+	p = fastshare.FastshareContentProvider(__settings__('fastshare_user'),__settings__('fastshare_pass'),tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile')))
+	extra = {
+			'vip':'0',
+			'keep-searches':__settings__('fastshare_keep-searches')
+	}
+	extra.update(settings)
+	providers[p.name] = xbmcprovider.XBMCLoginOptionalContentProvider(p,extra,__addon__)
+
 
 def icon(provider):
 	icon_file = os.path.join(__addon__.getAddonInfo('path'),'resources','icons',provider+'.png')
