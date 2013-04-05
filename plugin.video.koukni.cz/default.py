@@ -22,6 +22,9 @@
 
 import re,os,urllib,urllib2,shutil,traceback
 import xbmcaddon,xbmc,xbmcgui,xbmcplugin,xbmcutil,util
+
+sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
+
 import xbmcprovider,koukni
 
 __scriptid__   = 'plugin.video.koukni.cz'
