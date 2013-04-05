@@ -41,17 +41,17 @@ class PlayserialContentProvider(ContentProvider):
 
     def categories(self):
         result = []
-	item = self.dir_item()
-	item['type'] = 'new'
-	item['url']  = '#new#'+self.base_url
-	result.append(item)
+        item = self.dir_item()
+        item['type'] = 'new'
+        item['url']  = '#new#'+self.base_url
+        result.append(item)
         data = util.substr(util.request(self.base_url),'<ul>','</ul>')
         pattern = '<li><a href=\'(?P<url>[^\']+)[^>]+>(?P<name>[^<]+)' 
         for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		item = self.dir_item()
-		item['title'] = m.group('name')
-		item['url'] = '#cat#'+m.group('url')
-		result.append(item)
+            item = self.dir_item()
+            item['title'] = m.group('name')
+            item['url'] = '#cat#'+m.group('url')
+            result.append(item)
         return result
 
     def episodes(self,page):
@@ -59,43 +59,43 @@ class PlayserialContentProvider(ContentProvider):
         data = util.substr(page,'<div class=\'obsah\'>','</div>')
         pattern = '<a href=\'(?P<url>[^\']+)[^>]+>(?P<name>[^<]+)' 
         for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		item = self.dir_item()
-		item['title'] = m.group('name')
-		item['url'] = '#show#'+m.group('url')
-		self._filter(result,item)
+            item = self.dir_item()
+            item['title'] = m.group('name')
+            item['url'] = '#show#'+m.group('url')
+            self._filter(result,item)
         return result
-    	
+
     def show(self,page):
         result = []
         data = util.substr(page,self.od,self.do)
         pattern='<a href=\'(?P<url>[^\']+)[^>]+>(?P<name>[^<]+)'
         if self.do.find('</div>') == -1:
-		pattern='(<b>(?P<serial>.+?)?</b> )'+pattern
+            pattern='(<b>(?P<serial>.+?)?</b> )'+pattern
         for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-		try:
-			name = "[B]%s[/B] %s" % (m.group('serial'),m.group('name'))
-		except:
-			name = "%s" % (m.group('name'))
-		item = self.video_item()
-		item['url'] = m.group('url')
-		item['title'] = name
-		self._filter(result,item)
+            try:
+                name = "[B]%s[/B] %s" % (m.group('serial'),m.group('name'))
+            except:
+                name = "%s" % (m.group('name'))
+            item = self.video_item()
+            item['url'] = m.group('url')
+            item['title'] = name
+            self._filter(result,item)
         return result
-    
-    
+
+
     def list(self,url):
         if url.find('#show#') == 0:
-		self.od='<div class=\'obsah\''
-		self.do='</div>'
-		return self.show(util.request(self._url(url[6:])))
+            self.od='<div class=\'obsah\''
+            self.do='</div>'
+            return self.show(util.request(self._url(url[6:])))
         if url.find('#new#') == 0:
-		self.od='<h1><center>Naposledy přidáno: </center></h1>'
-		self.do='<script language="JavaScript">'
-		return self.show(util.request(self._url(url[:5])))
+            self.od='<h1><center>Naposledy přidáno: </center></h1>'
+            self.do='<script language="JavaScript">'
+            return self.show(util.request(self._url(url[:5])))
         if url.find('#cat#') == 0:
-		return self.episodes(util.request(self._url(url[5:])))
+            return self.episodes(util.request(self._url(url[5:])))
         else:
-		raise Expception("Invalid url, I do not know how to list it :"+url)
+            raise Expception("Invalid url, I do not know how to list it :"+url)
 
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
@@ -106,16 +106,16 @@ class PlayserialContentProvider(ContentProvider):
         resolved = resolver.findstreams(data,['[\"|\']+(?P<url>http://[^\"|\'|\\\]+)','flashvars=\"file=(?P<url>[^\"|\\\]+)','file=(?P<url>[^\&]+)'])
         result = []
         for i in resolved:
-		item = self.video_item()
-		item['title'] = i['name']
-		item['url'] = i['url']
-		item['quality'] = i['quality']
-		item['surl'] = i['surl']
-		result.append(item)     
+            item = self.video_item()
+            item['title'] = i['name']
+            item['url'] = i['url']
+            item['quality'] = i['quality']
+            item['surl'] = i['surl']
+            result.append(item)     
         if len(result)==1:
-		return result[0]
+            return result[0]
         elif len(result) > 1 and select_cb:
-		return select_cb(result)
+            return select_cb(result)
 
 
 
