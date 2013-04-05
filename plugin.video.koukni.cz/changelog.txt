@@ -1,3 +1,5 @@
+[B]1.0.12:[/B]
+- oprava přehrávání rmtp (díky m3x)
 [B]1.0.9:[/B]
 - migrace na content.resolver 1.3.0
 - odebrana moznost pridavat a odebirat tagy
