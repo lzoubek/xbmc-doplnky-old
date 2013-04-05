@@ -18,5 +18,6 @@
     <description lang="en">Watch online content from bezvadata.cz</description>
     <description lang="cs">Sledujte nebo stahujte obsah ze servru bezvadata.cz. Stahování nebo přehrávání bez omezení rychlosti</description>
     <platform>all</platform>
+    <broken>pouzijte soubory-online</broken>
   </extension>
 </addon>
