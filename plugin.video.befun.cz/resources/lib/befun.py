@@ -44,6 +44,9 @@ class BefunContentProvider(ContentProvider):
                 url+='&'+self.order_by
             else:
                 url+='?'+self.order_by
+        if url.find('#movie#') == 0:
+            url = url[7:]
+            return self.list_movie(util.request(self._url(url)),url)
         if url.find('#cat#') == 0:
             url = url[5:]
             return self._categories(util.request(self._url(url)),url)
@@ -62,6 +65,25 @@ class BefunContentProvider(ContentProvider):
             self._filter(result,item)
         return result
 
+    def list_movie(self,page,url):
+        item = self.video_item()
+        item['url'] = url
+ 
+        data = util.substr(page,'<ul class=\"bread','</ul>')
+        title = re.search('<li class=\"active\">([^<]+)',data)
+        item['title'] = title.group(1).strip()
+
+        data = util.substr(util.substr(page,'<article','<!-- Page footer'),'<div class=\"content','</p>') + '</p>'
+        plot = re.search('<p>(.+?)</p>',data)
+        if plot:
+            item['plot'] = plot.group(1)
+
+        data = util.substr(page,'<div class=\"img','</div>')
+        img = re.search('<img src=\"([^\"]+)',data)
+        if img:
+            item['img'] = self._url(img.group(1))
+
+        return [item]
 
     def list_page(self,page,start,end):
         next = re.search('<a href=\"(?P<url>[^\"]+)\" class=\"ajax\">Další',page)
@@ -72,8 +94,8 @@ class BefunContentProvider(ContentProvider):
             url = re.search('<a href=\"([^\"]+)',data)
             img = re.search('<div class=\"img[^<]+<img src=\"(?P<img>[^\"]+).+?alt=\"(?P<name>[^\"]+)',data)
             if img and url:
-                item = self.video_item()
-                item['url'] = url.group(1)
+                item = self.dir_item()
+                item['url'] = '#movie#' + url.group(1)
                 item['img'] = self._url(img.group('img'))
                 item['title'] = img.group('name')
                 self._filter(result,item)
