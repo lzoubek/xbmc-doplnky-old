@@ -194,7 +194,10 @@ class XBMContentProvider(object):
         if 'img' in item.keys():
             img = item['img']
         if title.find('$') == 0:
-            title = self.addon.getLocalizedString(int(title[1:]))
+            try:
+                title = self.addon.getLocalizedString(int(title[1:]))
+            except:
+                pass
         menuItems = {}
         if 'menu' in item.keys():
             menuItems.update(item['menu'])
