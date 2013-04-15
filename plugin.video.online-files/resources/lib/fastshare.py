@@ -48,13 +48,12 @@ class FastshareContentProvider(ContentProvider):
             size = re.search('<div class=\"fs\">([^<]+)',it,re.IGNORECASE | re.DOTALL)
             time = re.search('<div class=\"vd\">([^<]+)',it,re.IGNORECASE | re.DOTALL)
             if name and link:
-                name = name.group(1)
-                if size:
-                    name+= ' (%s)' % size.group(1).strip()
-                if time:
-                    name+= ' [%s]' % time.group(1).strip()
                 item = self.video_item()
-                item['title'] = name
+                item['title'] = name.group(1)
+                if size:
+                    item['size'] = size.group(1).strip()
+                if time:
+                    item['length'] =  time.group(1).strip()
                 item['url'] = self._url(link.group(1))
                 item['img'] = self._url(img.group(1))
                 self._filter(result,item)
