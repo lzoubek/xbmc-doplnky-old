@@ -1,3 +1,6 @@
+[B]1.0.6:[/B]
+- nyní se natahují informace o filmu (textový popis)
+- oprava chyby při listování seriálů
 [B]1.0.5:[/B]
 - oprava vyhledávání filmů #153
 [B]1.0.4:[/B]
