@@ -43,7 +43,7 @@ def resolve(url):
             if qual == 'sd':
                 quality = "480p"
             elif qual == "hd":
-                quality = "720p"
+                quality = "640p"
             else:
                 quality = "???"
             link = item[u'videos'][qual]
@@ -51,4 +51,6 @@ def resolve(url):
         return items
 
 def _regex(url):
-    return re.search('http://img\.mail\.ru.*?<param.+?value=\"movieSrc=(?P<url>[^\"]+)', url, re.IGNORECASE | re.DOTALL)
+    m1 = re.search('http://img\.mail\.ru.+?<param.+?value=\"movieSrc=(?P<url>[^\"]+)', url, re.IGNORECASE | re.DOTALL)
+    m2 = re.search('http://video\.mail\.ru\/(?P<url>.+?)\.html', url, re.IGNORECASE | re.DOTALL)
+    return m1 or m2
