@@ -113,6 +113,10 @@ class ContentProvider(object):
             url (str): relative or absolute URL to be resolved
             captcha_cb(func{obj}): callback function when user input is required (captcha, one-time passwords etc).
             function implementation must be Provider-specific
+            select_cb(func{array}): callback function for cases when given url resolves to multiple streams,
+            provider class may call this function and require user interaction
+            wait_cb(func{obj}): callback function for cases when url resolves to stream which becomes available
+            somewhere in future (typically in several seconds). Provider may call this and require waiting.
         Returns:
             None - if ``url`` was not resolved. Video item with 'url' key pointing to resolved target
         '''
