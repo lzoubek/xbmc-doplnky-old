@@ -21,6 +21,7 @@
 # */
 import re,urllib,urllib2,cookielib,random,util,sys,os,traceback
 from provider import ContentProvider
+import koukniresolver
 
 class KoukniContentProvider(ContentProvider):
 
@@ -83,19 +84,10 @@ class KoukniContentProvider(ContentProvider):
             result.append(item)
         return result
 
-
-
     def resolve(self,item,captcha_cb=None,select_cb=None):
-        item = item.copy()
-        url = self._url(item['url'])
-        data = util.request(url)
-        video = re.search('clip.+?url\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        conn = re.search('netConnectionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        subs = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        if video and conn:
-            item['url'] = '%s playpath=%s' % (conn.group('url'),video.group('url'))
-            item['surl'] = url
-            item['quality'] = '720p'
-            if subs:
-                item['subs'] = self._url(subs.group('url'))
+        data = koukniresolver.resolve(self._url(item['url']))
+        if data and len(data) > 0:
+            item = self.video_item()
+            for key in data[0].keys():
+                item[key] = data[0][key]
             return item

@@ -56,12 +56,11 @@ def _iframe(url):
     iframe = re.search('(\d+)$',url,re.IGNORECASE | re.DOTALL)
     if iframe:
         data = util.request(url)
-        video = re.search('clip.+?url\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        conn = re.search('netConnectionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        subs = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
-        if video and conn:
+        video = re.search('<source type=\"video\/mp4\" src=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
+        subs = re.search('<track src=\"(?P<url>[^\"]+)',data,re.IGNORECASE | re.DOTALL)
+        if video:
             ret = {'name':__name__,'quality':'720p','surl':url}
-            ret['url'] = '%s playpath=%s' % (conn.group('url'),video.group('url'))
+            ret['url'] = _furl(video.group('url'))
             if subs:
                 ret['subs'] = _furl(subs.group('url'))
             return [ret]
