@@ -20,10 +20,10 @@ class BefunProviderTestCase(ProviderTestCase):
     def setUp(self):
         self.provider_class = BefunContentProvider
         self.cp = self.provider_class()
-        self.list_urls=['#cat#serialy','#cat#filmy','#cat#filmy/komedie']
+        self.list_urls=['#cat#serialy','#show#serial/10/alcatraz','#cat#filmy','#cat#filmy/komedie']
         self.resolve_items = [{'url':'http://www.befun.cz/film/1974/avengers-hd-munk'}]
         self.categories_list = True
-        self.search_keywords = ['avengers']
+        self.search_keywords = ['avengers','valecny kun']
 
 from serialy import SerialyczContentProvider
 class SerialyczProviderTestCase(ProviderTestCase):

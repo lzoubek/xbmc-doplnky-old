@@ -36,6 +36,7 @@ class BefunContentProvider(ContentProvider):
         return ['categories','resolve','search']
 
     def search(self,keyword):
+        keyword = urllib.quote_plus(keyword)
         return self.list_page(util.request(self._url('vyhledat/results?q='+keyword+'&c=filmy')),'<h2>Výsledky vyhledávání</h2>','</section')
 
     def list(self,url):
