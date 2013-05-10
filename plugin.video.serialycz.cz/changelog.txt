@@ -1,3 +1,5 @@
+B]1.1.13:[/B]
+- vylepšení od mx3Lmail
 B]1.1.12:[/B]
 - #151 - fixnuto rutube a podpora videomail
 B]1.1.11:[/B]

@@ -1,3 +1,5 @@
+[B]1.0.7:[/B]
+- oprava vyhledávání víceslovného textu
 [B]1.0.6:[/B]
 - nyní se natahují informace o filmu (textový popis)
 - oprava chyby při listování seriálů
