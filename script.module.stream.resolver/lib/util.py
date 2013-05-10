@@ -107,6 +107,8 @@ def _substitute_entity(match):
         else: return match.group()
 
 def decode_html(data):
+    if not type(data) == str:
+        return data
     try:
         if not type(data) == unicode:
             data = unicode(data,'utf-8',errors='ignore')
