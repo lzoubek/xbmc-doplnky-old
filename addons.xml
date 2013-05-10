@@ -6,7 +6,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -28,7 +28,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
     <import addon="script.common.plugin.cache" version="0.9.1"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.5.5"
+       version="1.5.6"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -65,11 +65,11 @@
 
 <addon id="plugin.video.befun.cz"
        name="befun.cz"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.5" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -91,7 +91,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -114,7 +114,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -136,7 +136,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -155,11 +155,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.12"
+       version="1.1.13"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -181,7 +181,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -203,7 +203,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -225,7 +225,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -248,7 +248,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -270,7 +270,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -292,7 +292,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -314,7 +314,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -336,7 +336,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -358,7 +358,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -380,7 +380,7 @@
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -402,7 +402,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -446,7 +446,7 @@
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.4" />
+    <import addon="script.module.stream.resolver" version="1.5.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
