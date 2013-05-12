@@ -174,6 +174,8 @@ class UloztoContentProvider(ContentProvider):
         self.init_urllib()
         self.login()
         self.info('Resolving %s'% url)
+        if not item.has_key('vip'):
+            item['vip'] = False
         vip = item['vip']
         if vip:
             page = util.request(url)
