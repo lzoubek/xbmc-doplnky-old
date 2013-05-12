@@ -1,3 +1,6 @@
+[B]1.1.0:[/B]
+- plugin znovu funkční
+- migrace na ContentProvider API
 [B]1.0.4:[/B]
 - načítání pohádek teď odpovídá webu, lze procházet podle písmen
 [B]1.0.3:[/B]
