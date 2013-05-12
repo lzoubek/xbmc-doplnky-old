@@ -56,6 +56,17 @@ class NastojakaProviderTestCase(ProviderTestCase):
         self.search_keywords = ['matonoha']
         self.categories_list = False
 
+from pohadkar import PohadkarContentProvider
+class PohadkarProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = PohadkarContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['#list#4','pohadka/s-certy-nejsou-zerty/video/']
+        self.resolve_items = [{'url':'video/s-certy-nejsou-zerty-cela-pohadka/'},{'url':'video/vcelka-maja-jak-maja-s-vilikem-preckali-zimu/'}]
+        self.search_keywords = ['vcelka maja']
+        self.categories_list = True
+
 from koukni import KoukniContentProvider
 class KoukniProviderTestCase(ProviderTestCase):
 
