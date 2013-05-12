@@ -3,3 +3,4 @@
 test/**/*.config
 test/**/*.txt
 test/**/*.url
+test/**/*.png
