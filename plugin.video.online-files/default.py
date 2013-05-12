@@ -97,6 +97,22 @@ class XBMCUloztoContentProvider(xbmcprovider.XBMCLoginOptionalContentProvider):
         if settings['search-type'] in search_types.keys():
             search_type = search_types[settings['search-type']]
         provider.search_type = search_type
+    
+    def resolve(self,url):
+        item = self.provider.video_item()
+        item.update({'url':url,'vip':True})
+        if not self.ask_for_account_type():
+            # user does not want to use VIP at this time
+            item.update({'vip':False})
+        else:            
+            if not self.provider.login():
+                xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30011))
+                return
+        try:
+            return self.provider.resolve(item,captcha_cb=self.ask_for_captcha)
+        except ResolveException, e:
+            self._handle_exc(e)
+
 
 settings = {
 	'downloads':__settings__('downloads'),

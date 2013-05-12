@@ -36,16 +36,33 @@ class UloztoContentProvider(ContentProvider):
         self.rh.location = None
         self.init_urllib()
 
-    def capabilities(self):
-        return ['login','search','resolve']
-
     def init_urllib(self):	
         opener = urllib2.build_opener(self.cp,self.rh)
         urllib2.install_opener(opener)
 
+    def capabilities(self):
+        return ['login','search','resolve','categories']
+
+    def categories(self):
+        result = []
+        if not self.login():
+            return result
+        data = util.request(self.base_url+'m/'+self.username)
+        fav = re.search('<li id=\"fmFavoritesFolder.+?href=\"(?P<url>[^\"]+)[^>]*>(?P<title>[^<]+)',data,re.IGNORECASE|re.DOTALL)
+        if fav:
+            item = self.dir_item()
+            item['url'] = '#fm#'+fav.group('url')
+            item['title'] = fav.group('title')
+            result.append(item)
+        myfiles = re.search('<a class=\"fmHomeFolder.+?href=\"(?P<url>[^\"]+)[^>]*>(?P<title>[^<]+)',data,re.IGNORECASE|re.DOTALL)
+        if myfiles:
+            item = self.dir_item()
+            item['url'] = '#fm#' + myfiles.group('url')
+            item['title'] = myfiles.group('title')
+            result.append(item)
+        return result
+
     def search(self,keyword):
-        print 'searching for...'
-        print [self.search_type]
         return self.list(self.base_url+'hledej/?'+self.search_type+'q='+urllib.quote(keyword))
 
     def login(self):
@@ -67,8 +84,30 @@ class UloztoContentProvider(ContentProvider):
             self.info('Login failed')
         return False
 
+    def list_folder(self,url):
+        self.login()
+        result = []
+        page = util.request(self._url(url))
+        page = util.substr(page,'<div id=\"fmItems','</ul')
+        for m in re.finditer('<div class=\"fmFolder(.+?)</em',page,re.IGNORECASE | re.DOTALL):
+            data = m.group(1)
+            item = self.dir_item()
+            item['url'] = '#fm#' + re.search('data-href=\"([^\"]+)',data).group(1)
+            item['title'] = re.search('data-name=\"([^\"]+)',data).group(1)
+            item['img'] = re.search('<img src=\"([^\"]+)',data).group(1)
+            result.append(item)
+        for m in re.finditer('<div class=\"fmFile(.+?)</em>',page,re.IGNORECASE | re.DOTALL):
+            data = m.group(1)
+            item = self.video_item()
+            item['url'] = re.search('data-href=\"([^\"]+)',data).group(1)
+            item['title'] = '%s.%s' % (re.search('data-name=\"([^\"]+)',data).group(1),re.search('data-ext=\"([^\"]+)',data).group(1))
+            item['img'] = re.search('<img src=\"([^\"]+)',data).group(1)
+            result.append(item)
+        return result
 
     def list(self,url):
+        if url.find('#fm#') == 0:
+            return self.list_folder(url[5:])
         url = self._url(url)
         page = util.request(url,headers={'X-Requested-With':'XMLHttpRequest','Referer':url,'Cookie':'uloz-to-id=1561277170;'})
         script = util.substr(page,'var kn','</script>')
@@ -122,19 +161,21 @@ class UloztoContentProvider(ContentProvider):
         item = item.copy()
         url = item['url']
         if url.startswith('http://www.ulozto.sk'):
-            url = 'http://www.ulozto.cz' + url[20:]
+            url = self.base_url + url[20:]
         if url.startswith('#'):
             ret = json.loads(util.request(url[1:]))
             if not ret['result'] == 'null':
                 url = b64decode(ret['result'])
                 url = self._url(url)
+        url = self._url(url)
         if url.startswith('#'):
             util.error('[uloz.to] - url was not correctly decoded')
             return
         self.init_urllib()
+        self.login()
         self.info('Resolving %s'% url)
-        logged_in = self.login()
-        if logged_in:
+        vip = item['vip']
+        if vip:
             page = util.request(url)
         else:
             try:
@@ -149,7 +190,7 @@ class UloztoContentProvider(ContentProvider):
             self.error('page with movie was not found on server')
             return
 
-        if logged_in:
+        if vip:
             data = util.substr(page,'<h3>Neomezené stahování</h3>','</div')
             m = re.search('<a(.+?)href=\"(?P<url>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
             if m:
