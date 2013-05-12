@@ -47,7 +47,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.5.6"
+       version="1.5.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -131,12 +131,12 @@
 </addon>
 
 <addon id="plugin.video.pohadkar.cz"
-       name="pohadkar.cz"
-       version="1.0.4"
+       name="Pohádkář.cz"
+       version="1.1.0"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.5.6" />
+    <import addon="script.module.stream.resolver" version="1.5.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
