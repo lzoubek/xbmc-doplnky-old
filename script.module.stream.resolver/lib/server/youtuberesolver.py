@@ -88,6 +88,8 @@ class YoutubePlayer(object):
 
         if flashvars.has_key(u"ttsurl"):
             video[u"ttsurl"] = flashvars[u"ttsurl"]
+        if flashvars.has_key("title"):
+            video["title"] = flashvars["title"]
 
         for url_desc in flashvars[u"url_encoded_fmt_stream_map"].split(u","):
             url_desc_map = cgi.parse_qs(url_desc)
@@ -113,9 +115,9 @@ class YoutubePlayer(object):
 
         return links
 
-    def extractVideoLinksFromYoutube(self, url, videoid):
+    def extractVideoLinksFromYoutube(self, url, videoid,video):
         result = util.request(self.urls[u"video_stream"] % videoid)
-        links = self.scrapeWebPageForVideoLinks(result, videoid)
+        links = self.scrapeWebPageForVideoLinks(result, video)
         if len(links) == 0:
             util.error(u"Couldn't find video url- or stream-map.")
         return links
@@ -150,10 +152,11 @@ def resolve(url):
     m = _regex(url)
     if not m == None:
         player = YoutubePlayer()
-        links = player.extractVideoLinksFromYoutube(url,m.group('id'))
+        video = {'title':'žádný název'}
+        links = player.extractVideoLinksFromYoutube(url,m.group('id'),video)
         resolved = []
         for q in links:
-            if q in player.fmt_value.keys():
+            if q in player.fmt_value.keys():                
                 quality = player.fmt_value[q]
                 item = {}
                 item['name'] = __name__
@@ -161,8 +164,8 @@ def resolve(url):
                 item['quality'] = quality
                 item['surl'] = url
                 item['subs'] = ''
+                item['title'] = video['title']
         resolved.append(item)
-        print resolved
         return resolved
 
 def _regex(url):
