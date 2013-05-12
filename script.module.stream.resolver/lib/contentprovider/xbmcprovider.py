@@ -105,7 +105,8 @@ class XBMContentProvider(object):
             params = self.params()
             params.update({'search-list':'#'})
             xbmcutil.add_dir(xbmcutil.__lang__(30003),params,xbmcutil.icon('search.png'))
-        xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))	
+        if not '!download' in self.provider.capabilities():
+            xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))	
         self.list(self.provider.categories())
         return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
