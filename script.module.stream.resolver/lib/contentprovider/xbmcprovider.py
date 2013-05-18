@@ -40,6 +40,7 @@ class XBMContentProvider(object):
         self.addon = addon
         self.addon_id = addon.getAddonInfo('id')
         self.check_setting_keys(['downloads'])
+        self.cache = provider.cache
 
     def check_setting_keys(self,keys):
         for key in keys:
@@ -74,14 +75,14 @@ class XBMContentProvider(object):
         params.update({'search':'#'})
         menuItems = self.params()
         xbmcutil.add_dir(xbmcutil.__lang__(30004),params,xbmcutil.icon('search.png'))
-        for what in xbmcutil.get_searches(self.addon,self.provider.name):
+        for what in xbmcutil.search_list(self.cache):
             params['search'] = what
             menuItems['search-remove'] = what
             xbmcutil.add_dir(what,params,menuItems={xbmc.getLocalizedString(117):menuItems})
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def search_remove(self,what):
-        xbmcutil.remove_search(self.addon,self.provider.name,what)
+        xbmcutil.search_remove(self.cache,what)
         xbmc.executebuiltin('Container.Refresh')
 
     def do_search(self,what):
@@ -97,10 +98,18 @@ class XBMContentProvider(object):
             except:
                 util.error('Unable to parse convert addon setting to number')
                 pass
-            xbmcutil.add_search(self.addon,self.provider.name,what,maximum)
+            xbmcutil.search_add(self.cache,what,maximum)
             self.search(what)
 
     def root(self):
+        searches = xbmcutil.get_searches(self.addon,self.provider.name)
+        if len(searches) > 0:
+            self.provider.info('Upgrading to new saved search storage...')
+            for s in searches:
+                self.provider.info('Moving item %s' % s)
+                xbmcutil.search_add(self.cache,s,9999999)
+            xbmcutil.delete_search_history(self.addon,self.provider.name)
+
         if 'search' in self.provider.capabilities():
             params = self.params()
             params.update({'search-list':'#'})

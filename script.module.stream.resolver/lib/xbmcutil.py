@@ -204,6 +204,39 @@ def error(text):
     xbmc.log(str([text]),xbmc.LOGERROR)
 
 
+def search_remove(cache,search):
+    data = cache.get('search')
+    if data == None or data == '':
+        data = []
+    else:
+        data = eval(data)
+    data.remove(search)
+    cache.set('search',repr(data))
+
+def search_add(cache,search,maximum):
+    data = cache.get('search')
+    if data == None or data == '':
+        data = []
+    else:
+        data = eval(data)
+    if search in data:
+        data.remove(search)
+    data.insert(0,search)
+    remove = len(data)-maximum
+    if remove>0:
+        for i in range(remove):
+            data.pop()
+    cache.set('search',repr(data))
+
+def search_list(cache):
+    data = cache.get('search')
+    if data == None or data == '':
+        data = []
+    else:
+        data = eval(data)
+    return data
+
+# obsolete functions .. 
 def get_searches(addon,server):
     local = xbmc.translatePath(addon.getAddonInfo('profile'))
     if not os.path.exists(local):
@@ -239,6 +272,14 @@ def add_search(addon,server,search,maximum):
     f.write(json.dumps(searches,ensure_ascii=True))
     f.close()
 
+def delete_search_history(addon,server):
+    local = xbmc.translatePath(addon.getAddonInfo('profile'))
+    if not os.path.exists(local):
+        return
+    local = os.path.join(local,server)
+    if os.path.exists(local):
+        os.remove(local)
+
 def remove_search(addon,server,search):
     local = xbmc.translatePath(addon.getAddonInfo('profile'))
     if not os.path.exists(local):
@@ -253,6 +294,8 @@ def remove_search(addon,server,search):
         f = open(local,'w')
         f.write(json.dumps(searches,ensure_ascii=True))
         f.close()
+# obsolete funcionts END
+
 
 def download(addon,filename,url,local,notifyFinishDialog=True,headers={}):
     util.info('Downloading %s' % url)
