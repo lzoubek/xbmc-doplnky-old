@@ -19,9 +19,15 @@
 # */
 
 import sys,os,util,re,traceback
+try:
+    import StorageServer
+except:
+    print 'Using dummy storage server'
+    import storageserverdummy as StorageServer
 
 class ResolveException(Exception):
     pass
+
 
 class ContentProvider(object):
     '''
@@ -48,6 +54,10 @@ class ContentProvider(object):
         self.base_url=base_url
         self.filter = filter
         self.tmp_dir = tmp_dir
+        self.cache = StorageServer.StorageServer(self.name, 24)
+ 
+    def __str__(self):
+        return 'ContentProvider'+self.name
 
     def capabilities(self):
         '''
@@ -146,4 +156,18 @@ class ContentProvider(object):
     def info(self,msg):
         util.info('[%s] %s' % (self.name,msg)) 
     def error(self,msg):
-        util.error('[%s] %s' % (self.name,msg)) 
+        util.error('[%s] %s' % (self.name,msg))
+
+
+def Cached(f):
+    '''
+     A method decorator that can be used on any ContentProvider method
+     Having this decorator means that results of such method are going 
+     to be cached for 24hours
+    '''
+    def wrap(*args):
+        self = args[0]
+        if hasattr(self,'cache') and self.cache:
+            return self.cache.cacheFunction(f,*args)
+        return f(*args)
+    return wrap
