@@ -159,7 +159,7 @@ class ContentProvider(object):
         util.error('[%s] %s' % (self.name,msg))
 
 
-def Cached(f):
+def cached(f):
     '''
      A method decorator that can be used on any ContentProvider method
      Having this decorator means that results of such method are going 
