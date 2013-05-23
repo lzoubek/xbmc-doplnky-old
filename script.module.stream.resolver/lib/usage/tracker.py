@@ -34,8 +34,18 @@ class TrackerSettings(object):
 
         if os.path.exists(self.settingFile):
             f = open(self.settingFile,'r')
-            self.data = json.loads(unicode(f.read().decode('utf-8','ignore')))
+            file_content = f.read()
             f.close()
+            try:
+                self.data = json.loads(unicode(file_content.decode('utf-8','ignore')))
+            except:
+                self.data = {}
+                self.data['id'] = {}
+                for serv in self.services:
+                    self.data['id'][serv.__name__] = serv.createInstanceID()
+                self.data['addons'] = {}
+                self.save()
+                
             for serv in self.services:
                 if not serv.__name__ in self.data['id'].keys():
                     self.data['id'][serv.__name__] = serv.createInstanceID()
