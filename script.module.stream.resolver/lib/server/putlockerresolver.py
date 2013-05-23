@@ -1,3 +1,7 @@
+# -*- coding: UTF-8 -*-
+# *
+# *
+# *  This Program is free software; you can redistribute it and/or modify
 # *  it under the terms of the GNU General Public License as published by
 # *  the Free Software Foundation; either version 2, or (at your option)
 # *  any later version.
@@ -20,9 +24,6 @@
 
 import re,util,os
 __name__ = 'putlocker'
-
-#cookie_file = os.path.join(profile_path, 'putlocker.cookies')
-#profile_path = common.profile_path
 
 
 def supports(url):
@@ -121,12 +122,12 @@ def url(url):
 				Avi = "http://putlocker.com/get_file.php?stream=%s&original=1"%playlist_code
 				html = util.request(Avi)
 				final=re.compile('url="(.+?)"').findall(html)[0].replace('&amp;','&')
-				return [{'url':final}]
+				return [final]
 			else:
 				Avi = "http://sockshare.com/get_file.php?stream=%s&original=1"%playlist_code
 				html = util.request(Avi)
 				final=re.compile('url="(.+?)"').findall(html)[0].replace('&amp;','&')
-				return [{'url':finalf}]
+				return [final]
 
 		#Else grab standard flv link
 		else:
@@ -145,7 +146,7 @@ def url(url):
 				print ('putlocker: stream url not found')
 				return False
             
-			return [{'url':flv_url.replace('&amp;','&')}]
+			return [flv_url.replace('&amp;','&')]
                 
                 
 def resolve(u):
