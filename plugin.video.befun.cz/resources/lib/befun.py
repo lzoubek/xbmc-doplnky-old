@@ -150,6 +150,7 @@ class BefunContentProvider(ContentProvider):
             '<embed( )src=\"(?P<url>[^\"]+)',
             '<object(.+?)data=\"(?P<url>[^\"]+)',
             '<iframe(.+?)src=[\"\' ](?P<url>.+?)[\'\" ]',
+            '<object.*?data=(?P<url>.+?)</object>'
             ])
         result = []
         if not resolved:
