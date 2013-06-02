@@ -1,3 +1,6 @@
+[B]1.0.8:[/B]
+- přidáno reportování také na befun.cz Google Analytics (pro uživatelé, kteří povolili zasílání statistik)
+- oprava přehrávání (Free) videí
 [B]1.0.7:[/B]
 - oprava vyhledávání víceslovného textu
 [B]1.0.6:[/B]
