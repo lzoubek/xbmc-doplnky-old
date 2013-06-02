@@ -50,7 +50,7 @@ class BefunXBMContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
         if result:
             # ping befun.cz GA account
             host = 'befun.cz'
-            tc = 'UA-3971432-4'
+            tc = 'UA-35173050-1'
             try:
                 utmain.main({'id':__scriptid__,'host':host,'tc':tc,'action':url})
             except:
