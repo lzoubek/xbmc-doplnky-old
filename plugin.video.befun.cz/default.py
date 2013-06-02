@@ -22,7 +22,7 @@
 import os
 sys.path.append( os.path.join ( os.path.dirname(__file__),'resources','lib') )
 import befun
-import xbmcprovider,xbmcaddon,xbmcutil,xbmc
+import xbmcprovider,xbmcaddon,xbmcutil,xbmc,utmain
 import util
 import traceback,urllib2
 
@@ -42,4 +42,20 @@ if params=={}:
     xbmcutil.init_usage_reporting( __scriptid__)
 provider = befun.BefunContentProvider()
 provider.order_by = order_by
-xbmcprovider.XBMCMultiResolverContentProvider(provider,settings,__addon__).run(params)
+
+class BefunXBMContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
+
+    def resolve(self,url):
+        result = xbmcprovider.XBMCMultiResolverContentProvider.resolve(self,url)
+        if result:
+            # ping befun.cz GA account
+            host = 'befun.cz'
+            tc = 'UA-3971432-4'
+            try:
+                utmain.main({'id':__scriptid__,'host':host,'tc':tc,'action':url})
+            except:
+                print 'Error sending ping to GA'
+                traceback.print_exc()
+        return result
+
+BefunXBMContentProvider(provider,settings,__addon__).run(params)
