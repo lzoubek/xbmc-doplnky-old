@@ -19,7 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import re, util
+import re, util,urllib2
 __name__ = 'videomail'
 def supports(url):
     return not _regex(url) == None
@@ -29,15 +29,17 @@ def resolve(url):
     m = _regex(url)
     if m:
         items = []
-        headers = {
-                   "Referer":"http://img.mail.ru/r/video2/uvpv3.swf?3",
-                   "Cookie":"VID=2SlVa309oFH4; mrcu=EE18510E964723319742F901060A; p=IxQAAMr+IQAA; video_key=203516; s="
-                  }
-        # header "Cookie" with parameters need to be set for your download/playback
         quality = "???"
         vurl = m.group('url')
         vurl = re.sub('\&[^$]*','',vurl)
-        data = util.request('http://api.video.mail.ru/videos/' + vurl + '.json', headers=headers)
+        util.init_urllib()
+        req = urllib2.Request('http://api.video.mail.ru/videos/' + vurl + '.json')
+        resp = urllib2.urlopen(req)
+        data = resp.read()
+        vkey = []
+        for cookie in re.finditer('(video_key=[^\;]+)',resp.headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL):
+            vkey.append(cookie.group(1))
+        headers = {'Cookie':vkey[-1]}
         item = util.json.loads(data)
         for qual in item[u'videos']:
             if qual == 'sd':
@@ -51,6 +53,6 @@ def resolve(url):
         return items
 
 def _regex(url):
-    m1 = re.search('http://img\.mail\.ru.+?<param.+?value=\"movieSrc=(?P<url>[^\"]+)', url, re.IGNORECASE | re.DOTALL)
+    m1 = re.search('http://.+?mail\.ru.+?<param.+?value=\"movieSrc=(?P<url>[^\"]+)', url, re.IGNORECASE | re.DOTALL)
     m2 = re.search('http://video\.mail\.ru\/(?P<url>.+?)\.html', url, re.IGNORECASE | re.DOTALL)
     return m1 or m2
