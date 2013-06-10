@@ -121,6 +121,7 @@ class EserialContentProvider(ContentProvider):
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',
             '<object(.+?)data=\"(?P<url>[^\"]+)',
+            '<object.*?data=(?P<url>.+?)</object>',
             '<iframe(.+?)src=[\"\' ](?P<url>.+?)[\'\" ]',
             ])
         result = []
@@ -133,6 +134,7 @@ class EserialContentProvider(ContentProvider):
             item['quality'] = i['quality']
             item['surl'] = i['surl']
             item['subs'] = i['subs']
+            item['headers'] = i['headers']
             result.append(item)	
         if len(result)==1:
             return result[0]
