@@ -42,6 +42,7 @@
     <description lang="cs">Tento doplněk Vám zpřístupní přehled premiér z kin, filmů vycházejících na DVD a Blue-ray a TOP žebříčků z ČSFD. Na ČSFD je možné vyhledávat filmy nebo osoby a procházet jejich filmotéky. K filmům načítá i medatada podobně jako scrapper s tou výhodou, že není nutné, aby se film nacházel ve vaší knihovně. Můžete přehrávat trailery a další videa a je zde také integrace s doplňky movie-library.cz, bezvadata.cz nebo kinotip.cz pro možnost hledání vybraného filmu jedním z těchto doplňků. </description>
     <description lang="en">This addon provides trailers and related videos to movies listed in csfd.cz. You can search for movies or actors,directors, list filmographies. Addon also fetches movie metadata similar as scrapper. There is an integration with movie-library.cz addon supporting convenient way to watch movie listed by this addon.</description>
     <platform>all</platform>
+    <broken>Under construction...</broken>
   </extension>
 </addon>
 
