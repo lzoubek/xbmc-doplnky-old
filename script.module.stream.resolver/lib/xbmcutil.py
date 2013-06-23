@@ -298,9 +298,12 @@ def remove_search(addon,server,search):
 
 
 def download(addon,filename,url,local,notifyFinishDialog=True,headers={}):
-    util.info('Downloading %s' % url)
+    util.info('Downloading %s to %s' % (url,local))
     local = xbmc.makeLegalFilename(local)
-    filename = filename.decode('ascii',errors='ignore')
+    try:
+        filename = util.replace_diacritic(util.decode_html(filename))
+    except:
+        filename = 'Video soubor'
     icon = os.path.join(addon.getAddonInfo('path'),'icon.png')
     notify = addon.getSetting('download-notify') == 'true'
     notifyEvery = addon.getSetting('download-notify-every')
