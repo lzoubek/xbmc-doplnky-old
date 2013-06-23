@@ -48,7 +48,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.6.0"
+       version="1.6.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -67,11 +67,11 @@
 
 <addon id="plugin.video.befun.cz"
        name="befun.cz"
-       version="1.0.8"
+       version="1.0.9"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.0" />
+    <import addon="script.module.stream.resolver" version="1.6.1" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
