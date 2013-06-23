@@ -1,3 +1,5 @@
+[B]1.0.9:[/B]
+- verze++ kvůli natažení závislého modulu s opravami stahování
 [B]1.0.8:[/B]
 - přidáno reportování také na befun.cz Google Analytics (pro uživatelé, kteří povolili zasílání statistik)
 - oprava přehrávání (Free) videí
