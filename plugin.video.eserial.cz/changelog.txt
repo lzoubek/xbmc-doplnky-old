@@ -1,3 +1,5 @@
+[B]1.0.10:[/B]
+- oprava přehrávání z videomail
 [B]1.0.9:[/B]
 - oprava zobrazeni titulku
 [B]1.0.6:[/B]
