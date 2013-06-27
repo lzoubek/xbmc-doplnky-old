@@ -115,9 +115,47 @@ class SerialyczContentProvider(ContentProvider):
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
         item = item.copy()
-        url = self._url(item['url']).replace('×','%c3%97')
-        data = util.substr(util.request(url),'<div id=\"content\"','#content')
-        resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','<object.*?data=(?P<url>.+?)</object>','<p><code><strong>(?P<url>.+?)</strong></code></p>'])
+        url = self._url(item['url']).replace('×', '%c3%97')
+        data = util.substr(util.request(url), '<div id=\"content\"', '#content')
+        visionone_resolved, onevision_resolved, scz_resolved = [],[],[]
+        
+        onevision = re.search('(?P<url>http://onevision\.ucoz\.ua/[^<]+)', data, re.IGNORECASE)
+        if onevision:
+            onevision_data = util.substr(util.request(onevision.group('url')),'<td class=\"eText\"','<td class=\"rightColumn\"')
+            onevision_resolved=resolver.findstreams(onevision_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+                                                  '<object(.+?)data=\"(?P<url>[^\"]+)',
+                                                  '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
+                                                  '<object.*?data=(?P<url>.+?)</object>'])
+        
+        visionone = re.search('(?P<url>http://visionone\.ucoz\.ru/[^<]+)', data, re.IGNORECASE)
+        if visionone:
+            visionone_data = util.substr(util.request(visionone.group('url')),'<td class=\"eText\"','<td class=\"rightColumn\"')
+            visionone_resolved = resolver.findstreams(visionone_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+                                                  '<object(.+?)data=\"(?P<url>[^\"]+)',
+                                                  '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
+                                                  '<object.*?data=(?P<url>.+?)</object>'])
+        scz = re.search('(?P<url>http://scz\.uvadi\.cz/\?p=[\d]+)', data, re.IGNORECASE)
+        if scz:
+            scz_data = util.substr(util.request(scz.group('url')),'<div id=\"content\"', '#content')
+            scz_resolved = resolver.findstreams(scz_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+                                                  '<object(.+?)data=\"(?P<url>[^\"]+)',
+                                                  '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
+                                                  '<object.*?data=(?P<url>.+?)</object>'])
+            
+        serialy_resolved = resolver.findstreams(data, ['<embed( )src=\"(?P<url>[^\"]+)',
+                                               '<object(.+?)data=\"(?P<url>[^\"]+)',
+                                               '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
+                                               '<object.*?data=(?P<url>.+?)</object>',
+                                               '<p><code><strong>(?P<url>http.+?)</strong></code></p>',
+                                               '<p><code><strong><big>(?P<url>.+?)</big></strong></code></p>'])
+        
+        resolved = []
+        resolved+= serialy_resolved or []
+        resolved+= visionone_resolved or []
+        resolved+= onevision_resolved or []
+        resolved+= scz_resolved or []
+        resolved = len(resolved) > 0 and resolved or None
+        
         result = []
         for i in resolved:
             item = self.video_item()
@@ -126,8 +164,8 @@ class SerialyczContentProvider(ContentProvider):
             item['quality'] = i['quality']
             item['surl'] = i['surl']
             item['headers'] = i['headers']
-            result.append(item)     
-        if len(result)==1:
+            result.append(item) 
+        if len(result) == 1:
             return result[0]
         elif len(result) > 1 and select_cb:
             return select_cb(result)
