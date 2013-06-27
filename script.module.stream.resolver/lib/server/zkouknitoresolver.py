@@ -27,11 +27,19 @@ def supports(url):
 # returns the steam url
 def resolve(url):
     m = _regex(url)
-    if not m == None:
-        data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
-        f = re.search('<file>([^<]+)',data,re.IGNORECASE | re.DOTALL)
+    f=None
+    if not m is None:
+        try:
+            data = util.request('http://www.zkouknito.cz/player/scripts/videoinfo_externi.php?id=%s' % m.group('id'))
+            f = re.search('<file>([^<]+)', data, re.IGNORECASE | re.DOTALL)
+        except Exception:
+            data = util.request(url)
+            f = re.search("\'file\':.*?'([^']+)", data, re.IGNORECASE | re.DOTALL)
         if f:
-            return [{'url':f.group(1)}]
+            return [{'url':f.group(1)}] 
+
 
 def _regex(url):
-    return re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)',url,re.IGNORECASE | re.DOTALL)
+    m1 = re.search('(www\.)zkouknito.cz/(.+?)vid=(?P<id>[\d]+)', url, re.IGNORECASE | re.DOTALL)
+    m2 = re.search('(www\.)zkouknito.cz/(.+?)', url, re.IGNORECASE | re.DOTALL)
+    return m1 or m2
