@@ -1,3 +1,5 @@
+B]1.1.14:[/B]
+- přidaná podpora pro servery onevision, visionone a scz (od mx3L)
 B]1.1.13:[/B]
 - vylepšení od mx3Lmail
 B]1.1.12:[/B]
