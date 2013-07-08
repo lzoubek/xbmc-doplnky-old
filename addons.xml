@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
+<addon id="plugin.video.jaksetodela.cz"
+       name="Jak se to dela"
+       version="1.0.0"
+       provider-name="Ivo Brhel">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.stream.resolver" version="1.6.2" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">jaksetodela.cz</summary>
+    <summary lang="cs">jaksetodela.cz</summary>
+    <description lang="en">Watch online www.jaksetodela.cz</description>
+    <description lang="cs">Sledujte online www.jaksetodela.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.playserial.cz"
        name="PlaySerialCZ"
        version="1.0.7"
