@@ -72,11 +72,11 @@ class ContentProvider(object):
         '''
         return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':'','img':'','length':'','quality':'???','subs':'','surl':''}
 
-    def dir_item(self):
+    def dir_item(self,title='',url='',type='dir'):
         '''
             reutrns empty directory item
         '''
-        return {'type':'dir','title':'','size':'0','url':''}
+        return {'type':type,'title':title,'size':'0','url':url}
 
     def login(self):
         '''

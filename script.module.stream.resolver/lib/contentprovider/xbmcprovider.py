@@ -196,7 +196,7 @@ class XBMContentProvider(object):
                 self.render_default(item)
 
     def render_default(self,item):
-        raise Exception("Unable to render item "+item)
+        raise Exception("Unable to render item " + str(item))
 
     def render_dir(self,item):
         params = self.params()
