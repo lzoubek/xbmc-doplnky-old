@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #/*
-# *      Copyright (C) 2012 Libor Zoubek
+# *      Copyright (C) 2013 Libor Zoubek
 # *
 # *
 # *  This Program is free software; you can redistribute it and/or modify
@@ -75,9 +75,10 @@ class UloztoContentProvider(ContentProvider):
                 return True
             data = util.substr(page,'<li class=\"menu-username','</li')
             m = re.search('key=(?P<key>[^\"]+)\"',data,re.IGNORECASE | re.DOTALL)
-            if m:
+            token = re.search('<input type=\"hidden\" name=\"_token_\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+            if m and token:
                 login_url = self.base_url+'login?key='+m.group('key')+'&do=loginForm-submit'
-                data = util.post(login_url,{'username':self.username,'password':self.password,'remember':'on','login':'Prihlasit'})
+                data = util.post(login_url,{'username':self.username,'password':self.password,'remember':'on','login':'Prihlasit','_token_':token.group(1)})
                 if data.find('href="/?do=web-logout') > 0:
                     self.info('Login successfull')
                     return True
