@@ -50,6 +50,16 @@ def post(url,data,headers={}):
     response.close()
     return data
 
+def post_json(url,data,headers={}):
+    postdata = json.dumps(data)
+    headers['Content-Type'] = 'application/json'
+    req = urllib2.Request(url,postdata,headers)
+    req.add_header('User-Agent',UA)
+    response = urllib2.urlopen(req)
+    data = response.read()
+    response.close()
+    return data
+
 def icon(name):
     return 'https://github.com/lzoubek/xbmc-doplnky/raw/dharma/icons/'+name
 
