@@ -124,11 +124,17 @@ class UloztoContentProvider(ContentProvider):
             self.error('error parsing page - unable to locate keys')
             return []
         burl = b64decode('I2h0dHA6Ly9jcnlwdG8tenNlcnYucmhjbG91ZC5jb20vYXBpL3YyL2RlY3J5cHQvP2tleT0lcyZ2YWx1ZT0lcwo=')
+        murl = b64decode('aHR0cDovL2NyeXB0by16c2Vydi5yaGNsb3VkLmNvbS9hcGkvdjEyL2RlY3J5cHQ/a2V5PSVzCg==')
         data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
         result = []
-        for m in re.finditer('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<div class=\"fileInfo(?P<info>.+?)</div>',data, re.IGNORECASE |  re.DOTALL):
-            info = m.group('info')
+        decr = json.loads(util.post_json(murl% keymap[key],keymap))
+        for li in re.finditer('<li data-icon=\"(?P<key>[^\"]+)',data, re.IGNORECASE |  re.DOTALL):
+            body = urllib.unquote(b64decode(decr[li.group('key')])).decode('utf8')
+            m = re.search('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<div class=\"fileInfo(?P<info>.+?)</div>',body, re.IGNORECASE |  re.DOTALL)
+            if not m:
+                continue
             value = keymap[m.group('key')]
+            info = m.group('info')
             iurl = burl % (keymap[key],value)
             item = self.video_item()
             item['title'] = m.group('name')
@@ -143,12 +149,6 @@ class UloztoContentProvider(ContentProvider):
             self._filter(result,item)
         # page navigation
         data = util.substr(page,'<div class=\"paginator','</div')
-        mprev = re.search('<a href=\"(?P<url>[^\"]+)\" class=\"prev',data)
-        if mprev:
-            item = self.dir_item()
-            item['type'] = 'prev'
-            item['url'] = mprev.group('url')
-            result.append(item)
         mnext = re.search('<a href=\"(?P<url>[^\"]+)\" class="next',data)
         if mnext:
             item = self.dir_item()
@@ -239,45 +239,41 @@ class UloztoContentProvider(ContentProvider):
         cid = re.search('<input type=\"hidden\" name=\"cid\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
         sign = re.search('<input type=\"hidden\" name=\"sign\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
         key = re.search('<input type=\"hidden\" name=\"captcha_key\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
-        if not (sign and ts and cid and key):
+        token = re.search('<input type=\"hidden\" name=\"_token_\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL)
+        if not (sign and ts and cid and key and token):
             util.error('[uloz.to] - unable to parse required params from page, plugin needs fix')
             return
-        request = urllib.urlencode({'captcha_key':key.group(1),'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha_id':captcha_id,'captcha_value':code,'freeDownload':'Stáhnout'})
+        request = urllib.urlencode({'captcha_key':key.group(1),'ts':ts.group(1),'cid':cid.group(1),'sign':sign.group(1),'captcha_id':captcha_id,'captcha_value':code,'freeDownload':'Stáhnout','_token_':token.group(1)})
         req = urllib2.Request(post_url,request)
         req.add_header('User-Agent',util.UA)
         req.add_header('Referer',post_url)
+        req.add_header('Accept','application/json')
+        req.add_header('X-Requested-With','XMLHttpRequest')
         sessid=[]
         for cookie in re.finditer('(ULOSESSID=[^\;]+)',headers.get('Set-Cookie'),re.IGNORECASE | re.DOTALL):
             sessid.append(cookie.group(1))
-        req.add_header('Cookie','uloztoid='+cid.group(1)+'; '+sessid[-1])
+        req.add_header('Cookie','nomobile=1; uloztoid='+cid.group(1)+'uloztoid2='+cid.group(1)+'; '+sessid[-1])
         try:
             resp = urllib2.urlopen(req)
             page = resp.read()
             headers = resp.headers
-        except RedirectionException:
-            # this is what we need, our redirect handler raises this
-            pass
         except urllib2.HTTPError:
             # this is not OK, something went wrong
             traceback.print_exc()
             util.error('[uloz.to] cannot resolve stream url, server did not redirected us')
             util.info('[uloz.to] POST url:'+post_url)
             return
-        stream = self.rh.location
-        # we did not get 302 but 200
-        if stream == None:
-            if page.find('overloaded') > 0:
-                self.error('server is overloaded, please wait some time or use VIP account')
-                raise ResolveException('Chyba: ULozto server je pretizen')
-            util.info('Captcha was invalid, retrying..')
-            return self._get_file_url_anonymous(page,post_url,headers,captcha_cb)
-        if stream.find('full=y') > -1:
-            util.error('[uloz.to] - out of free download slots, use payed account or try later')
-            return
-        if stream.find('neexistujici') > -1:
-            util.error('[uloz.to] - movie was not found on server')
-            return
-        return self._fix_stream_url(stream)
+        try:
+            result = json.loads(page)
+        except:
+            raise ResolveException('Unexpected error, addon needs fix')
+        if result['status'] == 'ok':
+            return self._fix_stream_url(result['url'])
+        elif result['status'] == 'error':
+            # the only known state is wrong captcha for now
+            util.error('Captcha validation failed, please try playing/downloading again')
+            raise ResolveException('Captcha failed, try again')
+
 
     def _fix_stream_url(self,stream):	
         index = stream.rfind('/')
