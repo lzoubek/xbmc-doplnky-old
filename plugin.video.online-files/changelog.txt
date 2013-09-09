@@ -1,3 +1,5 @@
+[B]1.1.2:[/B]
+- #170 vyhledavani na ulozto opet v provozu
 [B]1.1.1:[/B]
 - #155 přidána podpora oblíbených a uživatelských souborů (zatím pouze zobrazení)
 [B]1.1.0:[/B]
