@@ -165,7 +165,7 @@ def resolve(url):
                 item['surl'] = url
                 item['subs'] = ''
                 item['title'] = video['title']
-                item['fmt'] = video['fmt']
+                item['fmt'] = q
                 resolved.append(item)
         return resolved
 
