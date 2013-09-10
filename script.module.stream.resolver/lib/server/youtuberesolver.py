@@ -165,7 +165,8 @@ def resolve(url):
                 item['surl'] = url
                 item['subs'] = ''
                 item['title'] = video['title']
-        resolved.append(item)
+                item['fmt'] = video['fmt']
+                resolved.append(item)
         return resolved
 
 def _regex(url):
