@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-#/*
-# *      Copyright (C) 2011 Libor Zoubek
+# /*
+# *      Copyright (C) 2013 Libor Zoubek
 # *
 # *
 # *  This Program is free software; you can redistribute it and/or modify
@@ -19,119 +19,126 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
+import os
+import xbmc, xbmcaddon, xbmcgui, xbmcplugin, util, xbmcprovider, xbmcutil, resolver
+from provider import ResolveException
 
-import re,os,urllib
-import xbmcaddon,xbmc,xbmcgui,xbmcplugin,xbmcutil
-import util,resolver
-import youtuberesolver as youtube
-
-__scriptid__   = 'plugin.video.videacesky.cz'
+__scriptid__ = 'plugin.video.videacesky.cz'
 __scriptname__ = 'videacesky.cz'
-__addon__      = xbmcaddon.Addon(id=__scriptid__)
-__language__   = __addon__.getLocalizedString
+__addon__ = xbmcaddon.Addon(id=__scriptid__)
+__language__ = __addon__.getLocalizedString
+__settings__ = __addon__.getSetting
 
-BASE_URL='http://www.videacesky.cz/'
+sys.path.append(os.path.join (__addon__.getAddonInfo('path'), 'resources', 'lib'))
+import videacesky
+settings = {'downloads':__addon__.getSetting('downloads'), 'quality':__addon__.getSetting('quality')}
 
 
-def furl(url):
-	if url.startswith('http'):
-		return url
-	url = url.lstrip('./')
-	return BASE_URL+url
-
-def categories():
-#	util.add_dir(__addon__.getLocalizedString(30001),{'top':BASE_URL+'/videozebricky/poslednich-50-videi'},util.icon('new.png'))
-	util.add_dir('Top 200',{'top':furl('/videozebricky/top-100')},util.icon('top.png'))
-	util.add_local_dir(__language__(30037),__addon__.getSetting('downloads'),util.icon('download.png'))
-	data = util.request(BASE_URL)
-	data = util.substr(data,'<ul id=\"headerMenu2\">','</ul>')
-	pattern = '<a href=\"(?P<url>[^\"]+)(.+?)>(?P<name>[^<]+)'
-	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
-		if m.group('url') == '/':
-			continue
-		util.add_dir(m.group('name'),{'cat':furl(m.group('url'))})
-
-def list_top(page):
-	data = util.substr(page,'<div class=\"postContent','</ul>')
-	pattern = '<li>[^<]*<a href="(?P<url>[^\"]+)[^>]*>(?P<name>[^<]+)'
-	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
-		util.add_video(
-			m.group('name'),
-			{'play':furl(m.group('url'))},
-			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':m.group('url')}}
-		)
-
-def list_content(page,url=BASE_URL):
-	data = util.substr(page,'<div class=\"contentArea','<div class=\"pagination\">')
-	pattern = '<h\d class=\"postTitle\"><a href=\"(?P<url>[^\"]+)(.+?)<span>(?P<name>[^<]+)</span></a>(.+?)<div class=\"postContent\">[^<]+<a[^>]+[^<]+<img src=\"(?P<img>[^\"]+)[^<]+</a>[^<]*<div class=\"obs\">[^>]+>(?P<plot>(.+?))</p>'
-	for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL ):
-		plot = re.sub('<br[^>]*>','',m.group('plot'))
-		util.add_video(
-			m.group('name'),
-			{'play':furl(m.group('url'))},
-			m.group('img'),
-			infoLabels={'plot':plot},
-			menuItems={xbmc.getLocalizedString(33003):{'name':m.group('name'),'download':furl(m.group('url'))}}
-		)
-	data = util.substr(page,'<div class=\"pagination\">','</div>')
-	m = re.search('<li class=\"info\"><span>([^<]+)',data)
-	n = re.search('<li class=\"prev\"[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)',data)
-	k = re.search('<li class=\"next\"[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)',data)
-	# replace last / + everyting till the end
-	myurl = re.sub('\/[\w\-]+$','/',url)
-	if not m == None:
-		if not n == None:
-			util.add_dir('%s - %s' % (m.group(1),n.group('name')),{'cat':myurl+n.group('url')})
-		if not k == None:
-			util.add_dir('%s - %s' % (m.group(1),k.group('name')),{'cat':myurl+k.group('url')})
+def vp8_youtube_filter(stream):
+	# some embedded devices running xbmc doesnt have vp8 support, so we
+	# provide filtering ability for youtube videos
 	
-def resolve(url):
-	data = util.substr(util.request(url),'<div class=\"postContent\"','</div>')
-	youtube.__eurl__ = 'http://www.videacesky.cz/wp-content/plugins/jw-player-plugin-for-wordpress/player.swf'
-	resolved = resolver.findstreams(__addon__,data,['<iframe src=\"(?P<url>[^\"]+)','\;file=(?P<url>[^\&]+)'])
-	print resolved
-	if resolved == None:
-		xbmcgui.Dialog().ok(__scriptname__,__language__(30002))
-		return
-	if not resolved == {}:
-		# search for subs
-		m = re.search('captions\.file=(?P<sub>[^\&]+)',data)
-		if m:
-			resolved['subs'] = m.group('sub')
-		return resolved
+	#======================================================================
+	# 	  5: "240p h263 flv container",
+	#      18: "360p h264 mp4 container | 270 for rtmpe?",
+	#      22: "720p h264 mp4 container",
+	#      26: "???",
+	#      33: "???",
+	#      34: "360p h264 flv container",
+	#      35: "480p h264 flv container",
+	#      37: "1080p h264 mp4 container",
+	#      38: "720p vp8 webm container",
+	#      43: "360p h264 flv container",
+	#      44: "480p vp8 webm container",
+	#      45: "720p vp8 webm container",
+	#      46: "520p vp8 webm stereo",
+	#      59: "480 for rtmpe",
+	#      78: "seems to be around 400 for rtmpe",
+	#      82: "360p h264 stereo",
+	#      83: "240p h264 stereo",
+	#      84: "720p h264 stereo",
+	#      85: "520p h264 stereo",
+	#      100: "360p vp8 webm stereo",
+	#      101: "480p vp8 webm stereo",
+	#      102: "720p vp8 webm stereo",
+	#      120: "hd720",
+	#      121: "hd1080"
+	#======================================================================
+	try:
+		if stream['fmt'] in [38, 44, 45, 46, 100, 101, 102]:
+			return True
+	except KeyError:
+		return False
+	return False
 
-def play(url):
-	stream = resolve(url)
-	if stream:
-		util.reportUsage(__scriptid__,__scriptid__+'/play')
-		print 'Sending %s to player' % stream
-		li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
-		xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-		util.load_subtitles(stream['subs'])
 
-def download(url,name):
-	downloads = __addon__.getSetting('downloads')
-	if '' == downloads:
-		xbmcgui.Dialog().ok(__scriptname__,__language__(30031))
-		return
-	stream = resolve(url)
-	if stream:
-		util.reportUsage(__scriptid__,__scriptid__+'/download')
-		name+='.flv'
-		util.download(__addon__,name,stream['url'],os.path.join(downloads,name))
+class VideaceskyXBMCContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
+	
+    def play(self, url):
+        stream = self.resolve(url)
+        print type(stream)
+        if type(stream) == type([]):
+            # resolved to mutliple files, we'll feed playlist and play the first one
+            playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            playlist.clear()
+            for video in stream:
+                li = xbmcgui.ListItem(label=video['title'], path=video['url'], iconImage='DefaultVideo.png')
+                playlist.add(video['url'], li)
+            stream = stream[0]
+        if stream:
+            xbmcutil.reportUsage(self.addon_id, self.addon_id + '/play')
+            if 'headers' in stream.keys():
+                for header in stream['headers']:
+                    stream['url'] += '|%s=%s' % (header, stream['headers'][header])
+            print 'Sending %s to player' % stream['url']
+            li = xbmcgui.ListItem(path=stream['url'], iconImage='DefaulVideo.png')
+            xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+            xbmcutil.load_subtitles(stream['subs'])
 
-p = util.params()
-if p=={}:
-	xbmcutil.init_usage_reporting( __scriptid__)
-	categories()
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-if 'top' in p.keys():
-	list_top(util.request(p['top']))
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-if 'cat' in p.keys():
-	list_content(util.request(p['cat']),p['cat'])
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
-if 'play' in p.keys():
-	play(p['play'])
-if 'download' in p.keys():
-	download(p['download'],p['name'])
+    def resolve(self, url):
+        def select_cb(resolved):
+            stream_parts = []
+            stream_parts_dict = {}
+            
+            for stream in resolved:
+                if stream['surl'] not in stream_parts_dict:
+                    stream_parts_dict[stream['surl']] = []
+                    stream_parts.append(stream['surl'])
+                if __settings__('filter_vp8') and vp8_youtube_filter(stream):
+                    continue
+                stream_parts_dict[stream['surl']].append(stream)
+
+            if len(stream_parts) == 1:
+                dialog = xbmcgui.Dialog()
+                quality = self.settings['quality'] or '0'
+                resolved = resolver.filter_by_quality(stream_parts_dict[stream_parts[0]], quality)
+                # if user requested something but 'ask me' or filtered result is exactly 1
+              	if len(resolved) == 1 or int(quality) > 0:
+                    return resolved[0]
+                opts = ['%s [%s]' % (r['title'], r['quality']) for r in resolved]
+                ret = dialog.select(xbmcutil.__lang__(30005), opts)
+                return resolved[ret]
+           
+            dialog = xbmcgui.Dialog()
+            opts = [__language__(30059)]
+            # when there are multiple stream, we let user choose only from best qualities
+            opts = opts + ['%s [%s]' % (stream_parts_dict[p][0]['title'], stream_parts_dict[p][0]['quality']) for p in stream_parts]
+            ret = dialog.select(xbmcutil.__lang__(30005), opts)
+            if ret == 0:
+                # requested to play all streams in given order - so return them all
+                return [stream_parts_dict[p][0] for p in stream_parts]
+            if ret >= 0:
+               return stream_parts_dict[stream_parts[ret]][0]
+
+        item = self.provider.video_item()
+        item.update({'url':url})
+        try:
+            return self.provider.resolve(item, select_cb=select_cb)
+        except ResolveException, e:
+            self._handle_exc(e)
+
+params = util.params()
+if params == {}:
+	xbmcutil.init_usage_reporting(__scriptid__)
+VideaceskyXBMCContentProvider(videacesky.VideaceskyContentProvider(tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile'))), settings, __addon__).run(params)
+
