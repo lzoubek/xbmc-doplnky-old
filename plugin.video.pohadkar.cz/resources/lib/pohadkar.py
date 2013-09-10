@@ -22,10 +22,12 @@
 
 LETTERS = ['A','B','C','Č','D','Ď','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','Ř','S','Š','T','Ť','U','V','W','X','Y','Z','Ž']
 import re,urllib,urllib2,cookielib,random,util,sys,os,traceback
+from threading import Lock
 from provider import ContentProvider
 from provider import ResolveException
 import md5
 import resolver
+import util
 class PohadkarContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None,tmp_dir='.'):
@@ -90,36 +92,37 @@ class PohadkarContentProvider(ContentProvider):
         return result
 
     def list_letter(self,index):
+        def fill_list_parallel(list, matches):
+            def process_match(m):
+                image,plot = self._get_meta(m.group('name'),self._url(m.group('url')))
+                item = self.dir_item()
+                item['title'] = m.group('name')
+                item['url'] = m.group('url')+'video/'
+                item['img'] = image
+                item['plot'] = plot
+                with lock:
+                    self._filter(list, item)
+            lock = Lock()
+            util.run_parallel_in_threads(process_match, matches)
+            
         letter = LETTERS[int(index)]
         data = util.request(self.base_url+'system/load-vypis/?znak='+letter+'&typ=1&zar=hp')
         pattern = '<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)'
         result = []
+        matches = []
         for m in re.finditer(pattern,data,re.IGNORECASE | re.DOTALL ):
-            image,plot = self._get_meta(m.group('name'),self._url(m.group('url')))
-            item = self.dir_item()
-            item['title'] = m.group('name')
-            item['url'] = m.group('url')+'video/'
-            item['img'] = image
-            item['plot'] = plot
-            self._filter(result,item)
+            matches.append((m,))
+        fill_list_parallel(result, matches)
+        result = sorted(result,key=lambda x:x['title'])
         return result
 
     def _get_meta(self,name,link):
         # load meta from disk or download it (slow for each tale, thatswhy we cache it)
-        local = self.tmp_dir
-        if not os.path.exists(local):
-            os.makedirs(local)
-        m = md5.new()
-        m.update(name)
-        image = os.path.join(local,m.hexdigest()+'_img.png')
-        plot = os.path.join(local,m.hexdigest()+'_plot.txt')
-        if not os.path.exists(image):
-            data = util.request(link)
-            self._get_image(data,image)
-            self._get_plot(data,plot)
-        return image,util.read_file(plot)
+        # not neccesary anymore its quite quick now,,
+        data = util.request(link)
+        return self._get_image(data),self._get_plot(data)
 
-    def _get_plot(self,data,local):
+    def _get_plot(self,data):
         data = util.substr(data,'<div id=\"tale_description\"','<div class=\"cleaner')
         p = data
         p = re.sub('<div[^>]+>','',p)
@@ -136,18 +139,19 @@ class PohadkarContentProvider(ContentProvider):
         p = re.sub('\[B\]\[B\]','[B]',p)
         p = re.sub('\[/B\]\[/B\]','[/B]',p)
         p = re.sub('\[B\][ ]*\[/B\]','',p)
-        util.save_data_to_file(util.decode_html(''.join(p)).encode('utf-8'),local)
+        return util.decode_html(''.join(p)).encode('utf-8')
 
 
-    def _get_image(self,data,local):
+    def _get_image(self,data):
         m = re.search('<img id=\"tale_picture\" src=\"(?P<img>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
         if not m == None:
             img = self._url(m.group('img'))
-            util.save_data_to_file(util.request(img),local)
+            return img
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
         page = util.request(self._url(item['url']))
         data = util.substr(page,'<div id=\"video','<div id=\"controller')
+        data = re.sub('youtube-nocookie.com','youtube.com',data)
         resolved = resolver.findstreams(data,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=\"(?P<url>[^\"]+)'])
         result = []
         if not resolved:
