@@ -148,7 +148,7 @@ class VideaceskyContentProvider(ContentProvider):
                 resolved += res[:]
         else:
             resolved = resolver.findstreams(data, ['file=(?P<url>[^&]+)&amp'])
-            subs = re.search('captions\.file=([^&]+)&amp', data)
+            subs = re.search('captions\.file=.*?(http[^&]+)&amp', data)
             if resolved and subs:
                 for i in resolved:
                     i['subs'] = subs.group(1)
