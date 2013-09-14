@@ -77,3 +77,15 @@ class KoukniProviderTestCase(ProviderTestCase):
         self.resolve_items = [{'url':'http://koukni.cz/82917405'}]
         self.search_keywords = ['big bang theory']
         self.categories_list = True
+        
+from videacesky import VideaceskyContentProvider
+class VideaceskyProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = VideaceskyContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['http://www.videacesky.cz/category/navody-dokumenty-pokusy']
+        self.resolve_items = [{'url':'talk-show-rozhovory/nathan-fillion-potreti-u-jimmyho-kimmela'},
+                              {'url':'navody-dokumenty-pokusy/pravdiva-fakta-o-vrubounovi'}]
+        self.search_keywords = ['fotbal']
+        self.categories_list = True
