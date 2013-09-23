@@ -314,7 +314,10 @@ def download(addon,filename,url,local,notifyFinishDialog=True,headers={}):
         notifyPercent = 5
     def callback(percent,speed,est,filename):
         if percent == 0 and speed == 0:
-            xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(13413).encode('utf-8'),filename,icon))
+            try:
+                xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)' % (xbmc.getLocalizedString(13413).encode('utf-8'),filename,icon))
+            except:
+               error('Unable to show notification') 
             return
         if notify:
             if percent > 0 and percent % notifyPercent == 0:
@@ -322,7 +325,10 @@ def download(addon,filename,url,local,notifyFinishDialog=True,headers={}):
                 if est>60:
                     esTime = '%sm' % int(est/60)
                 message = xbmc.getLocalizedString(24042) % percent + ' - %s KB/s %s' % (speed,esTime)
-                xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)'%(message.encode('utf-8'),filename,icon))
+                try:
+                    xbmc.executebuiltin('XBMC.Notification(%s,%s,3000,%s)'%(message.encode('utf-8'),filename,icon))
+                except:
+                    error('Unable to show notification')
 
     downloader = Downloader(callback)
     result = downloader.download(url,local,filename,headers)
