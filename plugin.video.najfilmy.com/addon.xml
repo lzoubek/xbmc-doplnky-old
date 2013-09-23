@@ -18,5 +18,6 @@
     <description lang="en">Watch online www.naj-filmy.com</description>
     <description lang="cs">Sledujte online www.naj-filmy.com</description>
     <platform>all</platform>
+    <broken>stranka zrusena</broken>
   </extension>
 </addon>

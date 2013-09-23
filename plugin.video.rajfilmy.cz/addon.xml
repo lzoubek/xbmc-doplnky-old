@@ -18,5 +18,6 @@
     <description lang="en">Watch online www.rajfilmy.cz</description>
     <description lang="cs">Sledujte online www.rajfilmy.cz</description>
     <platform>all</platform>
+    <broken>stranka vyzaduje registraci</broken>
   </extension>
 </addon>
