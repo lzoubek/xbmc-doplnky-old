@@ -70,7 +70,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.6.3"
+       version="1.6.4"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -151,6 +151,7 @@
     <description lang="en">Watch online www.rajfilmy.cz</description>
     <description lang="cs">Sledujte online www.rajfilmy.cz</description>
     <platform>all</platform>
+    <broken>stranka vyzaduje registraci</broken>
   </extension>
 </addon>
 
@@ -244,11 +245,11 @@
 
 <addon id="plugin.video.videacesky.cz"
        name="videacesky.cz"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.0" />
+    <import addon="script.module.stream.resolver" version="1.6.4" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -261,7 +262,6 @@
     <description lang="en">Watch content from videacesky.cz</description>
     <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
     <platform>all</platform>
-	<broken>docasne odstaven</broken>
   </extension>
 </addon>
 
@@ -328,6 +328,7 @@
     <description lang="en">Watch online www.naj-filmy.com</description>
     <description lang="cs">Sledujte online www.naj-filmy.com</description>
     <platform>all</platform>
+    <broken>stranka zrusena</broken>
   </extension>
 </addon>
 
