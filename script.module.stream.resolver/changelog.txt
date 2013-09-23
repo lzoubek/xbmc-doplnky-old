@@ -1,3 +1,6 @@
+[B]1.6.4:[/B]
+- fixed youtube resolver (by mx3L)
+- added concurrent function (by mx3L)
 [B]1.6.2:[/B]
 - updated zkouknito resolver, added kset, publicvideohost resolvers (by mx3L)
 [B]1.6.1:[/B]
