@@ -29,11 +29,17 @@ class ZkouknitoContentProvider(ContentProvider):
 
 	def __init__(self,username=None,password=None,filter=None):
 		ContentProvider.__init__(self,'zkouknito.cz','http://zkouknito.cz/',username,password,filter)
-		opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
+		ck = cookielib.Cookie(version=0, name='confirmed', value='1', port=None, port_specified=False,
+										 domain='zkouknito.cz', domain_specified=True, domain_initial_dot=False, 
+										 path='/', path_specified=True, secure=False, expires=None, discard=True, 
+										 comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
+		cj = cookielib.LWPCookieJar()
+		cj.set_cookie(ck)
+		opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 		urllib2.install_opener(opener)
 
 	def capabilities(self):
-		return ['resolve','cagegories']
+		return ['resolve','categories']
 
 
 	def categories(self):
@@ -82,17 +88,17 @@ class ZkouknitoContentProvider(ContentProvider):
 		item = item.copy()
 		url = self._url(item['url'])
 		data = util.request(url)
-		resolved = resolver.findstreams(data,['\'file\'\: \'(?P<url>[^\']+)'])
-                result = []
+		resolved = resolver.findstreams(data,["\'file\'\:.?\'(?P<url>[^\']+)"])
+		result = []
 		for i in resolved:
-                        item = self.video_item()
-                        item['title'] = i['name']
-                        item['url'] = i['url']
-                        item['quality'] = i['quality']
-                        item['surl'] = i['surl']
-                        result.append(item)     
-                if len(result)==1:
-                        return result[0]
-                elif len(result) > 1 and select_cb:
-                        return select_cb(result)
+			item = self.video_item()
+			item['title'] = i['name']
+			item['url'] = i['url']
+			item['quality'] = i['quality']
+			item['surl'] = i['surl']
+			result.append(item)     
+		if len(result)==1:
+			return result[0]
+		elif len(result) > 1 and select_cb:
+			return select_cb(result)
 
