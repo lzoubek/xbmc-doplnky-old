@@ -20,7 +20,7 @@
 # *
 # */
 
-import re,os,urllib,urllib2,shutil,traceback,cookielib
+import re,os,urllib,urllib2,shutil,traceback,cookielib,HTMLParser
 import util,resolver
 from provider import ContentProvider
 
@@ -154,7 +154,8 @@ class BefunContentProvider(ContentProvider):
         data = util.substr(data,'<div class=\"video','</div')
         sosac = re.search('\"(http\://[\w]+\.sosac\.ph[^\"]+)',data,re.DOTALL)
         if sosac:
-            data = util.request(sosac.group(1))
+            sosac = HTMLParser.HTMLParser().unescape(sosac.group(1))
+            data = util.request(sosac)
         resolved = resolver.findstreams(data,[
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',
