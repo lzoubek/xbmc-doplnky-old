@@ -35,13 +35,14 @@ order_map = {'0':'','1':'inverse=0','2':'order=rating','3':'order=seen'}
 order_by = order_map[__addon__.getSetting('order-by')]
 
 
-settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality'),'order-by':order_by}
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality'),'order-by':order_by,'strict-search':__addon__.getSetting('strict-search')}
 
 params = util.params()
 if params=={}:
     xbmcutil.init_usage_reporting( __scriptid__)
 provider = befun.BefunContentProvider()
 provider.order_by = order_by
+provider.strict_search = __addon__.getSetting('strict-search') == 'true'
 
 class BefunXBMContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
 
