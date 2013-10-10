@@ -229,7 +229,7 @@ class UloztoContentProvider(ContentProvider):
 
         captcha_id = re.search('<input type=\"hidden\" name=\"captcha_id\".+?value=\"([^\"]+)"',page,re.IGNORECASE | re.DOTALL).group(1)
         # ask callback to provide captcha code
-        self.info('Asking for captcha')
+        self.info('Asking for captcha img http://img.uloz.to/captcha/%s.png' % captcha_id)
         code = captcha_cb({'id':captcha_id,'img': 'http://img.uloz.to/captcha/%s.png' % captcha_id})
         if not code:
             self.info('Captcha not provided, done')

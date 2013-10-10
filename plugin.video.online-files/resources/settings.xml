@@ -6,11 +6,10 @@
 		<setting label="30032" id="download-notify" type="bool" default="true" />
 		<setting label="30033" id="download-notify-every" type="enum" lvalues="30034|30035|30036" default="0" visible="eq(-1,true)" />
 	</category>
-	<category label="30009">
-		<setting label="30002" id="bezvadata_enabled" type="bool" default="true" />
-		<setting label="30000" id="bezvadata_keep-searches" type="text" default="20" />
-		<setting label="30050" id="bezvadata_18+content" type="bool" default="false" />
-		<setting label="30051" id="bezvadata_ext-filter" type="text" default="exe,rar,srt,zip" />
+	<category label="30015">
+		<setting label="30002" id="webshare_enabled" type="bool" default="true" />
+		<setting label="30000" id="webshare_keep-searches" type="text" default="20" />
+		<setting label="30051" id="webshare_ext-filter" type="text" default="exe,rar,srt,zip" />
 	</category>
 	<category label="30010">
 		<setting label="30002" id="ulozto_enabled" type="bool" default="true" />
@@ -31,5 +30,11 @@
 	<category label="30014">
 		<setting label="30002" id="fastshare_enabled" type="bool" default="true" />
 		<setting label="30000" id="fastshare_keep-searches" type="text" default="20" />
+	</category>
+	<category label="30009">
+		<setting label="30002" id="bezvadata_enabled" type="bool" default="true" />
+		<setting label="30000" id="bezvadata_keep-searches" type="text" default="20" />
+		<setting label="30050" id="bezvadata_18+content" type="bool" default="false" />
+		<setting label="30051" id="bezvadata_ext-filter" type="text" default="exe,rar,srt,zip" />
 	</category>
 </settings>

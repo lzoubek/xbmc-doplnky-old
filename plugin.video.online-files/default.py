@@ -33,23 +33,26 @@ __settings__   = __addon__.getSetting
 import util,search
 
 import xbmcutil
-import bezvadata,hellspy,ulozto,fastshare
+import bezvadata,hellspy,ulozto,fastshare,webshare
 import xbmcprovider
 
 from provider import ResolveException
 	
 
 def search_cb(what):
-	for key in providers.keys():
-		p = providers[key]
-		try:
-			result = p.provider.search(what)
-			for item in result:
-				item['title'] = '[%s] %s' % (p.provider.name,item['title'])
-			p.list(result)
-		except:
-			traceback.print_exc()
-	return xbmcplugin.endOfDirectory(int(sys.argv[1]))
+    for key in providers.keys():
+        p = providers[key]
+        try:
+            result = p.provider.search(what)
+            for item in result:
+                item['title'] = '[%s] %s' % (p.provider.name,item['title'])
+                if item['type'] == 'next':
+                    item['type'] = 'dir'
+                    item['title'] = p.provider.name+' >>> '
+            p.list(result)
+        except:
+            traceback.print_exc()
+    return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def bezvadata_filter(item):
 	ext_filter = __settings__('bezvadata_ext-filter').split(',')
@@ -63,6 +66,14 @@ def bezvadata_filter(item):
 
 def ulozto_filter(item):
 	ext_filter = __settings__('ulozto_ext-filter').split(',')
+	ext_filter =  ['.'+f.strip() for f in ext_filter]
+	extension = os.path.splitext(item['title'])[1]
+	if extension in ext_filter:
+		return False
+	return True
+
+def webshare_filter(item):
+	ext_filter = __settings__('webshare_ext-filter').split(',')
 	ext_filter =  ['.'+f.strip() for f in ext_filter]
 	extension = os.path.splitext(item['title'])[1]
 	if extension in ext_filter:
@@ -153,6 +164,15 @@ if __settings__('fastshare_enabled') == 'true':
 	extra = {
 			'vip':'0',
 			'keep-searches':__settings__('fastshare_keep-searches')
+	}
+	extra.update(settings)
+	providers[p.name] = xbmcprovider.XBMCLoginOptionalContentProvider(p,extra,__addon__)
+
+if __settings__('webshare_enabled') == 'true':
+	p = webshare.WebshareContentProvider(__settings__('webshare_user'),__settings__('webshare_pass'),filter=webshare_filter)
+	extra = {
+			'vip':'0',
+			'keep-searches':__settings__('webshare_keep-searches')
 	}
 	extra.update(settings)
 	providers[p.name] = xbmcprovider.XBMCLoginOptionalContentProvider(p,extra,__addon__)
