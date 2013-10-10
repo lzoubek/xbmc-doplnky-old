@@ -13,8 +13,6 @@ class WebshareProviderTestCase(ProviderTestCase):
         self.cp = self.provider_class()
         self.list_urls=[]
         self.resolve_items = [{'url':'ident=1de10F12i7'}]
-        #self.resolve_items = [{'url':'http://www.fastshare.cz/2050612/avengers-avengers-the-2012-dvdrip-xvid-cz.avi'}]
-
         self.search_keywords = ['avengers']
         self.categories_list = False
 
