@@ -19,5 +19,4 @@
     <description lang="cs">Sledujte online seriály ze servru sledujuserialy.cz</description>
     <platform>all</platform>
   </extension>
-  <broken>server docasne nedostupny</broken>
 </addon>

@@ -1,3 +1,6 @@
+[B]1.6.5:[/B]
+- fixed youtube resolver (mx3L)
+- download is now more robust #174
 [B]1.6.4:[/B]
 - fixed youtube resolver (by mx3L)
 - added concurrent function (by mx3L)

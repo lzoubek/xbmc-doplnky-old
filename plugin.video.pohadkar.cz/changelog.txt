@@ -1,3 +1,5 @@
+[B]1.1.1:[/B]
+- urychlení načítání (by mx3L)
 [B]1.1.0:[/B]
 - plugin znovu funkční
 - migrace na ContentProvider API

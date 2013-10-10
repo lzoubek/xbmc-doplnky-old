@@ -1,3 +1,6 @@
+[B]1.0.10:[/B]
+- oprava nefunkčniho přehráváni některých videí #183 (by cuchac1)
+- nová volba 'Striktní vyhledávání' - dodatečné filtrování výsledků #173
 [B]1.0.9:[/B]
 - verze++ kvůli natažení závislého modulu s opravami stahování
 [B]1.0.8:[/B]

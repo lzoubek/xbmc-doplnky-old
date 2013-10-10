@@ -18,5 +18,6 @@
     <description lang="en">Watch online HBO Show Na stojáka</description>
     <description lang="cs">Sledujte online scénky pořadu HBO Na stojáka</description>
     <platform>all</platform>
+    <broken>server nedostupny</broken>
   </extension>
 </addon>
