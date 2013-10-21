@@ -31,8 +31,7 @@ def url(url):
         iframe = _iframe(url)
         if iframe:
             return iframe[0]['url']
-        else:
-            return [url]
+
 def resolve(url):
     m = _regex(url)
     if not m == None:
@@ -43,8 +42,8 @@ def resolve(url):
             return
         if iframe:
             return iframe
-        else:
-            return [{'name':__name__,'quality':'720p','url':url,'surl':url}]
+        #else:
+        #    return [{'name':__name__,'quality':'720p','url':url,'surl':url}]
 
 def _furl(url):
     if url.startswith('http'):
@@ -53,6 +52,9 @@ def _furl(url):
     return 'http://www.koukni.cz/'+url
 
 def _iframe(url):
+    index = url.find('&')
+    if index > 0:
+        url = url[:index]
     iframe = re.search('(\d+)$',url,re.IGNORECASE | re.DOTALL)
     if iframe:
         data = util.request(url)
@@ -61,6 +63,14 @@ def _iframe(url):
         if video:
             ret = {'name':__name__,'quality':'720p','surl':url}
             ret['url'] = _furl(video.group('url'))
+            if subs:
+                ret['subs'] = _furl(subs.group('url'))
+            return [ret]
+        video = re.search('url\: \'(?P<url>mp4[^\']+)',data,re.IGNORECASE | re.DOTALL)
+        subs = re.search('captionUrl\: \'(?P<url>[^\']+)',data,re.IGNORECASE | re.DOTALL)
+        if video:
+            ret = {'name':__name__,'quality':'720p','surl':url}
+            ret['url'] = 'rtmp://koukni.cz/mp4 playpath=%s' % video.group('url')
             if subs:
                 ret['subs'] = _furl(subs.group('url'))
             return [ret]
