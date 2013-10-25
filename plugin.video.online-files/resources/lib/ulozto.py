@@ -123,21 +123,26 @@ class UloztoContentProvider(ContentProvider):
         if not (j and k):
             self.error('error parsing page - unable to locate keys')
             return []
-        burl = b64decode('I2h0dHA6Ly9jcnlwdG8tenNlcnYucmhjbG91ZC5jb20vYXBpL3YyL2RlY3J5cHQvP2tleT0lcyZ2YWx1ZT0lcwo=')
-        murl = b64decode('aHR0cDovL2NyeXB0by16c2Vydi5yaGNsb3VkLmNvbS9hcGkvdjEyL2RlY3J5cHQ/a2V5PSVzCg==')
+        burl = b64decode('I2h0dHA6Ly9jcnlwdG8uamV6em92by5uZXQvZGVjcnlwdC8/a2V5PSVzJnZhbHVlPSVzCg==')
+        murl = b64decode('aHR0cDovL2NyeXB0by5qZXp6b3ZvLm5ldC9kZWNyeXB0Lwo=')
+        murl = 'http://crypto.jezzovo.net/decrypt/'
         data = util.substr(page,'<ul class=\"chessFiles','</ul>') 
         result = []
-        decr = json.loads(util.post_json(murl% keymap[key],keymap))
+        req = {'seed':keymap[key],'values':keymap}
+        decr = json.loads(util.post_json(murl,req))
         for li in re.finditer('<li data-icon=\"(?P<key>[^\"]+)',data, re.IGNORECASE |  re.DOTALL):
-            body = urllib.unquote(b64decode(decr[li.group('key')])).decode('utf8')
-            m = re.search('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)alt=\"(?P<name>[^\"]+)(.+?)<div class=\"fileInfo(?P<info>.+?)</div>',body, re.IGNORECASE |  re.DOTALL)
+            body = urllib.unquote(b64decode(decr[li.group('key')]))
+            m = re.search('<li>.+?<div data-icon=\"(?P<key>[^\"]+)[^<]+<img(.+?)src=\"(?P<logo>[^\"]+)(.+?)<div class=\"fileInfo(?P<info>.+?)</h4>',body, re.IGNORECASE |  re.DOTALL)
             if not m:
                 continue
             value = keymap[m.group('key')]
             info = m.group('info')
             iurl = burl % (keymap[key],value)
             item = self.video_item()
-            item['title'] = m.group('name')
+            item['title'] = '.. title not found..'
+            title = re.search('<div class=\"fileName.+?<a[^>]+>(?P<title>[^<]+)',info, re.IGNORECASE|re.DOTALL)
+            if title:
+                item['title'] = title.group('title')
             size = re.search('<span class=\"fileSize[^>]+>(?P<size>[^<]+)',info, re.IGNORECASE|re.DOTALL)
             if size:
                 item['size'] = size.group('size').strip()
@@ -165,7 +170,7 @@ class UloztoContentProvider(ContentProvider):
             url = self.base_url + url[20:]
         if url.startswith('#'):
             ret = json.loads(util.request(url[1:]))
-            if not ret['result'] == 'null':
+            if ret.has_key('result'):
                 url = b64decode(ret['result'])
                 url = self._url(url)
         url = self._url(url)
