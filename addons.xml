@@ -109,29 +109,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.bezvadata.cz"
-       name="bezvadata.cz"
-       version="1.0.4"
-       provider-name="Libor Zoubek">
-  <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.5" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">movie-library.cz</summary>
-    <summary lang="cs">movie-library.cz</summary>
-    <description lang="en">Watch online content from bezvadata.cz</description>
-    <description lang="cs">Sledujte nebo stahujte obsah ze servru bezvadata.cz. Stahování nebo přehrávání bez omezení rychlosti</description>
-    <platform>all</platform>
-    <broken>pouzijte soubory-online</broken>
-  </extension>
-</addon>
-
 <addon id="plugin.video.rajfilmy.cz"
        name="Rajfilmy.cz"
        version="1.0.4"
@@ -267,7 +244,7 @@
 
 <addon id="plugin.video.online-files"
        name="Soubory Online"
-       version="1.2.0"
+       version="1.2.1"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
