@@ -27,7 +27,7 @@ import elementtree.ElementTree as ET
 class WebshareContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None,tmp_dir='.'):
-        ContentProvider.__init__(self,'webshshare.cz','http://webshare.cz/',username,password,filter,tmp_dir)
+        ContentProvider.__init__(self,'webshare.cz','http://webshare.cz/',username,password,filter,tmp_dir)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
 

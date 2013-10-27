@@ -26,7 +26,7 @@ from provider import ResolveException
 class FastshareContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None,tmp_dir='.'):
-        ContentProvider.__init__(self,'fasthshare.cz','http://www.fastshare.cz/',username,password,filter,tmp_dir)
+        ContentProvider.__init__(self,'fastshare.cz','http://www.fastshare.cz/',username,password,filter,tmp_dir)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
 
