@@ -182,6 +182,9 @@ u'\u0165':'t',
 u'\u016f':'u',
 u'\u00fd':'y',
 u'\u017e':'z'
+u'\xed':'i',
+u'\xe9':'e',
+u'\xe1':'a',
 }
 
 def replace_diacritic(string):
