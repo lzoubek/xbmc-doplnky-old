@@ -1,3 +1,7 @@
+[B]1.6.6:[/B]
+- added koukejse resolver
+- improved @cached decorator
+- captcha image is now downloaded to file before showing up captcha dialog
 [B]1.6.5:[/B]
 - fixed youtube resolver (mx3L)
 - download is now more robust #174
