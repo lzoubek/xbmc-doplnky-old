@@ -158,16 +158,20 @@ class ContentProvider(object):
     def error(self,msg):
         util.error('[%s] %s' % (self.name,msg))
 
+class cached(object):
+    '''
+    A method decorator that can be used on any ContentProvider method
+    Having this decorator means that results of such method are going 
+    to be cached for 24hours by default. You can pass number argument 
+    to decorator, for example @cached(1) would cache for 1 hour.
+    '''
 
-def cached(f):
-    '''
-     A method decorator that can be used on any ContentProvider method
-     Having this decorator means that results of such method are going 
-     to be cached for 24hours
-    '''
-    def wrap(*args):
-        self = args[0]
-        if hasattr(self,'cache') and self.cache:
-            return self.cache.cacheFunction(f,*args)
-        return f(*args)
-    return wrap
+    def __init__(self,ttl=24):
+        self.ttl = ttl
+
+    def __call__(self,f):
+        def wrap(*args):
+            provider = args[0]
+            cache = StorageServer.StorageServer(provider.name+str(self.ttl), self.ttl)
+            return cache.cacheFunction(f,*args)
+        return wrap
