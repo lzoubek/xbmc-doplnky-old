@@ -105,7 +105,6 @@ class XBMCUloztoContentProvider(xbmcprovider.XBMCLoginOptionalContentProvider):
         self.check_setting_keys(['vip','search-type'])
         search_type = ''
         search_types = {'0':'','1':'media=video&','2':'media=image&','3':'media=music&','4':'media=document&'}
-        print 'setting is '+str(settings['search-type'])
         if settings['search-type'] in search_types.keys():
             search_type = search_types[settings['search-type']]
         provider.search_type = search_type
