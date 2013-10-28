@@ -24,7 +24,7 @@ import simplejson as json
 from base64 import b64decode
 from provider import ContentProvider
 from provider import ResolveException
-
+from provider import cached
 class UloztoContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None):
@@ -106,6 +106,7 @@ class UloztoContentProvider(ContentProvider):
             result.append(item)
         return result
 
+    @cached(1)
     def list(self,url):
         if url.find('#fm#') == 0:
             return self.list_folder(url[5:])
@@ -162,17 +163,21 @@ class UloztoContentProvider(ContentProvider):
             result.append(item)
         return result
 
+    @cached(48)
+    def decr_url(self,url):
+        if url.startswith('#'):
+            ret = json.loads(util.request(url[1:]))
+            if ret.has_key('result'):
+                url = b64decode(ret['result'])
+                url = self._url(url)
+        return url
 
     def resolve(self,item,captcha_cb=None):
         item = item.copy()
         url = item['url']
         if url.startswith('http://www.ulozto.sk'):
             url = self.base_url + url[20:]
-        if url.startswith('#'):
-            ret = json.loads(util.request(url[1:]))
-            if ret.has_key('result'):
-                url = b64decode(ret['result'])
-                url = self._url(url)
+        url = self.decr_url(url)
         url = self._url(url)
         if url.startswith('#'):
             util.error('[uloz.to] - url was not correctly decoded')
