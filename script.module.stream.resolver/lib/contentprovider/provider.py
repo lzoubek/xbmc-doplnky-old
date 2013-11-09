@@ -18,12 +18,13 @@
 # *
 # */
 
-import sys,os,util,re,traceback
+import sys,os,util,re,traceback,resolver
 try:
     import StorageServer
 except:
     print 'Using dummy storage server'
     import storageserverdummy as StorageServer
+
 
 class ResolveException(Exception):
     pass
@@ -66,11 +67,11 @@ class ContentProvider(object):
         '''
         return []
 
-    def video_item(self):
+    def video_item(self,url=''):
         '''
         returns empty video item - contains all required fields
         '''
-        return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':'','img':'','length':'','quality':'???','subs':'','surl':''}
+        return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':url,'img':'','length':'','quality':'???','subs':'','surl':''}
 
     def dir_item(self,title='',url='',type='dir'):
         '''
@@ -114,6 +115,31 @@ class ContentProvider(object):
             array of video or directory items
         '''
         return []
+    def findstreams(self,data,regexes):
+        """
+        Find's streams (see resovler.findstreams for more details)
+
+        Args:
+            datai (str): data (piece of HTML for example) to search links
+            regexes (array): array of regexes to search interesting urls in data
+        Returns:
+            array of video items
+        """
+        resolved = resolver.findstreams(data,regexes)
+        if resolved == None:
+            raise ResolveException('Nelze zistkat video link, zkontrolujte jestli video nebylo odstraneno')
+        if resolved == {}:
+            raise ResolveException('Video je na serveru, ktery neni podporovan')
+        result = []
+        for i in resolved:
+            item = self.video_item()
+            item['title'] = i['name']
+            item['url'] = i['url']
+            item['quality'] = i['quality']
+            item['surl'] = i['surl']
+            item['headers'] = i['headers']
+            result.append(item)
+        return result
 
     def resolve(self,item,captcha_cb=None,select_cb=None,wait_cb=None):
         '''
