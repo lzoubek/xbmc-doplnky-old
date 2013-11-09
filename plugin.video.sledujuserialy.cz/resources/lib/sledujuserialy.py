@@ -20,7 +20,7 @@
 # *
 # */
 import urllib2,re,os,sys,cookielib
-import util,resolver
+import util
 from provider import ContentProvider
 
 class SledujuserialyContentProvider(ContentProvider):
@@ -45,7 +45,6 @@ class SledujuserialyContentProvider(ContentProvider):
         pattern='<a href=\"(?P<url>[^\"]+).+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.dir_item()
-#            item['title'] = m.group('name').decode('windows-1250').encode('utf-8').strip()
             item['title'] = m.group('name').strip()
             item['url'] = m.group('url')
             result.append(item)
@@ -71,15 +70,17 @@ class SledujuserialyContentProvider(ContentProvider):
         return result
 
     def list(self,url):
-        result = []
         if url.find('nejnovejsi') > 0:
             return self.list_new(url)
+        return self.list_episodes(url)
+
+    def list_episodes(self,url):
+        result = []
         page = util.request(self._url(url))
         data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
         pattern = '<div style=\"background-image\: url\((?P<img>[^\)]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?title=\"(?P<name>[^\"]+)'
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
             item = self.video_item()
-            #item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
             item['title'] = m.group('name')
             item['url'] = m.group('url')
             item['img'] = self._url(m.group('img'))
@@ -96,20 +97,7 @@ class SledujuserialyContentProvider(ContentProvider):
         item = item.copy()
         url = self._url(item['url'])
         data = util.substr(util.request(url),'<a name=\"video\"','<div class=\"line_line')
-        resolved = resolver.findstreams(data+url,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','<object.*?data=(?P<url>.+?)</object>'])
-        result = []
-        if not resolved:
-            util.info('Nothing resolved :-(')
-            return
-        for i in resolved:
-            item = self.video_item()
-            item['title'] = i['name']
-            item['url'] = i['url']
-            item['quality'] = i['quality']
-            item['surl'] = i['surl']
-            item['subs'] = i['subs']
-            item['headers'] = i['headers']
-            result.append(item)     
+        result = self.findstreams(data+url,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','<object.*?data=(?P<url>.+?)</object>'])
         if len(result)==1:
             return result[0]
         elif len(result) > 1 and select_cb:
