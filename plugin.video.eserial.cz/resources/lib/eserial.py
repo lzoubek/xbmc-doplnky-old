@@ -22,7 +22,7 @@
 
 import re,os,urllib,urllib2,shutil,traceback,cookielib
 import util,resolver
-from provider import ContentProvider
+from provider import ContentProvider,cached
 
 class EserialContentProvider(ContentProvider):
 
@@ -54,7 +54,7 @@ class EserialContentProvider(ContentProvider):
         result = []
         for m in re.finditer('<div class=\'dily-vypis\'>(?P<show>.+?)</div>',data,re.IGNORECASE | re.DOTALL ):
             show = m.group('show')
-            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>.+?<div[^<].+?<a[^>]+>(?P<index>[^<]+)<b>(?P<name>[^<]+)',show)
+            link = re.search('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>.+?<div[^<].+?<a[^>]+>(?P<index>[^<]*)<b>(?P<name>[^<]*)',show)
             if link:
                 vurl = link.group('url')
                 name = link.group('index') + link.group('name')
@@ -95,6 +95,7 @@ class EserialContentProvider(ContentProvider):
         else:
             raise Expception("Invalid url, I do not know how to list it :"+url)
 
+    @cached(ttl=24)
     def categories(self):
         data = util.request(self.base_url)
         data = util.substr(data,'<div id=\"stred','<div id=\"patka')
@@ -104,10 +105,13 @@ class EserialContentProvider(ContentProvider):
         item['url'] = '#new#himym/novinky'
         result.append(item)
         
-        for m in re.finditer('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>[^<]*<div[^<]*<a[^>]+>(?P<name>[^<]+)',data,re.IGNORECASE | re.DOTALL ):
+        for m in re.finditer('<a href=\'(?P<url>[^\']+)[^<]+<img src=(?P<img>[^ ]+)[^<]+</a>[^<]*<div[^<]*(?P<name><a.+?)</div>',data,re.IGNORECASE | re.DOTALL ):
             item = self.dir_item()
             item['img'] = self._url(m.group('img').strip('\'\"'))
-            item['title'] = m.group('name')
+            title = ''
+            for n in re.finditer('<a[^>]+>([^<]*)',m.group('name')):
+                    title += n.group(1)
+            item['title'] = title
             item['url'] = '#show#'+m.group('url')
             result.append(item)
         return result
@@ -117,25 +121,13 @@ class EserialContentProvider(ContentProvider):
         url = self._url(item['url'])
         data = util.request(self._url(item['url']))	
         data = util.substr(data,'<div id=\"stred','<div id=\'patka>')
-        resolved = resolver.findstreams(data,[
+        result = self.findstreams(data,[
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',
             '<object(.+?)data=\"(?P<url>[^\"]+)',
             '<object.*?data=(?P<url>.+?)</object>',
             '<iframe(.+?)src=[\"\' ](?P<url>.+?)[\'\" ]',
             ])
-        result = []
-        if not resolved:
-            self.error('Nothing resolved')
-        for i in resolved:
-            item = self.video_item()
-            item['title'] = i['name']
-            item['url'] = i['url']
-            item['quality'] = i['quality']
-            item['surl'] = i['surl']
-            item['subs'] = i['subs']
-            item['headers'] = i['headers']
-            result.append(item)	
         if len(result)==1:
             return result[0]
         elif len(result) > 1 and select_cb:

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.10"
+       version="1.0.11"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="script.module.stream.resolver" version="1.6.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
