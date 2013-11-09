@@ -70,7 +70,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.6.6"
+       version="1.6.7"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -105,6 +105,29 @@
     <summary lang="cs">befun.cz</summary>
     <description lang="en">Watch online HD movies and series from befun.cz</description>
     <description lang="cs">Sledujte online HD filmy seriály se servru befun.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.mtr.sk"
+       name="Mestská TV Ružomberok"
+       version="1.0.0"
+       provider-name="Libor Zoubek">
+  <requires>
+    <import addon="xbmc.python" version="2.0" />
+    <import addon="script.module.stream.resolver" version="1.6.7" />
+    <import addon="script.module.elementtree" version="1.2.7" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">mtr.sk</summary>
+    <summary lang="cs">mtr.sk</summary>
+    <description lang="en">Watch online mtr.sk</description>
+    <description lang="cs">Sledujte online mtr.sk</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -156,11 +179,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.14"
+       version="1.1.15"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="script.module.stream.resolver" version="1.6.7" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -445,7 +468,7 @@
 
 <addon id="plugin.video.sledujuserialy.cz"
        name="sledujuserialy.cz"
-       version="1.0.5"
+       version="1.0.6"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
