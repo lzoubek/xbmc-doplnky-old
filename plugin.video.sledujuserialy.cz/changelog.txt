@@ -1,3 +1,5 @@
+[B]1.0.6:[/B]
+- při neúspěšném získání video linku plugin zobrazí hlášku namísto chyby
 [B]1.0.5:[/B]
 - #141 - prehravani opet funkcni
 [B]1.0.3:[/B]
