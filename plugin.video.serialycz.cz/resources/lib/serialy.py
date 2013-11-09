@@ -22,7 +22,7 @@
 import urllib2,re,os,md5,sys,cookielib
 import util,resolver
 from provider import ContentProvider
-
+from provider import cached
 class SerialyczContentProvider(ContentProvider):
 
     def __init__(self,username=None,password=None,filter=None,tmp_dir='.'):
@@ -43,12 +43,15 @@ class SerialyczContentProvider(ContentProvider):
         data = util.substr(util.request(self.base_url),'<div id=\"primary\"','<div id=\"secondary')
         pattern='<a href=\"(?P<url>[^\"]+)[^>]+>(?P<name>[^<]+)</a>'	
         for m in re.finditer(pattern, util.substr(data,'Seriály</a>','</ul>'), re.IGNORECASE | re.DOTALL):
-            image,plot = self._get_meta(m.group('name'),m.group('url'))
             item = self.dir_item()
             item['title'] = m.group('name')
             item['url'] = m.group('url')
-            item['img'] = image
-            item['plot'] = plot
+            #try:
+            #    image,plot = self._get_meta(m.group('name'),m.group('url'))
+            #    item['img'] = image
+            #    item['plot'] = plot
+            #except:
+            #    pass # server does not like too much requests in a row
             result.append(item)
         return result
 
@@ -80,6 +83,7 @@ class SerialyczContentProvider(ContentProvider):
     def _get_image(self,data,local):
         data = util.substr(data,'<div class=\"entry-photo\"','</div>')
         m = re.search('<img(.+?)src=\"(?P<img>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
+        print m
         if not m == None:
             util.save_data_to_file(m.group('img'),local)
 
@@ -122,7 +126,7 @@ class SerialyczContentProvider(ContentProvider):
         onevision = re.search('(?P<url>http://onevision\.ucoz\.ua/[^<]+)', data, re.IGNORECASE)
         if onevision:
             onevision_data = util.substr(util.request(onevision.group('url')),'<td class=\"eText\"','<td class=\"rightColumn\"')
-            onevision_resolved=resolver.findstreams(onevision_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+            onevision_resolved=self.findstreams(onevision_data, ['<embed( )src=\"(?P<url>[^\"]+)',
                                                   '<object(.+?)data=\"(?P<url>[^\"]+)',
                                                   '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
                                                   '<object.*?data=(?P<url>.+?)</object>'])
@@ -130,19 +134,19 @@ class SerialyczContentProvider(ContentProvider):
         visionone = re.search('(?P<url>http://visionone\.ucoz\.ru/[^<]+)', data, re.IGNORECASE)
         if visionone:
             visionone_data = util.substr(util.request(visionone.group('url')),'<td class=\"eText\"','<td class=\"rightColumn\"')
-            visionone_resolved = resolver.findstreams(visionone_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+            visionone_resolved = self.findstreams(visionone_data, ['<embed( )src=\"(?P<url>[^\"]+)',
                                                   '<object(.+?)data=\"(?P<url>[^\"]+)',
                                                   '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
                                                   '<object.*?data=(?P<url>.+?)</object>'])
         scz = re.search('(?P<url>http://scz\.uvadi\.cz/\?p=[\d]+)', data, re.IGNORECASE)
         if scz:
             scz_data = util.substr(util.request(scz.group('url')),'<div id=\"content\"', '#content')
-            scz_resolved = resolver.findstreams(scz_data, ['<embed( )src=\"(?P<url>[^\"]+)',
+            scz_resolved = self.findstreams(scz_data, ['<embed( )src=\"(?P<url>[^\"]+)',
                                                   '<object(.+?)data=\"(?P<url>[^\"]+)',
                                                   '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
                                                   '<object.*?data=(?P<url>.+?)</object>'])
             
-        serialy_resolved = resolver.findstreams(data, ['<embed( )src=\"(?P<url>[^\"]+)',
+        serialy_resolved = self.findstreams(data, ['<embed( )src=\"(?P<url>[^\"]+)',
                                                '<object(.+?)data=\"(?P<url>[^\"]+)',
                                                '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]',
                                                '<object.*?data=(?P<url>.+?)</object>',
@@ -156,18 +160,9 @@ class SerialyczContentProvider(ContentProvider):
         resolved+= scz_resolved or []
         resolved = len(resolved) > 0 and resolved or None
         
-        result = []
-        for i in resolved:
-            item = self.video_item()
-            item['title'] = i['name']
-            item['url'] = i['url']
-            item['quality'] = i['quality']
-            item['surl'] = i['surl']
-            item['headers'] = i['headers']
-            result.append(item) 
-        if len(result) == 1:
-            return result[0]
-        elif len(result) > 1 and select_cb:
-            return select_cb(result)
+        if len(resolved) == 1:
+            return resolved[0]
+        elif len(resolved) > 1 and select_cb:
+            return select_cb(resolved)
 
 
