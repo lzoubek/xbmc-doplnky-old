@@ -5,6 +5,7 @@ import unittest
 filename = os.path.dirname( os.path.realpath(__file__) )
 sys.path.append( os.path.join ( filename, '..','script.module.stream.resolver','lib') )
 sys.path.append( os.path.join ( filename , '..','script.module.stream.resolver','lib','contentprovider') )
+sys.path.append( os.path.join ( filename , '..','script.module.stream.resolver','lib','server') )
 import provider
 import util
 
@@ -27,6 +28,30 @@ for addon in os.listdir(os.path.join(os.path.realpath(filename),'..')):
         lib = os.path.join(filename,'..',addon,'resources','lib')
         import_dir(lib)       
 
+class ResolverTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.resolver = None
+        self.urls = []
+
+    def assertions(self,url,results):
+        """
+        Subclass can implement resolver-specific assertions
+        """
+        pass
+
+    def test_resolve(self):
+        if self.resolver:
+            for url in self.urls:
+                print 'Testing URL: %s' % url
+                self.assertTrue(self.resolver.supports(url),'Resolver supports \'%s\''% url)
+                result = self.resolver.resolve(url)
+                self.assertIsNotNone(result,'Resolver returned something')
+                self.assertTrue(len(result) > 0,'Returned non-empty list of streams')
+                self.assertTrue(result[0].has_key('url'),'Retunred item contains [url] key')
+                self.assertTrue(len(result[0]['url']),'Retunred item [url] key has non-empty value')
+                print result
+                self.assertions(url,result)
 
 # to be updated by child class
 CONFIG_FILE = 'test.config'
