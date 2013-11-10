@@ -25,6 +25,28 @@ class BefunProviderTestCase(ProviderTestCase):
         self.categories_list = True
         self.search_keywords = ['avengers','valecny kun']
 
+from tvsosac import TVSosacContentProvider
+class TVSosacProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = TVSosacContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['cs/tv-shows-a-z/m','#serie#cs/detail/misfits-zmetci']
+        self.resolve_items = [{'url':'http://tv.sosac.ph/cs/player/once-upon-a-time-s2-e22'}]
+        self.categories_list = True
+        self.search_keywords = ['avengers','valecny kun']
+
+from mtrsk import MtrSkContentProvider
+class MtrSkProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = MtrSkContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=[]
+        self.resolve_items = [{'url':'http://kdah.mtr.sk/videoarchiv/2013/2013-11-04_FILMTIP.mp4'}]
+        self.categories_list = False
+        self.search_keywords = []
+
 from serialy import SerialyczContentProvider
 class SerialyczProviderTestCase(ProviderTestCase):
 
