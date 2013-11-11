@@ -112,3 +112,55 @@ class VideaceskyProviderTestCase(ProviderTestCase):
                               {'url':'navody-dokumenty-pokusy/pravdiva-fakta-o-vrubounovi'}]
         self.search_keywords = ['fotbal']
         self.categories_list = True
+        
+from rtvs import RtvsContentProvider
+class RtvsProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = RtvsContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['#listaz#?letter=a',
+                        'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013',
+                        'http://www.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=2013-5&date=04.06.2013&do=calendar-changeMonth',
+                        'http://www.rtvs.sk/televizia/program/detail/2577/a3um/archiv?date=25.11.2012']
+        self.resolve_items = [{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'},
+                              {'url':'http://ww.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=04.06.2013&date=04.06.2013&do=calendar-changeDate'}]
+        self.categories_list = True
+        
+
+from joj import JojContentProvider
+class JojProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = JojContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['#top#',
+                        "#cat#http://www.joj.sk/archiv.html",
+                        "#cat##rel#http://www.joj.sk/archiv.html/?type=relacie",
+                        '#subcat##showon#http://www.joj.sk/archiv.html/?type=relacie',
+                        '#subcat##showoff#http://www.joj.sk/archiv.html/?type=relacie',
+                        '#series#http://buckovci.joj.sk/buckovci-archiv/2013-05-06-buckovci-2-slnko-seno-dedina-finale-serie.html',
+                        '#episodes##0#http://buckovci.joj.sk/ajax.json?contentId=16363&serie=4679&page=36160&actualAlias=2013-05-06-buckovci-2-slnko-seno-dedina-finale-serie',]
+        self.resolve_items = [{'url':'http://panelak.joj.sk/panelak-epizody/2013-08-19-panelak.html'}]
+        self.categories_list = True
+        
+        
+from barrandov import BarrandovContentProvider
+class BarrandovProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = BarrandovContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['video/hlavni-zpravy/']
+        self.resolve_items = [{'url':'http://www.barrandov.tv/video/17085-hlavni-zpravy-17-9-2013'}]
+        self.categories_list = True
+        
+from gordonura import GordonUraContentProvider
+class GordonUraContentProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = GordonUraContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['?tag=KN-online']
+        self.resolve_items = [{'url':'http://gordon.ura.cz/?p=3219'}]
+        self.categories_list = True
