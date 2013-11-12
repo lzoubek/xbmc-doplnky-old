@@ -35,23 +35,34 @@ import util,search
 import xbmcutil
 import bezvadata,hellspy,ulozto,fastshare,webshare
 import xbmcprovider
-
+from threading import Lock
 from provider import ResolveException
 	
 
 def search_cb(what):
+
+    def paralel_search(search):
+        def do_search(p,what):
+            res = []
+            try:
+                result = p.provider.search(what)
+                for item in result:
+                    item['title'] = '[%s] %s' % (p.provider.name,item['title'])
+                    if item['type'] == 'next':
+                        item['type'] = 'dir'
+                        item['title'] = '[%s] %s >>' % (p.provider.name,__language__(30063))
+            except:
+                traceback.print_exc()
+            with lock:
+                p.list(result)
+        lock = Lock()
+        util.run_parallel_in_threads(do_search, search)
+
+    searches = []
     for key in providers.keys():
         p = providers[key]
-        try:
-            result = p.provider.search(what)
-            for item in result:
-                item['title'] = '[%s] %s' % (p.provider.name,item['title'])
-                if item['type'] == 'next':
-                    item['type'] = 'dir'
-                    item['title'] = p.provider.name+' >>> '
-            p.list(result)
-        except:
-            traceback.print_exc()
+        searches.append((p,what))
+    paralel_search(searches)
     return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def bezvadata_filter(item):
