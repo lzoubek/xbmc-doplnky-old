@@ -67,11 +67,11 @@ class ContentProvider(object):
         '''
         return []
 
-    def video_item(self,url=''):
+    def video_item(self,url='',img='',quality='???'):
         '''
         returns empty video item - contains all required fields
         '''
-        return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':url,'img':'','length':'','quality':'???','subs':'','surl':''}
+        return {'type':'video','title':'','rating':0,'year':0,'size':'0MB','url':url,'img':img,'length':'','quality':quality,'subs':'','surl':''}
 
     def dir_item(self,title='',url='',type='dir'):
         '''
