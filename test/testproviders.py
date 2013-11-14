@@ -97,7 +97,7 @@ class KoukniProviderTestCase(ProviderTestCase):
         self.provider_class = KoukniContentProvider
         self.cp = self.provider_class()
         self.list_urls=['http://koukni.cz/serialz']
-        self.resolve_items = [{'url':'http://koukni.cz/82917405'}]
+        self.resolve_items = [{'url':'http://koukni.cz/39862282'}]
         self.search_keywords = ['big bang theory']
         self.categories_list = True
         
