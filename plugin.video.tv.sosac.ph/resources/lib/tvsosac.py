@@ -45,14 +45,12 @@ class TVSosacContentProvider(ContentProvider):
         return result
 
     def list(self,url):
-        print url
         if url.find('tv-shows-a-z') >= 0:
             return self.list_shows_by_letter(url)
         if url.find('#serie#') == 0:
             return self.list_serie(url[7:])
 
     def list_serie(self,url):
-        print url
         result = []
         page = util.request(self._url(url))
         data = util.substr(page,'<div class=\"content\">','<script')
@@ -73,7 +71,7 @@ class TVSosacContentProvider(ContentProvider):
                     self._filter(result,item)
         return result
 
-    @cached(ttl=24*7)
+    @cached(ttl=24*6)
     def list_shows_by_letter(self,url):
         result = []
         page = util.request(self._url(url))
@@ -83,6 +81,17 @@ class TVSosacContentProvider(ContentProvider):
             item['url'] = '#serie#'+m.group('url')
             item['title'] = m.group('name')
             self._filter(result,item)
+        paging = util.substr(page,'<div class=\"pagination\"','</div')
+        next = re.search('<li class=\"next[^<]+<a href=\"\?page=(?P<page>\d+)',paging,re.IGNORECASE | re.DOTALL)
+        if next:
+            next_page = int(next.group('page'))
+            current = re.search('\?page=(?P<page>\d)',url)
+            current_page = 0
+            if current:
+                current_page = int(current.group('page'))
+            if current_page < next_page:
+                url = re.sub('\?.+?$','',url) + '?page='+str(next_page)
+                result += self.list_shows_by_letter(url)
         return result
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
