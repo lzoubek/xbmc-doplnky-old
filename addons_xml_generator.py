@@ -4,6 +4,10 @@
 import os
 import md5
 
+IGNORED = ['dev','repo','icons','test']
+
+# let's keep ignored (not yet released) addons here
+IGNORED += ['plugin.video.csfd-trailers']
 
 class Generator:
     """
@@ -27,7 +31,7 @@ class Generator:
         for addon in addons:
             try:
                 # skip any file or .git folder
-                if ( not os.path.isdir( addon ) or addon == ".git" ): continue
+                if ( not os.path.isdir( addon ) or addon == ".git" or addon in IGNORED ): continue
                 # create path
                 _path = os.path.join( addon, "addon.xml" )
                 # split lines for stripping
