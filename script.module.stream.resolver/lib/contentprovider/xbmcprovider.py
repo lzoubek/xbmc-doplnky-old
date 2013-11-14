@@ -157,7 +157,10 @@ class XBMContentProvider(object):
             try:
                 msg = self.addon.getLocalizedString(int(msg[1:]))
             except:
-                pass
+                try:
+                    msg = xbmcutil.__lang__(int(msg[1:]))
+                except:
+                    pass
         xbmcgui.Dialog().ok(self.provider.name,msg)
         
         
