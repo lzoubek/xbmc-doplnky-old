@@ -3,6 +3,7 @@
 
 TOOLS=$(dirname "$0")
 
+
 BUILD_DIR=repo
 echo "Cleaning up *.pyc files.."
 find . -name '*.pyc' | xargs rm -f
@@ -17,7 +18,7 @@ fi
 for addonFile in $addons ; do
     dirname=$addonFile
     if [ ! -f $addonFile/addon.xml ] ; then
-	echo "$addonFile/addon.xml does not exist, skipping"
+	#echo "$addonFile/addon.xml does not exist, skipping"
 	continue
     fi
     addon_id=$("$TOOLS/get_addon_attribute" "$addonFile/addon.xml" "id")
@@ -45,7 +46,7 @@ for addonFile in $addons ; do
     if [ -e "$package" ] ; then
         rm "$package"
     fi
-    zip -FS -r "$package" "$dirname" -x "*.py[oc] *.sw[onp]" ".*"
+    zip -FS -q -r "$package" "$dirname" -x "*.py[oc] *.sw[onp]" ".*"
 
     # copy changelog file
     changelog=$(ls "$dirname"/[Cc]hangelog.txt)
