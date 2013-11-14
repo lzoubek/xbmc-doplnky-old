@@ -1,3 +1,4 @@
+dev
 *.swp
 *.py[oc]
 test/**/*.config
