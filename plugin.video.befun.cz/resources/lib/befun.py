@@ -156,25 +156,13 @@ class BefunContentProvider(ContentProvider):
         if sosac:
             sosac = HTMLParser.HTMLParser().unescape(sosac.group(1))
             data = util.request(sosac)
-        resolved = resolver.findstreams(data,[
+        result = self.findstreams(data,[
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',
             '<object(.+?)data=\"(?P<url>[^\"]+)',
             '<iframe(.+?)src=[\"\' ](?P<url>.+?)[\'\" ]',
             '<object.*?data=(?P<url>.+?)</object>'
             ])
-        result = []
-        if not resolved:
-            self.error('Nothing resolved')
-        for i in resolved:
-            item = self.video_item()
-            item['title'] = i['name']
-            item['url'] = i['url']
-            item['quality'] = i['quality']
-            item['surl'] = i['surl']
-            item['subs'] = i['subs']
-            item['headers'] = i['headers']
-            result.append(item)	
         if len(result)==1:
             return result[0]
         elif len(result) > 1 and select_cb:
