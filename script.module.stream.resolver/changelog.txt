@@ -1,3 +1,7 @@
+[B]1.6.9:[/B]
+- attempt to fix showing captcha image on windows (when there are special 
+chars in xbmc profile path)
+- added anyfiles resolver
 [B]1.6.8:[/B]
 - added streamujtv resolver
 [B]1.6.7:[/B]
