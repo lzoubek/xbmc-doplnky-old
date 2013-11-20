@@ -23,8 +23,7 @@
 LETTERS = ['A','B','C','Č','D','Ď','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','Ř','S','Š','T','Ť','U','V','W','X','Y','Z','Ž']
 import re,urllib,urllib2,cookielib,random,util,sys,os,traceback
 from threading import Lock
-from provider import ContentProvider
-from provider import ResolveException
+from provider import ContentProvider, ResolveException, cached
 import md5
 import resolver
 import util
@@ -91,6 +90,7 @@ class PohadkarContentProvider(ContentProvider):
             item['url'] = self._url(url+n.group('url'))
         return result
 
+    @cached(ttl=24 * 7)
     def list_letter(self,index):
         def fill_list_parallel(list, matches):
             def process_match(m):
