@@ -64,7 +64,7 @@ class PlayserialProviderTestCase(ProviderTestCase):
         self.provider_class = PlayserialContentProvider
         self.cp = self.provider_class()
         self.list_urls=['#cat#index.php?epizody&serial=californication&nazev=Californication','#show#index.php?serial=californication&serie=2&nazev=Californication']
-        self.resolve_items = [{'url':'index.php?id=4614&serial=alcatraz'}]
+        self.resolve_items = [{'url':'index.php?id=11608&serial=simpsonovi'}]
         self.categories_list = True
 
 
@@ -86,7 +86,7 @@ class PohadkarProviderTestCase(ProviderTestCase):
         self.provider_class = PohadkarContentProvider
         self.cp = self.provider_class()
         self.list_urls=['#list#4','pohadka/s-certy-nejsou-zerty/video/']
-        self.resolve_items = [{'url':'video/s-certy-nejsou-zerty-cela-pohadka/'},{'url':'video/vcelka-maja-jak-maja-s-vilikem-preckali-zimu/'}]
+        self.resolve_items = [{'url':'video/s-certy-nejsou-zerty-pivo/'},{'url':'video/vcelka-maja-jak-maja-s-vilikem-preckali-zimu/'}]
         self.search_keywords = ['vcelka maja']
         self.categories_list = True
 
