@@ -137,6 +137,7 @@ class ContentProvider(object):
             item['url'] = i['url']
             item['quality'] = i['quality']
             item['surl'] = i['surl']
+            item['subs'] = i['subs']
             item['headers'] = i['headers']
             result.append(item)
         return result
