@@ -1,3 +1,7 @@
+[B]1.2.3:[/B]
+- pokus o opravy #193 (nezobrazuje se captcha obrazek na win pokud je na ceste 
+non-ascii znak)
+- globalni vyhledavani nyni dotazuje vsechny servery zaroven
 [B]1.2.2:[/B]
 - ulozto: přidáno cachování výsledků hledání (1h)
 - ulozto: oprava chyby, kdy se vůbec nezobrazí captcha
