@@ -43,6 +43,13 @@ def item():
     return {'name':'','url':'','quality':'???','surl':'','subs':'','headers':{}}
 
 def resolve(url):
+    """
+        resolves given url by asking all resolvers
+
+        returns None if no resolver advised to be able to resolve this url
+        returns False if resolver did his job, but did not return any value (thus failed)
+        returns Array of resolved objects in positive usecase
+    """
     url = util.decode_html(url)
     util.info('Resolving '+url)
     resolver = _get_resolver(url)
@@ -55,7 +62,7 @@ def resolve(url):
     except:
         traceback.print_exc()
     if value == None:
-        return []
+        return False
     default = item()
     # fix  missing but required values 
     def fix_stream(i,url,resolver,default):
@@ -91,34 +98,40 @@ def filter_resolvable(url):
 # @param data piece of text (HTML code) to search in
 # @param regexes - array of strings - regular expressions, each MUST define named group called 'url'
 #        which retrieves resolvable URL (that one is passsed to resolve operation)
-# @return exactly 1 dictionary with keys: name,url,quality,surl
+# @return array of resolved objects ({name,url,quality,surl})
 # @return None if at least 1 resoler failed to resolve and nothing else has been found
-# @return [] if no resolvable URLs or no resolvers for URL has been found
+# @return [] if no resolvers for URLs has been found
+# @return False if none of regexes found anything
 def findstreams(data,regexes):
-    resolvables = {}
+    resolvables = {} # map to keep each link exactly once
     resolved = []
     # keep list of found urls to aviod having duplicates
     urls = []
-    error = False
+    notFound = False
     for regex in regexes:
         for match in re.finditer(regex,data,re.IGNORECASE | re.DOTALL):
             url = filter_resolvable(match.group('url'))
             if url:
                 util.info('Found resolvable %s ' % url)
                 resolvables[url] = None
+    if len(resolvables) == 0:
+        util.info('No resolvables found!')
+        return False
     for rurl in resolvables:        
             streams = resolve(rurl)
-            if streams == []:
-                util.debug('There was an error resolving '+rurl)
-                error = True
-            if not streams == None:
+            if streams == False:
+                util.info('There was an error resolving '+rurl)
+            elif streams == None:
+                util.info('No resolver found for '+rurl)
+                notFound = True
+            else:
                 if len(streams) > 0:
                     for stream in streams:
                         resolved.append(stream)
-    if error and len(resolved) == 0:
-        return None
     if len(resolved) == 0:
-        return {}
+        if notFound:
+            return []
+        return None
     resolved = sorted(resolved,key=lambda i:i['quality'])
     resolved = sorted(resolved,key=lambda i:len(i['quality']))
     resolved.reverse()

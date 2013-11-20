@@ -127,12 +127,14 @@ class ContentProvider(object):
         """
         resolved = resolver.findstreams(data,regexes)
         if resolved == None:
-            raise ResolveException('Nelze zistkat video link, zkontrolujte jestli video nebylo odstraneno')
-        if resolved == {}:
+            raise ResolveException('Nelze ziskat video link [CR]zkontrolujte jestli video nebylo odstraneno')
+        if resolved == False:
+            raise ResolveException('Nebyl nalezen zadny video embed [CR]zkontrolujte stranku pripadne nahlaste chybu pluginu')
+        if resolved == []:
             raise ResolveException('Video je na serveru, ktery neni podporovan')
         result = []
         for i in resolved:
-            item = self.video_item()
+            item = self.video_item() 
             item['title'] = i['name']
             item['url'] = i['url']
             item['quality'] = i['quality']
