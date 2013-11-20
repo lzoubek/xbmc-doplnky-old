@@ -153,6 +153,9 @@ def resolve(url):
     if not m == None:
         player = YoutubePlayer()
         video = {'title':'žádný název'}
+        index = url.find('&') # strip out everytihing after &
+        if index > 0:
+            url = url[:index]
         links = player.extractVideoLinksFromYoutube(url,m.group('id'),video)
         resolved = []
         for q in links:
