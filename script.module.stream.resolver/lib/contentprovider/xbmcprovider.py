@@ -20,7 +20,7 @@
 
 import sys,os,re,traceback,util,xbmcutil,resolver,time
 import xbmcplugin,xbmc,xbmcgui
-
+import urlparse, urllib
 from provider import ResolveException
 class XBMContentProvider(object):
     '''
@@ -295,7 +295,7 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
         util.save_to_file(params['img'],img)
         xbmc.sleep(3000)
         cd = CaptchaDialog('captcha-dialog.xml',xbmcutil.__addon__.getAddonInfo('path'),'default','0')
-        cd.image = img
+        cd.image = urlparse.urljoin('file:',urllib.pathname2url(img))
         cd.doModal()
         del cd
         kb = xbmc.Keyboard('',self.addon.getLocalizedString(200),False)
