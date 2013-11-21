@@ -63,9 +63,11 @@ for addonFile in $addons ; do
     if [ -f "$icon" ] ; then
         cp "$icon" "$target_dir"/
     fi
+    git add $target_dir
     # generate unique hash of released addon for further check 
     echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -) > hashes/$addon_id
 done 
 echo "Regenerate addons.xml"
 python addons_xml_generator.py
+git add addons.xml addons.xml.md5
 echo "Done"
