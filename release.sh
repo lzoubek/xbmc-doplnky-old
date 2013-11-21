@@ -11,6 +11,10 @@ find . -name '*.pyc' | xargs rm -f
 if [ -z $1 ];
 then
 	addons=$(ls -l | grep "^d" | gawk -F' ' '{print $9}')
+elif [ "$1" == "-n" ];
+then
+  echo "Determining which addons need to be released"
+  addons=$(./needs_release.sh | grep Addon | gawk -F' ' '{print $2}')
 else
 	addons=$1
 fi
@@ -59,8 +63,9 @@ for addonFile in $addons ; do
     if [ -f "$icon" ] ; then
         cp "$icon" "$target_dir"/
     fi
-    echo
-done
+    # generate unique hash of released addon for further check 
+    echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -) > hashes/$addon_id
+done 
 echo "Regenerate addons.xml"
 python addons_xml_generator.py
 echo "Done"

@@ -4,7 +4,7 @@
 import os
 import md5
 
-IGNORED = ['dev','repo','icons','test']
+IGNORED = ['dev','repo','icons','test','hashes']
 
 # let's keep ignored (not yet released) addons here
 IGNORED += ['plugin.video.csfd-trailers']
