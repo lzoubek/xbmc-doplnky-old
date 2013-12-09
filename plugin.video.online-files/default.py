@@ -53,8 +53,11 @@ def search_cb(what):
                         item['title'] = '[%s] %s >>' % (p.provider.name,__language__(30063))
             except:
                 traceback.print_exc()
-            with lock:
+            try:
+                lock.acquire()
                 p.list(result)
+            finally:
+                lock.release()
         lock = Lock()
         util.run_parallel_in_threads(do_search, search)
 
