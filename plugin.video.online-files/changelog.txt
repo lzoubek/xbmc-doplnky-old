@@ -1,3 +1,6 @@
+[B]1.2.4:[/B]
+- oprava kompatibility s pythonem 2.6
+- oprava fastshare
 [B]1.2.3:[/B]
 - pokus o opravy #193 (nezobrazuje se captcha obrazek na win pokud je na ceste 
 non-ascii znak)
