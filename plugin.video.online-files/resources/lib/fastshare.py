@@ -70,9 +70,15 @@ class FastshareContentProvider(ContentProvider):
         item = item.copy()        
         util.init_urllib()
         url = self._url(item['url'])
+        page = ''
         try:
+            opener = urllib2.OpenerDirector()
+            opener.add_handler(urllib2.HTTPHandler())
+            opener.add_handler(urllib2.UnknownHandler())
+            urllib2.install_opener(opener)
             request = urllib2.Request(url)
-            response = urllib2.urlopen(request)
+            request.add_header('User-Agent',util.UA)
+            response= urllib2.urlopen(request)
             page = response.read()
             response.close()
         except urllib2.HTTPError, e:
@@ -102,14 +108,18 @@ class FastshareContentProvider(ContentProvider):
             req.add_header('Cookie',sessid[-1])
             try:
                 resp = urllib2.urlopen(req)
-                file_url = resp.geturl()
+                if resp.code == 302:
+                    file_url = resp.headers.get('location')
+                else:
+                    file_url = resp.geturl()
                 if file_url.find(action.group('url')) > 0:            
                     msg = resp.read()
                     resp.close()
                     js_msg = re.search('alert\(\'(?P<msg>[^\']+)',msg,re.IGNORECASE | re.DOTALL)
                     if js_msg:
                         raise ResolveException(js_msg.group('msg'))
-                    raise ResolveException('')
+                    self.error(msg)
+                    raise ResolveException('Nelze ziskat soubor, zkuste to znovu')
                 resp.close()
                 if file_url.find('data') >=0 or file_url.find('download_free') > 0:
                     item['url'] = file_url
@@ -119,3 +129,4 @@ class FastshareContentProvider(ContentProvider):
             except urllib2.HTTPError:
                 traceback.print_exc()
                 return
+
