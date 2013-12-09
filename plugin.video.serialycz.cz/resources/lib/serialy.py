@@ -121,6 +121,13 @@ class SerialyczContentProvider(ContentProvider):
         item = item.copy()
         url = self._url(item['url']).replace('×', '%c3%97')
         data = util.substr(util.request(url), '<div id=\"content\"', '#content')
+        
+        for script in re.finditer('<script.+?src=\"([^\"]+)',data,re.IGNORECASE|re.DOTALL):
+            try:
+                data += util.request(script.group(1)).replace('\\\"','\"')
+            except:
+                pass
+        util.init_urllib() # need to reinitialize urrlib, because anyfiles could have left some cookies 
         visionone_resolved, onevision_resolved, scz_resolved = [],[],[]
         
         onevision = re.search('(?P<url>http://onevision\.ucoz\.ua/[^<]+)', data, re.IGNORECASE)
