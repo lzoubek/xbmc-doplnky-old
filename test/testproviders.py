@@ -54,7 +54,7 @@ class SerialyczProviderTestCase(ProviderTestCase):
         self.provider_class = SerialyczContentProvider
         self.cp = self.provider_class()
         self.list_urls=['http://www.serialycz.cz/category/home/serialy/beauty-and-the-beast/','category/home/serialy/game-of-thrones/']
-        self.resolve_items = [{'url':'http://www.serialycz.cz/2010/10/himym-04x05/'}]
+        self.resolve_items = [{'url':'http://www.blau.mablog.eu/?p=65'}]
         self.categories_list = True
 
 from playserial import PlayserialContentProvider
