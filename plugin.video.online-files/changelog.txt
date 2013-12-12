@@ -1,3 +1,5 @@
+[B]1.2.5:[/B]
+- ulozto: oprava přehrávání a stahování (dle změn webu)
 [B]1.2.4:[/B]
 - oprava kompatibility s pythonem 2.6
 - oprava fastshare
