@@ -80,7 +80,17 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={}):
         if not type(action) == type({}):
             items.append((mi,action))
         else:
-            items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
+            if 'action-type' in action:
+                action_type = action['action-type']
+                del action['action-type']
+                if action_type == 'list':
+                    items.append((mi,'Container.Update(%s)'%_create_plugin_url(action)))
+                elif action_type == 'play':
+                    items.append((mi,'PlayMedia(%s)'%_create_plugin_url(action)))
+                else:
+                    items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
+            else:
+                items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
     if len(items) > 0:
         liz.addContextMenuItems(items)
     return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=_create_plugin_url(params),listitem=liz,isFolder=True)
@@ -111,7 +121,18 @@ def add_video(name,params={},logo='',infoLabels={},menuItems={}):
         if not type(action) == type({}):
             items.append((mi,action))
         else:
-            items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
+            if 'action-type' in action:
+                action_type = action['action-type']
+                del action['action-type']
+                if action_type == 'list':
+                    items.append((mi,'Container.Update(%s)'%_create_plugin_url(action)))
+                elif action_type == 'play':
+                    items.append((mi,'PlayMedia(%s)'%_create_plugin_url(action)))
+                else:
+                    items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
+            else:
+                items.append((mi,'RunPlugin(%s)'%_create_plugin_url(action)))
+                
     if len(items) > 0:
         li.addContextMenuItems(items)
     return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=li,isFolder=False)
@@ -146,7 +167,7 @@ def save_to_file(url,file):
         traceback.print_exc()
 
 def load_subtitles(url):
-    if not (url=='' or url==None):	
+    if not (url=='' or url==None):
         local = xbmc.translatePath(__addon__.getAddonInfo('path'))
         if not os.path.exists(local):
             os.makedirs(local)
