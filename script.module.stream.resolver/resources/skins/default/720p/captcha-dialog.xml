@@ -30,32 +30,35 @@
 				<align>center</align>
 				<label>SCRIPT200</label>
 			</control>
-			<control type="label">
-				<posx>80</posx>
-				<posy>100</posy>
-				<width>300</width>
-				<height>80</height>
-				<textcolor>white</textcolor>
-				<aligny>center</aligny>
-				<align>center</align>
-				<label>SCRIPT201</label>
-			</control>
 
 			<control type="image" id="101">
 				<posx>50</posx>
-				<posy>80</posy>
+				<posy>75</posy>
 				<width>300</width>
-				<height>100</height>
+        <height>105</height>
 				<texture></texture>
 			</control>
 
+			<control type="button" id="103">
+				<posx>360</posx>
+				<posy>75</posy>
+				<width>100</width>
+				<height>50</height>
+				<align>center</align>
+				<visible>false</visible>
+        <label>Next</label>
+        <ondown>102</ondown>
+				<texturenofocus>button-nofocus.png</texturenofocus>
+				<texturefocus>button-focus.png</texturefocus>
+			</control>
 			<control type="button" id="102">
 				<posx>360</posx>
-				<posy>105</posy>
+				<posy>130</posy>
 				<width>100</width>
 				<height>50</height>
 				<align>center</align>
 				<visible>true</visible>
+        <onup>103</onup>
 				<label>OK</label>
 				<texturenofocus>button-nofocus.png</texturenofocus>
 				<texturefocus>button-focus.png</texturefocus>
