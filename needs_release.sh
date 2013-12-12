@@ -34,7 +34,7 @@ for addonFile in $addons ; do
     # generate current hash and check for saved values 
     md5=`echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -)`
     if [ ! -f hashes/$addon_id ];then
-      "$addon_id was never released!"
+      echo "$addon_id was never released!"
       continue
     fi
     need=$(grep -c $md5 hashes/$addon_id)
