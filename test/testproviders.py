@@ -164,3 +164,15 @@ class GordonUraContentProviderTestCase(ProviderTestCase):
         self.list_urls=['?tag=KN-online']
         self.resolve_items = [{'url':'http://gordon.ura.cz/?p=3219'}]
         self.categories_list = True
+        
+
+from mixercz import MixerczContentProvider
+class MixerczContentProviderTestCase(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = MixerczContentProvider
+        self.cp = self.provider_class()
+        self.search_keywords = ['avril', 'peter bic']
+        self.list_urls=['#playlist#1#0', "#interpreter#2337"]
+        self.resolve_items = [{'url':'19277'}]
+        self.categories_list = True
