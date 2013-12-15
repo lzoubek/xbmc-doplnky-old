@@ -1,3 +1,5 @@
+[B]1.0.12:[/B]
+- orpava hledání anyfiles embedů
 [B]1.0.11:[/B]
 - opraveno listování některých dílů i seriálů #175
 [B]1.0.10:[/B]

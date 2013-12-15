@@ -1,3 +1,5 @@
+B]1.1.16:[/B]
+- opraveno hledání anyfiles embedů
 B]1.1.15:[/B]
 - vypnuto stahování loga seriálu #185
 B]1.1.14:[/B]
