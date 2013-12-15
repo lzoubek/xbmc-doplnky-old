@@ -68,7 +68,7 @@
 
 <addon id="script.module.stream.resolver"
        name="stream resolver"
-       version="1.6.10"
+       version="1.6.11"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
@@ -177,11 +177,11 @@
 
 <addon id="plugin.video.serialycz.cz"
        name="serialycz.cz"
-       version="1.1.15"
+       version="1.1.16"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.7" />
+    <import addon="script.module.stream.resolver" version="1.6.11" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -221,11 +221,11 @@
 
 <addon id="plugin.video.eserial.cz"
        name="eserial.cz"
-       version="1.0.11"
+       version="1.0.12"
        provider-name="Libor Zoubek">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.7" />
+    <import addon="script.module.stream.resolver" version="1.6.11" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"
@@ -358,11 +358,11 @@
 
 <addon id="plugin.video.play-movie.eu"
        name="Play-Movie"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Ivo Brhel">
   <requires>
     <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="script.module.stream.resolver" version="1.6.11" />
   </requires>
   <extension point="xbmc.python.pluginsource"
              provides="video"

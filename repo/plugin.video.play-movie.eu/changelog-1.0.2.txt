@@ -1,0 +1,6 @@
+[B]1.0.2:[/B]
+Opravy menu kategorie filmu
+[B]1.0.1:[/B]
+Nova verze stream resolveru
+[B]1.0.0:[/B]
+Initial version
