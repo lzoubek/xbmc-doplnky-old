@@ -309,30 +309,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.barrandov.tv"
-       name="barrandov.tv"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
-  <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">barrandov.tv</summary>
-    <summary lang="cs">barrandov.tv</summary>
-    <summary lang="sk">barrandov.tv</summary>
-    <description lang="en">Watch online TV archive from barrandov.tv</description>
-    <description lang="cs">Sledujte TV archiv zo serveru barrandov.tv</description>
-    <description lang="sk">Sledujte TV archív zo serveru barrandov.tv</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="plugin.video.najfilmy.com"
        name="NajfilmySK"
        version="1.0.2"
@@ -374,30 +350,6 @@
     <summary lang="cs">play-movie.eu</summary>
     <description lang="en">Watch online www.play-movie.eu</description>
     <description lang="cs">Sledujte online www.play-movie.eu</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.gordon.ura.cz"
-       name="Gordon Ramsay CZ"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
-  <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">Gordon Ramsay CZ</summary>
-    <summary lang="cs">Gordon Ramsay CZ</summary>
-    <summary lang="sk">Gordon Ramsay CZ</summary>
-    <description lang="en">Watch online archive from http://gordon.ura.cz</description>
-    <description lang="cs">Gordon Ramsay a jeho hustokrutý pořady ze serveru http://gordon.ura.cz</description>
-    <description lang="sk">Gordon Ramsay a jeho hustokrutý pořady ze serveru http://gordon.ura.cz</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -468,30 +420,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.joj.sk"
-       name="joj.sk"
-       version="1.1.0"
-       provider-name="Maros Ondrasek">
-  <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">joj.sk</summary>
-    <summary lang="cs">joj.sk</summary>
-    <summary lang="sk">joj.sk</summary>
-    <description lang="en">Watch online TV archive from joj.sk</description>
-    <description lang="cs">Sledujte online TV archiv zo serveru joj.sk</description>
-    <description lang="sk">Sledujte online TV archív zo serveru joj.sk</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="plugin.video.zkouknito.cz"
        name="zkouknito.cz"
        version="1.0.4"
@@ -554,30 +482,6 @@
     <summary lang="cs">sledujuserialy.cz</summary>
     <description lang="en">Watch online series from sledujuserialy.cz</description>
     <description lang="cs">Sledujte online seriály ze servru sledujuserialy.cz</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.rtvs.sk"
-       name="rtvs.sk"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
-  <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en">rtvs.sk</summary>
-    <summary lang="cs">rtvs.sk</summary>
-    <summary lang="sk">rtvs.sk</summary>
-    <description lang="en">Watch online TV archive from rtvs.sk</description>
-    <description lang="cs">Sledujte TV archiv zo serveru rtvs.sk</description>
-    <description lang="sk">Sledujte TV archív zo serveru rtvs.sk</description>
     <platform>all</platform>
   </extension>
 </addon>
