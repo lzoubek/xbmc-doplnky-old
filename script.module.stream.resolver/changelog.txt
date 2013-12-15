@@ -1,3 +1,5 @@
+[B]1.6.11:[/B]
+- fixed putlocker and flashx resolvers (ibv)
 [B]1.6.10:[/B]
 - attempt to fix showing captcha image on windows (when there are special 
 chars in profile path)
