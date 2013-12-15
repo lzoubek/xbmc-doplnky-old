@@ -121,6 +121,14 @@ class EserialContentProvider(ContentProvider):
         url = self._url(item['url'])
         data = util.request(self._url(item['url']))	
         data = util.substr(data,'<div id=\"stred','<div id=\'patka>')
+
+        for script in re.finditer('<script.+?src=\"([^\"]+)',data,re.IGNORECASE|re.DOTALL):
+            try:
+                data += util.request(script.group(1)).replace('\\\"','\"')
+            except:
+                pass
+        util.init_urllib() # need to reinitialize urrlib, because anyfiles could have left some cookies 
+ 
         result = self.findstreams(data,[
             '<embed( )*flashvars=\"file=(?P<url>[^\"]+)',
             '<embed( )src=\"(?P<url>[^\"]+)',

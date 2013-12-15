@@ -11,7 +11,7 @@ class EserialProviderTestCase(ProviderTestCase):
         self.provider_class = EserialContentProvider
         self.cp = self.provider_class()
         self.list_urls=['#show#http://www.eserial.cz/alcatraz/','#list#http://www.eserial.cz/anatomie-lzi/serie/2']
-        self.resolve_items = [{'url':'http://eserial.cz/mentalista/video/1819'}]
+        self.resolve_items = [{'url':'http://eserial.cz/mentalista/video/1819'},{'url':'http://eserial.cz/grimm/video/11708'}]
         self.categories_list = True
 
 from befun import BefunContentProvider
