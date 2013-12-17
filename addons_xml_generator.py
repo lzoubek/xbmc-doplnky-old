@@ -7,7 +7,7 @@ import md5
 IGNORED = ['dev','repo','icons','test','hashes']
 
 # let's keep ignored (not yet released) addons here
-IGNORED += ['plugin.video.csfd-trailers','plugin.video.barrandov.tv','plugin.video.gordon.ura.cz','plugin.video.joj.sk','plugin.video.rtvs.sk']
+IGNORED += ['plugin.video.csfd-trailers']
 
 class Generator:
     """
