@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.12">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
+    <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.simplejson" version="2.0.10"/>
     <!--    <import addon="script.common.plugin.cache" version="2.5.0" /> -->
   </requires>

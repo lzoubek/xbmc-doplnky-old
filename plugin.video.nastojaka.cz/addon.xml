@@ -4,7 +4,7 @@
        version="1.0.4"
        provider-name="Libor Zoubek">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
+    <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.stream.resolver" version="1.6.6" />
   </requires>
   <extension point="xbmc.python.pluginsource"
