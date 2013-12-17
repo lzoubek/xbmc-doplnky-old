@@ -1,15 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.koukni.cz"
-       name="koukni.cz"
-       version="1.0.13"
-       provider-name="Libor Zoubek">
+<?xml version="1.0" encoding="utf-8"?><addon id="plugin.video.koukni.cz" name="koukni.cz" provider-name="Libor Zoubek" version="1.0.14">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.stream.resolver" version="1.6.11"/>
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
