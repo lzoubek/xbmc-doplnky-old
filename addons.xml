@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.jaksetodela.cz"
-       name="Jak se to dela"
-       version="1.0.0"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.jaksetodela.cz" name="Jak se to dela" provider-name="Ivo Brhel" version="1.0.1">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -22,17 +17,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tv.sosac.ph"
-       name="TV Sosáč"
-       version="1.0.1"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.2">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.8" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -44,17 +34,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.playserial.cz"
-       name="PlaySerialCZ"
-       version="1.0.7"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.playserial.cz" name="PlaySerialCZ" provider-name="Ivo Brhel" version="1.0.8">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -66,13 +51,13 @@
   </extension>
 </addon>
 
-<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.12">
+<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.13">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.simplejson" version="2.0.10"/>
-    <!--    <import addon="script.common.plugin.cache" version="2.5.0" /> -->
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.simplejson" version="2.0.10" />
+
   </requires>
-  <extension library="lib" point="xbmc.python.module"/>
+  <extension library="lib" point="xbmc.python.module" />
   <extension point="xbmc.addon.metadata">
     <summary>xbmc-doplnky plugins common python modules mainly for resolving stream URLs</summary>
     <description>Common python modules pack that is used by xbmc-doplnky plugins</description>
@@ -81,10 +66,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.mixer.cz" name="mixer.cz" provider-name="Maros Ondrasek" version="1.0.1">
+<addon id="plugin.video.mixer.cz" name="mixer.cz" provider-name="Maros Ondrasek" version="1.0.2">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.stream.resolver" version="1.6.12"/>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -100,17 +85,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.befun.cz"
-       name="befun.cz"
-       version="1.0.11"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.12">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.8" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -122,18 +102,13 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.mtr.sk"
-       name="Mestská TV Ružomberok"
-       version="1.0.0"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.mtr.sk" name="Mestská TV Ružomberok" provider-name="Libor Zoubek" version="1.0.1">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.7" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
     <import addon="script.module.elementtree" version="1.2.7" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -145,17 +120,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.rajfilmy.cz"
-       name="Rajfilmy.cz"
-       version="1.0.4"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.rajfilmy.cz" name="Rajfilmy.cz" provider-name="Ivo Brhel" version="1.0.5">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -168,17 +138,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.pohadkar.cz"
-       name="Pohádkář.cz"
-       version="1.1.1"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.pohadkar.cz" name="Pohádkář.cz" provider-name="Libor Zoubek" version="1.1.2">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -190,17 +155,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.serialycz.cz"
-       name="serialycz.cz"
-       version="1.1.16"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.serialycz.cz" name="serialycz.cz" provider-name="Libor Zoubek" version="1.1.17">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.11" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -212,17 +172,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.petka.cz"
-       name="Petka.cz"
-       version="1.0.3"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.petka.cz" name="Petka.cz" provider-name="Ivo Brhel" version="1.0.4">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -234,17 +189,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.eserial.cz"
-       name="eserial.cz"
-       version="1.0.12"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.eserial.cz" name="eserial.cz" provider-name="Libor Zoubek" version="1.0.13">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.11" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -256,17 +206,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.videacesky.cz"
-       name="videacesky.cz"
-       version="1.0.7"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.videacesky.cz" name="videacesky.cz" provider-name="Libor Zoubek" version="1.0.8">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -278,18 +223,13 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.online-files"
-       name="Soubory Online"
-       version="1.2.5"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.online-files" name="Soubory Online" provider-name="Libor Zoubek" version="1.2.6">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.10" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
     <import addon="script.module.elementtree" version="1.2.7" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -301,17 +241,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.nastojaka.cz"
-       name="nastojaka.cz"
-       version="1.0.4"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.nastojaka.cz" name="nastojaka.cz" provider-name="Libor Zoubek" version="1.0.5">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -324,17 +259,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.barrandov.tv"
-       name="barrandov.tv"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
+<addon id="plugin.video.barrandov.tv" name="barrandov.tv" provider-name="Maros Ondrasek" version="1.0.1">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -348,17 +278,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.najfilmy.com"
-       name="NajfilmySK"
-       version="1.0.2"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.najfilmy.com" name="NajfilmySK" provider-name="Ivo Brhel" version="1.0.3">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -371,17 +296,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.play-movie.eu"
-       name="Play-Movie"
-       version="1.0.2"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.play-movie.eu" name="Play-Movie" provider-name="Ivo Brhel" version="1.0.3">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.11" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -393,17 +313,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.gordon.ura.cz"
-       name="Gordon Ramsay CZ"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
+<addon id="plugin.video.gordon.ura.cz" name="Gordon Ramsay CZ" provider-name="Maros Ondrasek" version="1.0.1">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -417,10 +332,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.koukni.cz" name="koukni.cz" provider-name="Libor Zoubek" version="1.0.14">
+<addon id="plugin.video.koukni.cz" name="koukni.cz" provider-name="Libor Zoubek" version="1.0.15">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.stream.resolver" version="1.6.11"/>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -434,17 +349,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.re-play.cz"
-       name="re-play.cz"
-       version="1.0.5"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.re-play.cz" name="re-play.cz" provider-name="Libor Zoubek" version="1.0.6">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -456,17 +366,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.hejbejse.tv"
-       name="Hejbejse.tv"
-       version="1.0.3"
-       provider-name="Ivo Brhel">
+<addon id="plugin.video.hejbejse.tv" name="Hejbejse.tv" provider-name="Ivo Brhel" version="1.0.4">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -478,17 +383,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.joj.sk"
-       name="joj.sk"
-       version="1.1.0"
-       provider-name="Maros Ondrasek">
+<addon id="plugin.video.joj.sk" name="joj.sk" provider-name="Maros Ondrasek" version="1.1.1">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -502,17 +402,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.zkouknito.cz"
-       name="zkouknito.cz"
-       version="1.0.4"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.zkouknito.cz" name="zkouknito.cz" provider-name="Libor Zoubek" version="1.0.5">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -546,17 +441,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.sledujuserialy.cz"
-       name="sledujuserialy.cz"
-       version="1.0.6"
-       provider-name="Libor Zoubek">
+<addon id="plugin.video.sledujuserialy.cz" name="sledujuserialy.cz" provider-name="Libor Zoubek" version="1.0.7">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
@@ -568,17 +458,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.rtvs.sk"
-       name="rtvs.sk"
-       version="1.0.0"
-       provider-name="Maros Ondrasek">
+<addon id="plugin.video.rtvs.sk" name="rtvs.sk" provider-name="Maros Ondrasek" version="1.0.1">
   <requires>
-    <import addon="xbmc.python" version="2.0" />
-    <import addon="script.module.stream.resolver" version="1.6.6" />
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.13" />
   </requires>
-  <extension point="xbmc.python.pluginsource"
-             provides="video"
-             library="default.py">
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
