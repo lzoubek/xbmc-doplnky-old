@@ -27,7 +27,7 @@ import cookielib
 from threading import Lock
 
 import util
-from provider import ContentProvider
+from provider import ContentProvider,cached
 
 CATEGORIES_START = '<div id="right-menu">'
 CATEGORIES_END = '<div class="block tip">'
@@ -90,7 +90,6 @@ class BarrandovContentProvider(ContentProvider):
             result.append(item)
         return result
     
-        
     def categories(self):
         result = []
         item = self.dir_item()
@@ -101,8 +100,12 @@ class BarrandovContentProvider(ContentProvider):
         item['type'] = 'top'
         item['url'] = "#top#"
         result.append(item)
-    
+        return result + self._fill_categories()
+
+    @cached(ttl=7 * 24) 
+    def _fill_categories(self):
         categories = []
+        result = []
         page = util.request(self._url('/video'))
         page = util.substr(page, CATEGORIES_START, CATEGORIES_END)
         for item in re.finditer(CATEGORIES_ITER_RE, page, re.DOTALL | re.IGNORECASE):
@@ -112,7 +115,7 @@ class BarrandovContentProvider(ContentProvider):
         self._fill_categories_parallel(result, categories)
         sorted(result, key=lambda x:x['title'])
         return result
-        
+    
     def _fill_categories_parallel(self, list, categories):
         def process_category(title, url):
             page = util.request(url)
