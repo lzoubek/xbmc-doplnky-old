@@ -34,6 +34,8 @@ __language__   = __addon__.getLocalizedString
 settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
 params = util.params()
+if params=={}:
+    xbmcutil.init_usage_reporting(__scriptid__)
 provider = rtvs.RtvsContentProvider(tmp_dir=xbmc.translatePath(__addon__.getAddonInfo('profile')))
 
 xbmcprovider.XBMCMultiResolverContentProvider(provider,settings,__addon__).run(params)

@@ -95,6 +95,8 @@ class GordonUraXBMCContentProvider(xbmcprovider.XBMCMultiResolverContentProvider
 
 settings = {'downloads':__addon__.getSetting('downloads'), 'quality':__addon__.getSetting('quality')}
 params = util.params()
+if params=={}:
+    xbmcutil.init_usage_reporting(__scriptid__)
 provider = gordonura.GordonUraContentProvider()
 
 GordonUraXBMCContentProvider(provider, settings, __addon__).run(params)
