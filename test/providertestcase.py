@@ -112,6 +112,15 @@ class ProviderTestCase(unittest.TestCase):
             result = self.cp.list(url)
             self.assertTrue(len(result)>0,'List method must return non-empty array for \'%s\''% url)
 
+    def test_list_paging(self):
+        if hasattr(self,'list_paging'):
+            for url in self.list_paging:
+                result = self.cp.list(url)
+                next_items = filter(lambda i: i['type'] == 'next',result)
+                self.assertTrue(len(next_items) == 1,'Exactly 1 item of type NEXT must be listed')
+                self.assertTrue(len(self.cp.list(next_items[0]['url']))>0,'Following next page \'%s\' must return non-empty array for \'%s\''% (next_items[0]['url'],url))
+
+
     def test_list_filtered(self):
         def filter(item):
             return False
