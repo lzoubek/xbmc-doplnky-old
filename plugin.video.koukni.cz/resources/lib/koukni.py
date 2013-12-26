@@ -69,13 +69,8 @@ class KoukniContentProvider(ContentProvider):
         index = url.find('?')
         if index > 0:
             navurl = url[:index]
-        prev = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"http://koukni.cz/style/images/xpredchozi.png',data,re.IGNORECASE | re.DOTALL )
-        if prev:
-            item = self.dir_item()
-            item['type'] = 'prev'
-            item['url'] = navurl+prev.group('url')
-            result.append(item)
-        next = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\"http://koukni.cz/style/images/xdalsi.png',data,re.IGNORECASE | re.DOTALL )
+        data = util.substr(data,'tecky.png','</div')
+        next = re.search('<a href=\"(?P<url>[^\"]+)\">[^<]*<img src=\".+?dalsi.png',data,re.IGNORECASE | re.DOTALL )
         if next:
             item = self.dir_item()
             item['type'] = 'next'
