@@ -5,7 +5,7 @@ sys.path.append( os.path.join ( filename,'..' ) )
 from providertestcase import ProviderTestCase
 
 from eserial import EserialContentProvider
-class EserialProviderTestCase(ProviderTestCase):
+class Eserial(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = EserialContentProvider
@@ -15,7 +15,7 @@ class EserialProviderTestCase(ProviderTestCase):
         self.categories_list = True
 
 from befun import BefunContentProvider
-class BefunProviderTestCase(ProviderTestCase):
+class Befun(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = BefunContentProvider
@@ -26,7 +26,7 @@ class BefunProviderTestCase(ProviderTestCase):
         self.search_keywords = ['avengers','valecny kun']
 
 from tvsosac import TVSosacContentProvider
-class TVSosacProviderTestCase(ProviderTestCase):
+class TVSosac(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = TVSosacContentProvider
@@ -37,7 +37,7 @@ class TVSosacProviderTestCase(ProviderTestCase):
         self.search_keywords = ['avengers','valecny kun']
 
 from mtrsk import MtrSkContentProvider
-class MtrSkProviderTestCase(ProviderTestCase):
+class MtrSk(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = MtrSkContentProvider
@@ -48,7 +48,7 @@ class MtrSkProviderTestCase(ProviderTestCase):
         self.search_keywords = []
 
 from serialy import SerialyczContentProvider
-class SerialyczProviderTestCase(ProviderTestCase):
+class Serialycz(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = SerialyczContentProvider
@@ -58,7 +58,7 @@ class SerialyczProviderTestCase(ProviderTestCase):
         self.categories_list = True
 
 from playserial import PlayserialContentProvider
-class PlayserialProviderTestCase(ProviderTestCase):
+class Playserial(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = PlayserialContentProvider
@@ -80,7 +80,7 @@ class PlayserialProviderTestCase(ProviderTestCase):
 #        self.categories_list = False
 
 from pohadkar import PohadkarContentProvider
-class PohadkarProviderTestCase(ProviderTestCase):
+class Pohadkar(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = PohadkarContentProvider
@@ -91,7 +91,7 @@ class PohadkarProviderTestCase(ProviderTestCase):
         self.categories_list = True
 
 from koukni import KoukniContentProvider
-class KoukniProviderTestCase(ProviderTestCase):
+class Koukni(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = KoukniContentProvider
@@ -103,7 +103,7 @@ class KoukniProviderTestCase(ProviderTestCase):
         self.categories_list = True
         
 from videacesky import VideaceskyContentProvider
-class VideaceskyProviderTestCase(ProviderTestCase):
+class Videacesky(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = VideaceskyContentProvider
@@ -115,7 +115,7 @@ class VideaceskyProviderTestCase(ProviderTestCase):
         self.categories_list = True
         
 from rtvs import RtvsContentProvider
-class RtvsProviderTestCase(ProviderTestCase):
+class Rtvs(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = RtvsContentProvider
@@ -130,7 +130,7 @@ class RtvsProviderTestCase(ProviderTestCase):
         
 
 from joj import JojContentProvider
-class JojProviderTestCase(ProviderTestCase):
+class Joj(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = JojContentProvider
@@ -147,7 +147,7 @@ class JojProviderTestCase(ProviderTestCase):
         
         
 from barrandov import BarrandovContentProvider
-class BarrandovProviderTestCase(ProviderTestCase):
+class Barrandov(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = BarrandovContentProvider
@@ -157,7 +157,7 @@ class BarrandovProviderTestCase(ProviderTestCase):
         self.categories_list = True
         
 from gordonura import GordonUraContentProvider
-class GordonUraContentProviderTestCase(ProviderTestCase):
+class GordonUra(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = GordonUraContentProvider
@@ -168,7 +168,7 @@ class GordonUraContentProviderTestCase(ProviderTestCase):
         
 
 from mixercz import MixerczContentProvider
-class MixerczContentProviderTestCase(ProviderTestCase):
+class Mixercz(ProviderTestCase):
 
     def setUp(self):
         self.provider_class = MixerczContentProvider

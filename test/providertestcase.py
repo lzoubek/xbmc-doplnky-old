@@ -130,7 +130,7 @@ class ProviderTestCase(unittest.TestCase):
             for item in result:
                 if item['type'] == 'video':
                     count+=1
-            self.assertTrue(count == 0,'Provider must return 0 video items when when filtering that stops everyting is applied')
+            self.assertTrue(count == 0,'Provider must return 0 video items when filtering that stops everyting is applied')
 
     def test_resolve(self):
         def select_cb(items):
