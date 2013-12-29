@@ -30,12 +30,14 @@ def resolve(url):
     if m:
         data = util.request('http://streamin.to/'+m.group('url'))
         n = re.search('config:{file:\'(.+?)\'',data,re.IGNORECASE | re.DOTALL)
+        k = re.search('streamer: \"(.+?)\"',data,re.IGNORECASE | re.DOTALL)
         quality = '???'
         q = re.search('x(\d+)\.html',url)
         if q:
             quality = q.group(1)+'p'
-        if not n == None:
-            return [{'quality':quality,'url':n.group(1).strip()}]
+        if n and k:
+            url = '%s playpath=%s' % (k.group(1).strip(),n.group(1).strip())
+            return [{'quality':quality,'url':url}]
 
 def _regex(url):
     return re.search('streamin\.to/(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)
