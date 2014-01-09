@@ -1,3 +1,5 @@
+[B]1.6.14:[/B]
+- fixed playedto resolver
 [B]1.6.12:[/B]
 - fixed streamujtv resolver
 - better support for dynamic context menu items
