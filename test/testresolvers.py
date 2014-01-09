@@ -11,6 +11,20 @@ class StreaminTo(ResolverTestCase):
         for result in results:
             self.assertTrue(result['quality'] == '360p','Quality is correctly detected')
 
+import playedtoresolver
+class PlayedTo(ResolverTestCase):
+
+    def setUp(self):
+        self.resolver = playedtoresolver
+        self.urls = ['http://played.to/embed-s16qcl6cr7fn-630x360.html','http://played.to/embed-s16qcl6cr7fn-630x360.html']
+
+    def assertions(self,url,results):
+        for result in results:
+            self.assertTrue(result['quality'] == '360p','Quality is correctly detected')
+
+
+
+
 import youtuberesolver
 class Youtube(ResolverTestCase):
     
@@ -23,4 +37,5 @@ class AnyFiles(ResolverTestCase):
     
     def setUp(self):
         self.resolver = anyfilesresolver
-        self.urls=['http://video.anyfiles.pl/w.jsp?id=85590&#038;width=620&#038;height=390&#038;pos=0&#038;skin=1']
+        self.urls=['http://video.anyfiles.pl/w.jsp?id=85626&width=620&height=349&pos=&skin=0',
+                'http://video.anyfiles.pl/w.jsp?id=85590&#038;width=620&#038;height=390&#038;pos=0&#038;skin=1']

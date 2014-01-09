@@ -28,7 +28,8 @@ def supports(url):
 def resolve(url):
     m = _regex(url)
     if m:
-        data = util.request('http://played.to/'+m.group('url'))
+        surl = m.group('url').replace('embed','iframe')
+        data = util.request('http://played.to/%s' % surl)
         n = re.search('file: \"(.+?)\"',data,re.IGNORECASE | re.DOTALL)
         quality = '???'
         q = re.search('x(\d+)\.html',url)
@@ -38,4 +39,4 @@ def resolve(url):
             return [{'quality':quality,'url':n.group(1).strip()}]
 
 def _regex(url):
-    return re.search('played\.to/(?P<url>.+?)$',url,re.IGNORECASE | re.DOTALL)
+    return re.search('played\.to/(?P<url>(embed|iframe)-.+?)$',url,re.IGNORECASE | re.DOTALL)
