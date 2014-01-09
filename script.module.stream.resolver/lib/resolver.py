@@ -56,7 +56,7 @@ def resolve(url):
     value = None
     if resolver == None:
         return None
-    util.debug('Using resolver '+str(resolver.__name__));
+    util.info('Using resolver \'%s\''%str(resolver.__name__));
     try:
         value = resolver.resolve(url)
     except:
