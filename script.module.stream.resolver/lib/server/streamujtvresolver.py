@@ -18,7 +18,7 @@ def resolve(url):
     if m:
         data = util.request(url)
         streams = re.search('res0\:[^\"]*\"([^\"]+)',data,re.IGNORECASE|re.DOTALL)
-        subs = re.search('sub0\:[^\"]*\"(http[^\"]+)',data,re.IGNORECASE|re.DOTALL)
+        subs = re.search('sub0\:[^>]+>(http[^\"]+)',data,re.IGNORECASE|re.DOTALL)
         rn = re.search('rn\:[^\"]*\"([^\"]*)',data,re.IGNORECASE|re.DOTALL)
         if streams and rn:
             streams = streams.group(1).split(',')
