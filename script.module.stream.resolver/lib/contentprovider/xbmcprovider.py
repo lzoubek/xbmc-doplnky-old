@@ -294,7 +294,7 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
         img = os.path.join(xbmc.translatePath(self.addon.getAddonInfo('profile')),'captcha.png').decode('utf-8')
         util.save_to_file(params['img'],img)
         cd = CaptchaDialog('captcha-dialog.xml',xbmcutil.__addon__.getAddonInfo('path'),'default','0')
-        cd.images = [os.path.join(self.addon.getAddonInfo('profile'),'captcha.png'),img,params['img']]
+        cd.images = [img]
         #xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % ('Captcha','captcha',cd.images[0]))
         xbmc.sleep(3000)
         cd.doModal()
