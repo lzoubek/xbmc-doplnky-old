@@ -291,7 +291,7 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
         self.check_setting_keys(['vip'])
 
     def ask_for_captcha(self,params):
-        img = os.path.join(xbmc.translatePath(self.addon.getAddonInfo('profile')),'captcha.png')
+        img = os.path.join(xbmc.translatePath(self.addon.getAddonInfo('profile')),'captcha.png').decode('utf-8')
         util.save_to_file(params['img'],img)
         cd = CaptchaDialog('captcha-dialog.xml',xbmcutil.__addon__.getAddonInfo('path'),'default','0')
         cd.images = [os.path.join(self.addon.getAddonInfo('profile'),'captcha.png'),img,params['img']]
