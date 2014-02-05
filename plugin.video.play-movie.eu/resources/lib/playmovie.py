@@ -54,11 +54,11 @@ class PlaymovieContentProvider(ContentProvider):
 			item = self.video_item()
 			try:
 				item['img'] = m.group('img')
+				item['plot']  = m.group('info')
 			except:
 				pass
 			item['url']   = self._url(m.group('url'))
 			item['title'] = m.group('name')
-			item['plot']  = m.group('info')
 			result.append(item)
 			
 		
@@ -98,6 +98,11 @@ class PlaymovieContentProvider(ContentProvider):
 		item['url']  = '#last#'+self.base_url
 		result.append(item)
 		
+		item = self.dir_item()
+		item['title']= '[B]Náhodný výběr[/B]'
+		item['url']  = '#rand#'+self.base_url
+		result.append(item)
+		
 		result.extend(self.cat(util.request(self.base_url)))
 		
 		return result
@@ -106,6 +111,8 @@ class PlaymovieContentProvider(ContentProvider):
 	def list(self,url):
 		if url.find('#film#') == 0:
                         return self.film(util.request(self._url(url[6:])))
+		if url.find('#rand#') == 0:
+                        return self.film(util.request(self._url(url[6:])+'index.php?id=2236'))
 		if url.find('#last#') == 0:
                         return self.film(util.request(self._url(url[6:])))
 		else:
