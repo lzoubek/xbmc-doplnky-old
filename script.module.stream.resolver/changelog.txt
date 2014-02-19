@@ -1,3 +1,6 @@
+[B]1.6.16:[/B]
+- support for disabled subtitles by plugin setting
+- #217 - incorrect item title on some skins
 [B]1.6.15:[/B]
 - fix streamujtv resolver to correctly handle subtitles
 - another possible fix of showing captcha on windows
