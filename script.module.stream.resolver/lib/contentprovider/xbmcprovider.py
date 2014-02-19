@@ -149,7 +149,11 @@ class XBMContentProvider(object):
             print 'Sending %s to player' % stream['url']
             li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
-            xbmcutil.load_subtitles(stream['subs'])
+            if 'subs' in self.settings.keys():
+                if self.settings['subs'] == True:
+                    xbmcutil.load_subtitles(stream['subs'])
+            else: # optional setting - plugin may not supply it
+                xbmcutil.load_subtitles(stream['subs'])
 
     def _handle_exc(self,e):
         msg = e.message
