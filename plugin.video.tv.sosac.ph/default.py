@@ -31,12 +31,15 @@ __scriptid__   = 'plugin.video.tv.sosac.ph'
 __scriptname__ = 'tv.sosac.ph'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
+__set          = __addon__.getSetting
 
-settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
+settings = {'downloads':__set('downloads'),'quality':__set('quality'),'subs':__set('subs') == 'true'}
+
+reverse_eps = __set('order-episodes') == '0'
 
 params = util.params()
 if params=={}:
 	xbmcutil.init_usage_reporting( __scriptid__)
-xbmcprovider.XBMCMultiResolverContentProvider(tvsosac.TVSosacContentProvider(),settings,__addon__).run(params)
+xbmcprovider.XBMCMultiResolverContentProvider(tvsosac.TVSosacContentProvider(reverse_eps=reverse_eps),settings,__addon__).run(params)
 
 

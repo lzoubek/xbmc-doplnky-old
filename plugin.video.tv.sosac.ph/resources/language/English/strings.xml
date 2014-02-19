@@ -27,5 +27,9 @@
 	<string id="30054">720p</string>
 	<string id="30055">480p</string>
 	<string id="30056">360p</string>
+  <string id="30057">Episodes order</string>
+  <string id="30058">Oldest first</string>
+  <string id="30059">Latest first</string>
+	<string id="30063">Load subtitles if available</string>
 	<string id="31000">Usage of plugin is tracked whenever you play or download video.</string>
 </strings>

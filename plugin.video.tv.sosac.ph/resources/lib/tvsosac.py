@@ -27,10 +27,11 @@ from provider import ContentProvider,cached,ResolveException
 
 class TVSosacContentProvider(ContentProvider):
 
-    def __init__(self,username=None,password=None,filter=None):
+    def __init__(self,username=None,password=None,filter=None,reverse_eps=False):
         ContentProvider.__init__(self,'tv.sosac.ph','http://tv.sosac.ph/',username,password,filter)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
+        self.reverse_eps = reverse_eps
 
     def capabilities(self):
         return ['resolve','categories']
@@ -69,6 +70,8 @@ class TVSosacContentProvider(ContentProvider):
                     item['url'] = i.group('url')
                 if i and ep_name:
                     self._filter(result,item)
+        if self.reverse_eps:
+            result.reverse()
         return result
 
     @cached(ttl=24*6)

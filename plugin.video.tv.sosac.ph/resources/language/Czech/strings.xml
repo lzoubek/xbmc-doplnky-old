@@ -25,6 +25,10 @@
 	<string id="30053">Nejhorší</string>
 	<string id="30054">720p</string>
 	<string id="30055">480p</string>
-	<string id="30056">360p</string>
+  <string id="30056">360p</string>
+  <string id="30057">Řazení epizod</string>
+  <string id="30058">Od nejstarších</string>
+  <string id="30059">Od nejnovějších</string>
+	<string id="30063">Vkládat titulky, jsou li k dispozici</string>
 	<string id="31000">Data o použití jsou zaslána pouze v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem.</string>
 </strings>
