@@ -291,11 +291,10 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
         self.check_setting_keys(['vip'])
 
     def ask_for_captcha(self,params):
-        img = os.path.join(xbmc.translatePath(self.addon.getAddonInfo('profile')),'captcha.png').decode('utf-8')
+        img = os.path.join(unicode(xbmc.translatePath(self.addon.getAddonInfo('profile'))),'captcha.png')
         util.save_to_file(params['img'],img)
         cd = CaptchaDialog('captcha-dialog.xml',xbmcutil.__addon__.getAddonInfo('path'),'default','0')
-        cd.images = [img]
-        #xbmc.executebuiltin('XBMC.Notification(%s,%s,8000,%s)' % ('Captcha','captcha',cd.images[0]))
+        cd.image = img
         xbmc.sleep(3000)
         cd.doModal()
         del cd
@@ -362,14 +361,13 @@ class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
 
     def __init__(self,*args,**kwargs):
         super(xbmcgui.WindowXMLDialog, self).__init__(args,kwargs)
-        self.images = []
-        self.img_index = 0
+        self.image = None
 
     def onFocus (self,controlId ):
         self.controlId = controlId
 
     def onInit (self ):
-        self.getControl(101).setImage(self.images[0])
+        self.getControl(101).setImage(self.image)
 
     def onAction(self, action):
         if action.getId() in [9,10]:
@@ -378,10 +376,4 @@ class CaptchaDialog ( xbmcgui.WindowXMLDialog ):
     def onClick( self, controlId ):
         if controlId == 102:
             self.close()
-        elif controlId == 103:
-            if self.img_index >= len(self.images)-1:
-                self.img_index = -1
-            self.img_index+=1
-            print 'Setting captcha to %s' %  self.images[self.img_index]
-            self.getControl(101).setImage(self.images[self.img_index])
 
