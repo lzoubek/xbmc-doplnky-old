@@ -26,5 +26,6 @@
 	<string id="30060">Best</string>
 	<string id="30061">Most watched</string>
 	<string id="30062">Strict search</string>
+	<string id="30063">Load subtitles if available</string>
 	<string id="31000">Usage of plugin is tracked whenever you play or download video.</string>
 </strings>

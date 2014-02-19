@@ -30,12 +30,12 @@ __scriptid__   = 'plugin.video.befun.cz'
 __scriptname__ = 'befun.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
+__set          = __addon__.getSetting
 
 order_map = {'0':'','1':'inverse=0','2':'order=rating','3':'order=seen'}
 order_by = order_map[__addon__.getSetting('order-by')]
 
-
-settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality'),'order-by':order_by,'strict-search':__addon__.getSetting('strict-search')}
+settings = {'downloads':__set('downloads'),'quality':__set('quality'),'order-by':order_by,'strict-search':__set('strict-search'),'subs':__set('subs') == 'true'}
 
 params = util.params()
 if params=={}:
