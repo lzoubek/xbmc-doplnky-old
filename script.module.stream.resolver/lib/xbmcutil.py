@@ -66,7 +66,7 @@ def substr(data,start,end):
 def add_dir(name,params,logo='',infoLabels={},menuItems={}):
     name = decode_html(name)
     if not 'title' in infoLabels:
-        infoLabels['title'] = name
+        infoLabels['title'] = ''
     if logo == None:
         logo = ''
     liz = xbmcgui.ListItem(name, iconImage='DefaultFolder.png',thumbnailImage=logo)
