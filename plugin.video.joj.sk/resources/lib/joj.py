@@ -60,7 +60,7 @@ SENZI_URL = 'http://senzi.joj.sk/'
 RELACIE_FIX = ['anosefe']
 SERIALY_FIX = []
 VYMENIT_LINK = {'csmatalent':'http://www.csmatalent.cz/video-cz.html'}
-
+CHANGE_PATH = { 'www': 'joj', 'plus': 'jojplus' }
    
 def fix_link(url):
     if url in SERIALY_FIX:
@@ -73,6 +73,11 @@ def fix_link(url):
                 return VYMENIT_LINK[rel]
     return url
 
+def fix_path(path):
+    for rel in CHANGE_PATH.keys():
+        if rel in path:
+            return CHANGE_PATH[rel]
+    return path
 
 class JojContentProvider(ContentProvider):
 
@@ -156,6 +161,10 @@ class JojContentProvider(ContentProvider):
             item = self.dir_item()
             item['title'] = 'Serialy'
             item['url'] = "#cat##ser#" + url + '/?type=serialy'
+            result.append(item)
+            item = self.video_item()
+            item['title'] = 'Live'
+            item['url'] = url.replace('archiv', 'live')
             result.append(item)
         return result
         
@@ -257,6 +266,16 @@ class JojContentProvider(ContentProvider):
                 item['url'] = m_v.group('url')
                 self._filter(result, item)
         return result
+
+    def rtmp_url(self, serverno, path, url):
+        if int(serverno) > 20:
+            serverno = str(int(serverno) / 2)
+        if len(serverno) == 2:
+            server = 'n' + serverno + '.joj.sk'
+        else:
+            server = 'n0' + serverno + '.joj.sk'
+        swfurl = 'http://player.joj.sk/JojPlayer.swf?no_cache=137034'
+        return 'rtmp://' + server + ' playpath=' + path + ' pageUrl=' + url + ' swfUrl=' + swfurl + ' swfVfy=true'
         
     # modified source from dmd-czech joj video plugin
     def resolve(self, item, captcha_cb=None, select_cb=None):
@@ -265,39 +284,35 @@ class JojContentProvider(ContentProvider):
         url = item['url']
         pageid = None
         try:
-            httpdata = util.request(url)
-            basepath = re.search('basePath: "(.+?)"', httpdata).group(1)
-            videoid = re.search('videoId: "(.+?)"', httpdata).group(1)
-            pageid = re.search('pageId: "(.+?)"', httpdata).group(1)
-        except:
-            basepath = re.search('basePath=(.+?)&amp', httpdata).group(1)
-            basepath = re.sub('%3A', ':', basepath)
-            basepath = re.sub('%2F', '/', basepath)
-            videoid = re.search('videoId=(.+?)&amp', httpdata).group(1)
-        if pageid:
-            playlisturl = basepath + 'services/Video.php?clip=' + videoid + 'pageId=' + pageid
-        else:
-            playlisturl = basepath + 'services/Video.php?clip=' + videoid
-        playlist = util.request(playlisturl)
-        title = re.search('title="(.+?)"', playlist).group(1)
-        thumb = re.search('large_image="(.+?)"', playlist).group(1)
-        videos = re.finditer(JOJ_FILES_ITER_RE, playlist, re.DOTALL | re.IGNORECASE)
-        for video in videos:
-            item = self.video_item()
-            item['quality'] = video.group('quality')
-            item['img'] = thumb
-            serverno = video.group('id')
-            path = video.group('path')
-            if int(serverno) > 20:
-                serverno = str(int(serverno) / 2)
-            if len(serverno) == 2:
-                server = 'n' + serverno + '.joj.sk'
+            try:
+                httpdata = util.request(url)
+                basepath = re.search('basePath: "(.+?)"', httpdata).group(1)
+                videoid = re.search('videoId: "(.+?)"', httpdata).group(1)
+                pageid = re.search('pageId: "(.+?)"', httpdata).group(1)
+            except:
+                basepath = re.search('basePath=(.+?)&amp', httpdata).group(1)
+                basepath = re.sub('%3A', ':', basepath)
+                basepath = re.sub('%2F', '/', basepath)
+                videoid = re.search('videoId=(.+?)&amp', httpdata).group(1)
+            if pageid:
+                playlisturl = basepath + 'services/Video.php?clip=' + videoid + 'pageId=' + pageid
             else:
-                server = 'n0' + serverno + '.joj.sk'
-            tcurl = 'rtmp://' + server
-            swfurl = 'http://player.joj.sk/JojPlayer.swf?no_cache=137034'
-            rtmp_url = tcurl + ' playpath=' + path + ' pageUrl=' + url + ' swfUrl=' + swfurl + ' swfVfy=true'
-            item['url'] = rtmp_url
-            result.append(item)
+                playlisturl = basepath + 'services/Video.php?clip=' + videoid
+            playlist = util.request(playlisturl)
+            title = re.search('title="(.+?)"', playlist).group(1)
+            thumb = re.search('large_image="(.+?)"', playlist).group(1)
+            videos = re.finditer(JOJ_FILES_ITER_RE, playlist, re.DOTALL | re.IGNORECASE)
+            for video in videos:
+                item = self.video_item()
+                item['quality'] = video.group('quality')
+                item['img'] = thumb
+                item['url'] = self.rtmp_url(video.group('id'), video.group('path'), url)
+                result.append(item)
+        except:
+            for quality in ['360', '540', '720']:
+                item = self.video_item()
+                item['quality'] = quality + 'p'
+                item['url'] = self.rtmp_url('10', fix_path(re.search('http://(\w+).joj.sk', url).group(1)) + '-' + quality, url)
+                result.append(item)
         result.reverse()
         return select_cb(result)
