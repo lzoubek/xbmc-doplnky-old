@@ -56,11 +56,10 @@ class XBMContentProvider(object):
         if 'list' in params.keys():
             self.list(self.provider.list(params['list']))
             return xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
         if 'down' in params.keys():
-            return self.download(params['down'],params['name'])
+            return self.download({'url':params['down'],'title':params['title']})
         if 'play' in params.keys():
-            return self.play(params['play'])
+            return self.play({'url':params['play'],'info':params})
         if 'search-list' in params.keys():
             return self.search_list()
         if 'search' in params.keys():
@@ -119,18 +118,18 @@ class XBMContentProvider(object):
         self.list(self.provider.categories())
         return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-    def download(self,url,name):
+    def download(self,item):
         downloads = self.settings['downloads']
         if '' == downloads:
             xbmcgui.Dialog().ok(self.provider.name,xbmcutil.__lang__(30009))
             return
-        stream = self.resolve(url)
+        stream = self.resolve(item['url'])
         if stream:
             if not 'headers' in stream.keys():
                 stream['headers'] = {}
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/download')
             # clean up \ and /
-            name = name.replace('/','_').replace('\\','_')
+            name = item['title'].replace('/','_').replace('\\','_')
             if not stream['subs'] == '':
                 util.save_to_file(stream['subs'],os.path.join(downloads,name+'.srt'))
             dot = name.find('.')
@@ -139,8 +138,8 @@ class XBMContentProvider(object):
                 name+='.mp4'
             xbmcutil.download(self.addon,name,self.provider._url(stream['url']),os.path.join(downloads,name),headers=stream['headers'])
 
-    def play(self,url):
-        stream = self.resolve(url)
+    def play(self,item):
+        stream = self.resolve(item['url'])
         if stream:
             xbmcutil.reportUsage(self.addon_id,self.addon_id+'/play')
             if 'headers' in stream.keys():
@@ -148,6 +147,9 @@ class XBMContentProvider(object):
                     stream['url'] += '|%s=%s' % (header,stream['headers'][header])
             print 'Sending %s to player' % stream['url']
             li = xbmcgui.ListItem(path=stream['url'],iconImage='DefaulVideo.png')
+            il = self._extract_infolabels(item['info'])
+            if len(il) > 0: #only set when something was extracted
+                li.setInfo('video',il)
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
             if 'subs' in self.settings.keys():
                 if self.settings['subs'] == True:
@@ -166,7 +168,6 @@ class XBMContentProvider(object):
                 except:
                     pass
         xbmcgui.Dialog().ok(self.provider.name,msg)
-        
         
     def resolve(self,url):
         item = self.provider.video_item()
@@ -224,7 +225,7 @@ class XBMContentProvider(object):
 
     def _extract_infolabels(self,item):
         infoLabels = {}
-        for label in ['plot','year','genre','rating','director','votes','cast','trailer']:
+        for label in ['title','plot','year','genre','rating','director','votes','cast','trailer','tvshowtitle','season','episode']:
             if label in item.keys():
                 infoLabels[label] = util.decode_html(item[label])
         return infoLabels
@@ -233,7 +234,7 @@ class XBMContentProvider(object):
         params = self.params()
         params.update({'play':item['url']})
         downparams = self.params()
-        downparams.update({'name':item['title'],'down':item['url']})
+        downparams.update({'title':item['title'],'down':item['url']})
         def_item = self.provider.video_item()
         if item['size'] == def_item['size']:
             item['size'] = ''
@@ -261,6 +262,8 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
         self.check_setting_keys(['quality'])
 
     def resolve(self,url):
+        item = self.provider.video_item()
+        item.update({'url':url})
         def select_cb(resolved):
             quality = self.settings['quality'] or '0'
             resolved = resolver.filter_by_quality(resolved,quality)
@@ -271,9 +274,6 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
             ret = dialog.select(xbmcutil.__lang__(30005), ['%s [%s]'%(r['title'],r['quality']) for r in resolved])
             if ret >= 0:
                 return resolved[ret]
-
-        item = self.provider.video_item()
-        item.update({'url':url})
         try:
             return self.provider.resolve(item,select_cb=select_cb)
         except ResolveException, e:
@@ -345,7 +345,7 @@ class XBMCLoginOptionalDelayedContentProvider(XBMCLoginOptionalContentProvider):
             time.sleep(1)
 
     def resolve(self,url):
-        item = self.provider.video_item()
+        item = self.video_item()
         item.update({'url':url})
         if not self.ask_for_account_type():
             # set user/pass to null - user does not want to use VIP at this time

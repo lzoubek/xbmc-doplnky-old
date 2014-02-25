@@ -36,8 +36,8 @@ settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.ge
 
 class MixerczXBMCContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
 
-    def play(self, url):
-        stream = self.resolve(url)
+    def play(self, item):
+        stream = self.resolve(item['url'])
         if type(stream) == type([]):
             # resolved to mutliple files, we'll feed playlist and play the first one
             playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)

@@ -30,15 +30,14 @@ __scriptname__ = 'eserial.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
-
 class XBMCEserialContentProvider(xbmcprovider.XBMCMultiResolverContentProvider):
 	
-	def search(self,keyword):
-		return 
+    def search(self,keyword):
+        return 
 
 settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
 params = util.params()
 if params=={}:
-	xbmcutil.init_usage_reporting( __scriptid__)
+    xbmcutil.init_usage_reporting( __scriptid__)
 XBMCEserialContentProvider(eserial.EserialContentProvider(),settings,__addon__).run(params)
