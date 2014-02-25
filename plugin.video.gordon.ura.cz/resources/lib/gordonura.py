@@ -58,20 +58,21 @@ class GordonUraContentProvider(ContentProvider):
         if url.startswith('#new#'):
             return self.list_page(util.request(self._url('?tag=online')))
         else:
-            return self.list_page(util.request(self._url(url)))        
-    
+            return self.list_page(util.request(self._url(url)))
+
     def categories(self):
         result = []
         item = self.dir_item()
         item['type'] = 'new'
         item['url'] = "#new#"
         result.append(item)
-        
+
         for title, url in [('Kitchen Nightmares','?tag=KN-online'),
          ("Ramsay's Kitchen Nightmares","?tag=rkn-online"),
          ("Gordon's Great Escape","?tag=GGE-online"),
          ("Cookalong Live",'?cat=19'),
          ("MasterChef",'?tag=mc-online'),
+         ("MasterChef Junior",'?tag=mcj-online'),
          ("Hell's Kitchen",'?tag=HK-online'),
          ("Hotel Hell",'?tag=HH-online'),
          ("Ramsey's Best Restaurant",'?cat=35'),
@@ -82,7 +83,7 @@ class GordonUraContentProvider(ContentProvider):
             item['url'] = url
             result.append(item)
         return result
-    
+
     def list_page(self, page):
         result = []
         page = util.substr(page, LISTING_START, LISTING_END)
@@ -107,7 +108,7 @@ class GordonUraContentProvider(ContentProvider):
             item['url'] = next_m.group('url')
             result.append(item)
         return result
-            
+
     def resolve(self, item, captcha_cb=None, select_cb=None):
         result = []
         item = item.copy()
