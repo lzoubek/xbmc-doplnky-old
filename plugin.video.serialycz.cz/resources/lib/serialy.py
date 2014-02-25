@@ -19,7 +19,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import urllib2,re,os,md5,sys,cookielib
+import urllib2,re,os,sys,cookielib
 import util,resolver
 from provider import ContentProvider
 from provider import cached
@@ -46,47 +46,8 @@ class SerialyczContentProvider(ContentProvider):
             item = self.dir_item()
             item['title'] = m.group('name')
             item['url'] = m.group('url')
-            #try:
-            #    image,plot = self._get_meta(m.group('name'),m.group('url'))
-            #    item['img'] = image
-            #    item['plot'] = plot
-            #except:
-            #    pass # server does not like too much requests in a row
             result.append(item)
         return result
-
-    def _get_meta(self,name,link):
-        # load meta from disk or download it (slow for each serie, thatwhy we cache it)
-        local = self.tmp_dir
-        if not os.path.exists(local):
-            os.makedirs(local)
-        m = md5.new()
-        m.update(name)
-        image = os.path.join(local,m.hexdigest()+'_img.url')
-        plot = os.path.join(local,m.hexdigest()+'_plot.txt')
-        if not os.path.exists(image):
-            data = util.request(link)
-            data = util.substr(data,'<div id=\"archive-posts\"','</div>')
-            m = re.search('<a(.+?)href=\"(?P<url>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
-            if not m == None:
-                data = util.request(m.group('url'))
-                self._get_image(data,image)
-                self._get_plot(data,plot)
-        return util.read_file(image).strip(),util.read_file(plot)
-
-    def _get_plot(self,data,local):
-        data = util.substr(data,'<div class=\"entry-content\"','</p>')
-        m = re.search('<(strong|b)>(?P<plot>(.+?))<', data, re.IGNORECASE | re.DOTALL)
-        if not m == None:
-            util.save_data_to_file(util.decode_html(m.group('plot')).encode('utf-8'),local)
-
-    def _get_image(self,data,local):
-        data = util.substr(data,'<div class=\"entry-photo\"','</div>')
-        m = re.search('<img(.+?)src=\"(?P<img>[^\"]+)', data, re.IGNORECASE | re.DOTALL)
-        print m
-        if not m == None:
-            util.save_data_to_file(m.group('img'),local)
-
 
     def new_episodes(self,page):
         result = []
