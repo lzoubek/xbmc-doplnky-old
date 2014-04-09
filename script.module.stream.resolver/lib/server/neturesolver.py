@@ -129,12 +129,14 @@ def resolve(url):
                 return [{'url':file_url,'quality':'???'}]
 
 def _regex(url):
-    m1 = m2 = None
+    m1 = m2 = m3 = None
     m1 = re.search("netu\.tv/watch_video\.php\?v=(?P<vid>[0-9A-Z]+)", url)
+    m2 = re.search('netu\.tv/player/embed_player\.php\?vid=(?P<vid>[0-9A-Z]+)', url)
     b64enc= re.search('data:text/javascript\;charset\=utf\-8\;base64([^\"]+)',url)
     b64dec = b64enc and base64.decodestring(b64enc.group(1))
     hash = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
     if hash:
         form = _decode(hash)
-        m2  = re.search('<input name="vid"[^>]+? value="(?P<vid>[^"]+?)">', form)
-    return m1 or m2
+        m3  = re.search('<input name="vid"[^>]+? value="(?P<vid>[^"]+?)">', form)
+    return m1 or m2 or m3
+
