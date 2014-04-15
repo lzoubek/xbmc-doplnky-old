@@ -42,7 +42,7 @@ class Youtube(ResolverTestCase):
 
     def setUp(self):
         self.resolver = youtuberesolver
-        self.urls=['http://www.youtube.com/watch?v=KKbUP7brxmY','//www.youtube.com/embed/jY3VBnG1dX4']
+        self.urls=['http://www.youtube.com/watch?v=KKbUP7brxmY']
 
 import anyfilesresolver
 class AnyFiles(ResolverTestCase):
