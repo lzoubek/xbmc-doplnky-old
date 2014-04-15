@@ -59,8 +59,14 @@ class YoutubePlayer(object):
 
     def __init__(self):
         pass
-    
-    def extractFlashVars(self, data):
+
+    def removeAdditionalEndingDelimiter(self, data):
+        pos = data.find("};")
+        if pos != -1:
+            data = data[:pos + 1]
+        return data
+
+    def extractFlashVars(self, data, assets):
         flashvars = {}
         found = False
 
@@ -73,16 +79,19 @@ class YoutubePlayer(object):
                     continue
                 data = line[p1 + 1:p2]
                 break
+        data = self.removeAdditionalEndingDelimiter(data)
 
         if found:
             data = json.loads(data)
-            flashvars = data["args"]
-
+            if assets:
+                flashvars = data["assets"]
+            else:
+                flashvars = data["args"]
         return flashvars
 
     def scrapeWebPageForVideoLinks(self, result, video):
         links = {}
-        flashvars = self.extractFlashVars(result)
+        flashvars = self.extractFlashVars(result,0)
         if not flashvars.has_key(u"url_encoded_fmt_stream_map"):
             return links
 
@@ -110,10 +119,48 @@ class YoutubePlayer(object):
 
             if url_desc_map.has_key(u"sig"):
                 url = url + u"&signature=" + url_desc_map[u"sig"][0]
+            elif url_desc_map.has_key(u"s"):
+                sig = url_desc_map[u"s"][0]
+                flashvars = self.extractFlashVars(result, 1)
+                js = flashvars[u"js"]
+                url = url + u"&signature=" + self.decrypt_signature(sig)
 
             links[key] = url
 
         return links
+
+    def decrypt_signature(self, s):
+        ''' use decryption solution by Youtube-DL project '''
+        if len(s) == 93:
+            return s[86:29:-1] + s[88] + s[28:5:-1]
+        elif len(s) == 92:
+            return s[25] + s[3:25] + s[0] + s[26:42] + s[79] + s[43:79] + s[91] + s[80:83]
+        elif len(s) == 91:
+            return s[84:27:-1] + s[86] + s[26:5:-1]
+        elif len(s) == 90:
+            return s[25] + s[3:25] + s[2] + s[26:40] + s[77] + s[41:77] + s[89] + s[78:81]
+        elif len(s) == 89:
+            return s[84:78:-1] + s[87] + s[77:60:-1] + s[0] + s[59:3:-1]
+        elif len(s) == 88:
+            return s[7:28] + s[87] + s[29:45] + s[55] + s[46:55] + s[2] + s[56:87] + s[28]
+        elif len(s) == 87:
+            return s[6:27] + s[4] + s[28:39] + s[27] + s[40:59] + s[2] + s[60:]
+        elif len(s) == 86:
+            return s[5:34] + s[0] + s[35:38] + s[3] + s[39:45] + s[38] + s[46:53] + s[73] + s[54:73] + s[85] + s[74:85] + s[53]
+        elif len(s) == 85:
+            return s[3:11] + s[0] + s[12:55] + s[84] + s[56:84]
+        elif len(s) == 84:
+            return s[81:36:-1] + s[0] + s[35:2:-1]
+        elif len(s) == 83:
+            return s[81:64:-1] + s[82] + s[63:52:-1] + s[45] + s[51:45:-1] + s[1] + s[44:1:-1] + s[0]
+        elif len(s) == 82:
+            return s[80:73:-1] + s[81] + s[72:54:-1] + s[2] + s[53:43:-1] + s[0] + s[42:2:-1] + s[43] + s[1] + s[54]
+        elif len(s) == 81:
+            return s[56] + s[79:56:-1] + s[41] + s[55:41:-1] + s[80] + s[40:34:-1] + s[0] + s[33:29:-1] + s[34] + s[28:9:-1] + s[29] + s[8:0:-1] + s[9]
+        elif len(s) == 80:
+            return s[1:19] + s[0] + s[20:68] + s[19] + s[69:80]
+        elif len(s) == 79:
+            return s[54] + s[77:54:-1] + s[39] + s[53:39:-1] + s[78] + s[38:34:-1] + s[0] + s[33:29:-1] + s[34] + s[28:9:-1] + s[29] + s[8:0:-1] + s[9]
 
     def extractVideoLinksFromYoutube(self, url, videoid,video):
         result = util.request(self.urls[u"video_stream"] % videoid)
@@ -159,7 +206,7 @@ def resolve(url):
         links = player.extractVideoLinksFromYoutube(url,m.group('id'),video)
         resolved = []
         for q in links:
-            if q in player.fmt_value.keys():                
+            if q in player.fmt_value.keys():
                 quality = player.fmt_value[q]
                 item = {}
                 item['name'] = __name__
