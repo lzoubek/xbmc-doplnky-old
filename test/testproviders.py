@@ -101,7 +101,7 @@ class Koukni(ProviderTestCase):
         self.resolve_items = [{'url':'http://koukni.cz/39862282'}]
         self.search_keywords = ['big bang theory']
         self.categories_list = True
-        
+
 from videacesky import VideaceskyContentProvider
 class Videacesky(ProviderTestCase):
 
@@ -113,7 +113,7 @@ class Videacesky(ProviderTestCase):
                               {'url':'navody-dokumenty-pokusy/pravdiva-fakta-o-vrubounovi'}]
         self.search_keywords = ['fotbal']
         self.categories_list = True
-        
+
 from rtvs import RtvsContentProvider
 class Rtvs(ProviderTestCase):
 
@@ -127,7 +127,6 @@ class Rtvs(ProviderTestCase):
         self.resolve_items = [{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'},
                               {'url':'http://ww.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=04.06.2013&date=04.06.2013&do=calendar-changeDate'}]
         self.categories_list = True
-        
 
 from joj import JojContentProvider
 class Joj(ProviderTestCase):
@@ -144,8 +143,7 @@ class Joj(ProviderTestCase):
                         '#episodes##0#http://buckovci.joj.sk/ajax.json?contentId=16363&serie=4679&page=36160&actualAlias=2013-05-06-buckovci-2-slnko-seno-dedina-finale-serie',]
         self.resolve_items = [{'url':'http://panelak.joj.sk/panelak-epizody/2013-08-19-panelak.html'}]
         self.categories_list = True
-        
-        
+
 from barrandov import BarrandovContentProvider
 class Barrandov(ProviderTestCase):
 
@@ -155,7 +153,7 @@ class Barrandov(ProviderTestCase):
         self.list_urls=['video/hlavni-zpravy/']
         self.resolve_items = [{'url':'http://www.barrandov.tv/video/17085-hlavni-zpravy-17-9-2013'}]
         self.categories_list = True
-        
+
 from gordonura import GordonUraContentProvider
 class GordonUra(ProviderTestCase):
 
@@ -165,7 +163,6 @@ class GordonUra(ProviderTestCase):
         self.list_urls=['?tag=KN-online']
         self.resolve_items = [{'url':'http://gordon.ura.cz/?p=3219'}]
         self.categories_list = True
-        
 
 from mixercz import MixerczContentProvider
 class Mixercz(ProviderTestCase):
@@ -177,3 +174,14 @@ class Mixercz(ProviderTestCase):
         self.list_urls=['#playlist#1#0', "#interpreter#2337"]
         self.resolve_items = [{'url':'19277'}]
         self.categories_list = True
+
+from markiza import MarkizaContentProvider
+class Markiza(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = MarkizaContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['video/televizne-noviny','/video/bez-servitky','#subcat#/video/hlas-cesko-slovenska']
+        self.resolve_items = [{'url':'http://videoarchiv.markiza.sk/video/televizne-noviny/14596_televizne-noviny'}]
+        self.categories_list = True
+
