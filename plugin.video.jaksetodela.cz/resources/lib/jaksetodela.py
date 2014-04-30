@@ -67,20 +67,6 @@ class JaksetodelaContentProvider(ContentProvider):
 			#item['plot']= m.group('info')
 			result.append(item)
 			
-		'''
-		pattern='.+<a href="(?P<url>.+?)">Další</a'
-		m = re.search(pattern, data, re.IGNORECASE | re.DOTALL)
-		next_url=''
-		if not m == None:
-			next_url=self._url('index.php'+m.group('url'))
-			try:	
-				item = self.dir_item()
-				item['title'] = 'Další strana ...'
-				item['url'] = '#film#'+next_url
-				result.append(item)
-			except:
-				pass
-		'''
 		return result
 
 	def cat(self,page):
@@ -129,12 +115,6 @@ class JaksetodelaContentProvider(ContentProvider):
 		item['type'] = 'new'
 		item['url']  = '#last#'+self._url('videos/basic/mr')
 		result.append(item)
-		'''
-		item=self.dir_item()
-		item['title']='Kategorie filmů'
-		item['url']  = '#cat#'+self._url('videos')
-		result.append(item)
-		'''
 		result.extend(self.cat(util.request(self._url('videos'))))
 		
 		return result
@@ -147,14 +127,12 @@ class JaksetodelaContentProvider(ContentProvider):
                         return self.cat(util.request(self._url(url[5:])))
 		if url.find('#catl2#') == 0:
                         return self.catl2(util.request(self._url(url[7:])))
-		#if url.find('#catl3#') == 0:
-                #        return self.catl3(util.request(self._url(url[7:])))
 		if url.find('#last#') == 0:
                         return self.film(util.request(self._url(url[6:])))
 		else:
                         raise Expception("Invalid url, I do not know how to list it :"+url)
 
-                        
+            
 	
 	def resolve(self,item,captcha_cb=None,select_cb=None):
 		item = item.copy()
@@ -162,8 +140,14 @@ class JaksetodelaContentProvider(ContentProvider):
 		print 'URL: '+url
 		hdata = util.request(url)
 		
-		data = util.substr(hdata,'<div id="video_player">','<div id="other" class="domtab">')
-		resolved = resolver.findstreams(data,['flash[V|v]ars=\"(?P<url>id=.+?)\" ','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','href="(?P<url>http://(www.)?streamcloud\.eu.+?)"'])
+		data = util.substr(hdata,'<div id="player"','<div id="other" class="domtab">')
+		pattern = 'videoId: \'(?P<vid>.+?)\','
+		m = re.search(pattern, data, re.IGNORECASE | re.DOTALL)
+		if not m == None:
+			url = 'http://www.youtube.com/watch?v='+m.group('vid')
+		print url
+		
+		resolved = resolver.findstreams(url,['(?P<url>http://www.youtube.com/watch\?v='+m.group('vid')+')'])
                 result = []
                 try:
 			for i in resolved:
