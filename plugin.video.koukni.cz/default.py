@@ -32,9 +32,9 @@ __scriptname__ = 'koukni.cz'
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 __language__   = __addon__.getLocalizedString
 
-settings = {'downloads':__addon__.getSetting('downloads')}
+settings = {'downloads':__addon__.getSetting('downloads'),'quality':__addon__.getSetting('quality')}
 
 params = util.params()
 if params=={}:
     xbmcutil.init_usage_reporting( __scriptid__)
-xbmcprovider.XBMContentProvider(koukni.KoukniContentProvider(),settings,__addon__).run(params)
+xbmcprovider.XBMCMultiResolverContentProvider(koukni.KoukniContentProvider(),settings,__addon__).run(params)
