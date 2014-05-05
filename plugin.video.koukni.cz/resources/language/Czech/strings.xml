@@ -2,6 +2,8 @@
 <strings>
 	<string id="30000">Počet zapamatovaných hledání</string>
 	<string id="30001">Video není dostupné, zkontrolujte,[CR]zda funguje přehrávání na webu.</string>
+	<string id="30003">[B]Nejnovější epizody[/B]</string>
+	<string id="30004">Zvolte zdroj</string>
 	<string id="30005">Přidat tag</string>
 	<string id="30006">Odebrat tag</string>
 	<string id="30007">Předchozí</string>
@@ -17,5 +19,12 @@
 	<string id="30035">5%</string>
 	<string id="30036">1%</string>
 	<string id="30037">[B]Stažené soubory[/B]</string>
+	<string id="30050">Kvalita videa</string>
+	<string id="30051">Zeptat se</string>
+	<string id="30052">Nejlepší</string>
+	<string id="30053">Nejhorší</string>
+	<string id="30054">720p</string>
+	<string id="30055">480p</string>
+	<string id="30056">360p</string>
 	<string id="31000">Data o použití jsou zaslána pouze v okamžiku, kdy spustíte přehrávání nebo stahování videa doplňkem.</string>
 </strings>

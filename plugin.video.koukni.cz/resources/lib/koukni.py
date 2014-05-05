@@ -79,9 +79,17 @@ class KoukniContentProvider(ContentProvider):
         return result
 
     def resolve(self,item,captcha_cb=None,select_cb=None):
-        data = koukniresolver.resolve(self._url(item['url']))
-        if data and len(data) > 0:
-            item = self.video_item()
-            for key in data[0].keys():
-                item[key] = data[0][key]
-            return item
+        result = []
+        resolved= koukniresolver.resolve(self._url(item['url']))
+        for r in resolved:
+            v = self.video_item()
+            v['title'] = item['title']
+            v['url'] = r['url']
+            v['surl'] = r['surl']
+            v['subs'] = r['subs']
+            v['quality'] = r['quality']
+            result.append(v)
+        if len(result)==1:
+            return result[0]
+        elif len(result) > 1 and select_cb:
+            return select_cb(result)

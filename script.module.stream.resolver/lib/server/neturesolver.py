@@ -119,14 +119,16 @@ def resolve(url):
             for idx in range(len(data)):
                 post_data[ data[idx][0] ] = data[idx][1]
             data = util.post(player_url, post_data, headers)
-            file_vars = re.search("file='\+([^']+?)\+'", data).group(1)
-            file_vars = file_vars.split('+')
-            file_url = ''
-            for file_var in file_vars:
-                file_url += re.search('var %s = "([^"]*?)"' % file_var, data).group(1)
-            file_url = _decode2(file_url)
-            if "http" in file_url:
-                return [{'url':file_url,'quality':'???'}]
+            b64enc= re.search('base64([^\"]+)',data, re.DOTALL)
+            b64dec = b64enc and base64.decodestring(b64enc.group(1))
+            hash = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
+            if hash:
+                file_vars_script = _decode(hash)
+                file_vars = re.compile('var.+?= "([^"]*?)"').findall(file_vars_script)
+                for file_var in file_vars:
+                    file_url = _decode2(file_var)
+                    if 'http' in file_url:
+                        return [{'url':file_url,'quality':'???'}]
 
 def _regex(url):
     m1 = m2 = m3 = None
