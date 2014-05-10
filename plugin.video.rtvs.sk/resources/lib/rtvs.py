@@ -27,7 +27,9 @@ import shutil
 import traceback
 import cookielib
 import md5
+import calendar
 from time import sleep
+from datetime import date
 
 import util
 from provider import ContentProvider
@@ -43,6 +45,10 @@ NEWEST_ITER_RE = '<li(.+?)<a href=\"(?P<url>[^"]+)\"(.+?)title=\"(?P<title>[^"]+
 START_AZ = '<h2 class="az"'
 END_AZ = START_TOP
 AZ_ITER_RE = TOP_ITER_RE
+
+START_DATE = '<div class="row verticalLine tvarchivDate">'
+END_DATE = START_TOP
+DATE_ITER_RE = '<div class=\"media\">\s*<a href=\"(?P<url>[^\"]+)\"[^<]+>\s*<img src=\"(?P<img>[^\"]+)\".+?</a>\s*<div class=\"media-body\">.+?<span class=\"programmeTime\">(?P<time>[^\<]+)<\/span>.+?<a class=\"link\".+?title=\"(?P<title>[^\"]+)\">.+?<\/div>'
 
 START_LISTING = '<div class="boxRight archiv">'
 END_LISTING = '<div class="boxRight soloBtn white">'
@@ -62,7 +68,8 @@ class RtvsContentProvider(ContentProvider):
         ContentProvider.__init__(self, 'rtvs.sk', 'http://www.rtvs.sk', username, password, filter, tmp_dir)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
-        self.archive_url = self._url('tv.archive.alphabet/')
+        self.alphabet_url = self._url('tv.archive.alphabet/')
+        self.date_url = self._url('tv.archive.date/')
         if not os.path.exists(self.tmp_dir):
             os.makedirs(self.tmp_dir)
 
@@ -72,17 +79,23 @@ class RtvsContentProvider(ContentProvider):
     def list(self, url):
         if url.find('#az#') == 0:
             return self.az()
+        elif url.find("#date#") == 0:
+            year = int(url.split("#")[2])
+            month = int(url.split("#")[3])
+            return self.date(year, month)
         elif url.find('#new#') == 0:
-            return self.list_new(util.request(self.archive_url))
+            return self.list_new(util.request(self.alphabet_url))
         elif url.find('#top#') == 0:
-            return self.list_top(util.request(self.archive_url))
+            return self.list_top(util.request(self.alphabet_url))
         elif url.find('#listaz#') == 0:
             url = url[8:]
-            return self.list_az(util.request(self.archive_url + url))
+            return self.list_az(util.request(self.alphabet_url + url))
+        elif url.find('#listdate#') == 0:
+            url = url[10:]
+            return self.list_date(util.request(self.date_url + url))
         else:
             return self.list_episodes(util.request(self._url(url)))
-    
-        
+
     def categories(self):
         result = []
         item = self.dir_item()
@@ -94,11 +107,15 @@ class RtvsContentProvider(ContentProvider):
         item['url'] = "#top#"
         result.append(item)
         item = self.dir_item()
-        item['title'] = 'A-Z'
+        item['title'] = '[B]A-Z[/B]'
         item['url'] = "#az#"
         result.append(item)
+        item = self.dir_item()
+        item['title'] = '[B]Podľa dátumu[/B]'
+        d = date.today()
+        item['url'] = "#date#%d#%d" % (d.year, d.month)
+        result.append(item)
         return result
-
 
     def az(self):
         result = []
@@ -113,8 +130,7 @@ class RtvsContentProvider(ContentProvider):
             item['title'] = chr
             item['url'] = prefix + '?letter=%s' % chr.lower()
             self._filter(result, item)
-        return result    
-
+        return result
 
     def list_az(self, page):
         result = []
@@ -136,7 +152,6 @@ class RtvsContentProvider(ContentProvider):
         self._get_images(images)
         return result
 
-
     def list_top(self, page):
         result = []
         images = []
@@ -148,12 +163,12 @@ class RtvsContentProvider(ContentProvider):
             item['title'] = "%s (%s - %s)" % (m.group('title'), m.group('date'), m.group('time'))
             item['img'] = img['local']
             item['url'] = m.group('url')
+            item['menu'] = {'$30070':{'list':item['url'], 'action-type':'list'}}
             self._filter(result, item)
             images.append(img)
         self._get_images(images)
         return result
 
-        
     def list_new(self, page):
         result = []
         images = []
@@ -165,12 +180,50 @@ class RtvsContentProvider(ContentProvider):
             item['title'] = "%s (%s - %s)" % (m.group('title'), m.group('date'), m.group('time'))
             item['img'] = img['local']
             item['url'] = m.group('url')
+            item['menu'] = {'$30070':{'list':item['url'], 'action-type':'list'}}
             self._filter(result, item)
             images.append(img)
         self._get_images(images)
         return result
-    
-        
+
+    def date(self, year, month):
+        result = []
+        today = date.today()
+        prev_month = month > 0 and month - 1 or 12
+        prev_year = prev_month == 12 and year - 1 or year
+        item = self.dir_item()
+        item['type'] = 'prev'
+        item['url'] = "#date#%d#%d" % (prev_year, prev_month)
+        result.append(item)
+        for d in calendar.LocaleTextCalendar().itermonthdates(year, month):
+            if d.month != month:
+                continue
+            if d > today:
+                break
+            item = self.dir_item()
+            item['title'] = "%d.%d %d" % (d.day, d.month, d.year)
+            item['url'] = "#listdate#?date=%02d.%02d.%d" % (d.day, d.month, d.year)
+            self._filter(result, item)
+        result.reverse()
+        return result
+
+    def list_date(self, page):
+        result = []
+        images = []
+        page = util.substr(page, START_DATE, END_DATE)
+        for m in re.finditer(DATE_ITER_RE, page, re.IGNORECASE | re.DOTALL):
+            img = {'remote':self._url(m.group('img')),
+                   'local' :self._get_image_path(self._url(m.group('img')))}
+            item = self.video_item()
+            item['title'] = "%s (%s)" % (m.group('title'), m.group('time'))
+            item['img'] = img['local']
+            item['url'] = m.group('url')
+            item['menu'] = {'$30070':{'list':item['url'], 'action-type':'list'}}
+            self._filter(result, item)
+            images.append(img)
+        self._get_images(images)
+        return result
+
     def list_episodes(self, page):
         result = []
         episodes = []
@@ -196,15 +249,14 @@ class RtvsContentProvider(ContentProvider):
         item['url'] = prev_url
         self._filter(result, item)
         return result
-    
+
     def list_episode(self, page):
         item = self.video_item()
         episode = re.search(EPISODE_RE, page, re.DOTALL)
         if episode:
-            item['title'] = episode.group('title')
-            item['plot'] = episode.group('plot')
+            item['title'] = episode.group('title').strip()
+            item['plot'] = episode.group('plot').strip()
         return item
-        
 
     def resolve(self, item, captcha_cb=None, select_cb=None):
         item = item.copy()
@@ -218,22 +270,22 @@ class RtvsContentProvider(ContentProvider):
         rtmp = re.search(rtmp_url_regex, keydata, re.DOTALL)
         m3u8 = re.search(m3u8_url_regex, keydata, re.DOTALL)
         m3u8_url = m3u8.group(1) + video_id + m3u8.group(2)
-    
+
         # rtmp[t][e|s]://hostname[:port][/app[/playpath]]
-        # tcUrl=url URL of the target stream. Defaults to rtmp[t][e|s]://host[:port]/app. 
-        
+        # tcUrl=url URL of the target stream. Defaults to rtmp[t][e|s]://host[:port]/app.
+
         # rtmp url- fix podla mponline2 projektu
         rtmp_url = rtmp.group(1) + video_id + rtmp.group(2)
         stream_part = 'mp4:' + video_id
         playpath = rtmp_url[rtmp_url.find(stream_part):]
         tcUrl = rtmp_url[:rtmp_url.find(stream_part) - 1] + rtmp_url[rtmp_url.find(stream_part) + len(stream_part):]
         app = tcUrl[tcUrl.find('/', tcUrl.find('/') + 2) + 1:]
-    
+
         # rtmp_url = rtmp_url+ ' playpath=' + playpath + ' tcUrl=' + tcUrl + ' app=' + app
         rtmp_url = rtmp_url + ' tcUrl=' + tcUrl + ' app=' + app
         item['url'] = rtmp_url
         return item
-    
+
     def _request_parallel(self, requests):
         def fetch(req, *args):
             return util.request(req), args
@@ -246,15 +298,14 @@ class RtvsContentProvider(ContentProvider):
                 break
             pages.append([page, args])
         return pages
-            
-    
+
     def _get_image_path(self, name):
         local = self.tmp_dir
         m = md5.new()
         m.update(name)
         image = os.path.join(local, m.hexdigest() + '_img.png')
         return image
-       
+
     def _get_images(self, images):
         def download(remote, local):
             util.save_data_to_file(util.request(remote), local)
