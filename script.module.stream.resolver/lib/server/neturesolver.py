@@ -124,11 +124,13 @@ def resolve(url):
             hash = b64dec and re.search("\'([^']+)\'", b64dec).group(1)
             if hash:
                 file_vars_script = _decode(hash)
-                file_vars = re.compile('var.+?= "([^"]*?)"').findall(file_vars_script)
-                for file_var in file_vars:
-                    file_url = _decode2(file_var)
-                    if 'http' in file_url:
-                        return [{'url':file_url,'quality':'???'}]
+            else:
+                file_vars_script = data
+            file_vars = re.compile('var.+?= "([^"]*?)"').findall(file_vars_script)
+            for file_var in file_vars:
+                file_url = _decode2(file_var)
+                if 'http' in file_url:
+                    return [{'url':file_url,'quality':'???'}]
 
 def _regex(url):
     m1 = m2 = m3 = None
