@@ -42,7 +42,8 @@ class Youtube(ResolverTestCase):
 
     def setUp(self):
         self.resolver = youtuberesolver
-        self.urls=['http://www.youtube.com/watch?v=KKbUP7brxmY']
+        self.urls=['http://www.youtube.com/watch?v=KKbUP7brxmY',
+                   'http://www.youtube.com/watch?v=mMrcYDrtjng'] #vevo
 
 import anyfilesresolver
 class AnyFiles(ResolverTestCase):
