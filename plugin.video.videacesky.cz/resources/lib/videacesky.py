@@ -44,12 +44,14 @@ class VideaceskyContentProvider(ContentProvider):
     def list(self, url):
         if url.find('#top10#') == 0:
             return self.list_top10(util.request(self.base_url))
+        if url.find("#related#") == 0:
+            return self.list_related(util.request(url[9:]))
         else:
             return self.list_content(util.request(self._url(url)), self._url(url))
-        
+
     def search(self, keyword):
         return self.list('?s=' + urllib.quote(keyword))
-        
+
     def categories(self):
         result = []
         item = self.dir_item()
@@ -61,7 +63,7 @@ class VideaceskyContentProvider(ContentProvider):
         item['url'] = "?r_sortby=highest_rated"
         result.append(item)
         item = self.dir_item()
-        item['title'] = 'TOP 10 měsíce'
+        item['title'] = '[B]TOP 10 měsíce[/B]'
         item['url'] = "#top10#"
         result.append(item)
         data = util.request(self.base_url)
@@ -75,8 +77,7 @@ class VideaceskyContentProvider(ContentProvider):
             item['url'] = m.group('url')
             result.append(item)
         return result
-    
-    
+
     def list_top10(self, page):
         result = []
         data = util.substr(page, 'TOP 10 měsíce', 'class=\"sidebarBox widget_text\"')
@@ -87,44 +88,70 @@ class VideaceskyContentProvider(ContentProvider):
             item['url'] = m.group('url')
             self._filter(result, item)
         return result
-        
-        
-    
-    
+
     def list_content(self, page, url=None):
         result = []
         if not url: url = self.base_url
         data = util.substr(page, '<div class=\"contentArea', '<div class=\"pagination\">')
         pattern = '<h\d class=\"postTitle\"><a href=\"(?P<url>[^\"]+)(.+?)<span>(?P<title>[^<]+)</span></a></h\d>(.+?)<span class=\"postDate\">(?P<date>[^\<]+)</span>(.+?)<div class=\"postContent">[^<]+<a[^>]+[^<]+<img src=\"(?P<img>[^\"]+)(.+?)<div class=\"obs\">(?P<plot>.+?)</div>'
         for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-            plot = re.sub('<br[^>]*>', '', m.group('plot'))
             item = self.video_item()
             item['title'] = m.group('title')
-            item['img'] = m.group('img')
-            item['plot'] = plot
+            item['img'] = m.group('img').strip()
+            item['plot'] = self.decode_plot(m.group('plot'))
             item['url'] = m.group('url')
+            item['menu'] = {'$30060':{'list':'#related#' + item['url'], 'action-type':'list'}}
             self._filter(result, item)
         data = util.substr(page, '<div class=\"pagination\">', '</div>')
         m = re.search('<li class=\"info\"><span>([^<]+)', data)
         n = re.search('<li class=\"prev\"[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)', data)
         k = re.search('<li class=\"next\"[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<span>(?P<name>[^<]+)', data)
         # replace last / + everyting till the end
-        #myurl = re.sub('\/[\w\-]+$', '/', url)
+        # myurl = re.sub('\/[\w\-]+$', '/', url)
         if not m == None:
             if not n == None:
                 item = self.dir_item()
                 item['type'] = 'prev'
-                #item['title'] = '%s - %s' % (m.group(1), n.group('name'))
+                # item['title'] = '%s - %s' % (m.group(1), n.group('name'))
                 item['url'] = n.group('url')
                 result.append(item)
             if not k == None:
                 item = self.dir_item()
                 item['type'] = 'next'
-                #item['title'] = '%s - %s' % (m.group(1), k.group('name'))
+                # item['title'] = '%s - %s' % (m.group(1), k.group('name'))
                 item['url'] = k.group('url')
                 result.append(item)
         return result
 
+    def list_related(self, page):
+        result = []
+        data = util.substr(page, '<div class=\"related\"', '<div class=\"postFooter\">')
+        pattern = '<li[^>]+><div[^<]+<img\ src=\"(?P<img>[^\"]+)\"[^<]+</a>\s+</div><a href=\"(?P<url>[^\"]+)\" title=\"(?P<title>[^\"]+)\">.+?</li>'
+        for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+            item = self.video_item()
+            item['title'] = m.group('title')
+            item['img'] = m.group('img')
+            item['url'] = m.group('url')
+            self._filter(result, item)
+        return result
+
+    def decode_plot(self, p):
+        p = re.sub('<br[^>]*>', '', p)
+        p = re.sub('<div[^>]+>', '', p)
+        p = re.sub('<table.*', '', p)
+        p = re.sub('</span>|<br[^>]*>|<ul>|</ul>|<hr[^>]*>', '', p)
+        p = re.sub('<span[^>]*>|<p[^>]*>|<li[^>]*>', '', p)
+        p = re.sub('<strong>|<a[^>]*>|<h[\d]+>', '[B]', p)
+        p = re.sub('</strong>|</a>|</h[\d]+>', '[/B]', p)
+        p = re.sub('</p>|</li>', '[CR]', p)
+        p = re.sub('<em>', '[I]', p)
+        p = re.sub('</em>', '[/I]', p)
+        p = re.sub('<img[^>]+>', '', p)
+        p = re.sub('\[B\]Edituj popis\[\/B\]', '', p)
+        p = re.sub('\[B\]\[B\]', '[B]', p)
+        p = re.sub('\[/B\]\[/B\]', '[/B]', p)
+        p = re.sub('\[B\][ ]*\[/B\]', '', p)
+        return util.decode_html(''.join(p)).encode('utf-8').strip()
 
     def resolve(self, item, captcha_cb=None, select_cb=None):
         result = []
@@ -152,7 +179,7 @@ class VideaceskyContentProvider(ContentProvider):
             if resolved and subs:
                 for i in resolved:
                     i['subs'] = subs.group(1)
-                
+
         if not resolved:
             raise ResolveException('Video nenalezeno')
         for i in resolved:
