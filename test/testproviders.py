@@ -124,8 +124,7 @@ class Rtvs(ProviderTestCase):
                         'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013',
                         'http://www.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=2013-5&date=04.06.2013&do=calendar-changeMonth',
                         'http://www.rtvs.sk/televizia/program/detail/2577/a3um/archiv?date=25.11.2012']
-        self.resolve_items = [{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'},
-                              {'url':'http://ww.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=04.06.2013&date=04.06.2013&do=calendar-changeDate'}]
+        self.resolve_items = [{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'}]
         self.categories_list = True
 
 from joj import JojContentProvider
@@ -150,7 +149,7 @@ class Barrandov(ProviderTestCase):
     def setUp(self):
         self.provider_class = BarrandovContentProvider
         self.cp = self.provider_class()
-        self.list_urls=['video/hlavni-zpravy/']
+        self.list_urls=['video/nase-zpravy/']
         self.resolve_items = [{'url':'http://www.barrandov.tv/video/17085-hlavni-zpravy-17-9-2013'}]
         self.categories_list = True
 
