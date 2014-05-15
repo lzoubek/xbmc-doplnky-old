@@ -26,7 +26,7 @@ class XBMContentProvider(object):
     '''
     ContentProvider class provides an internet content. It should NOT have any xbmc-related imports
     and must be testable without XBMC runtime. This is a basic/dummy implementation.
-    '''	
+    '''
 
     def __init__(self,provider,settings,addon):
         '''
@@ -114,7 +114,7 @@ class XBMContentProvider(object):
             params.update({'search-list':'#'})
             xbmcutil.add_dir(xbmcutil.__lang__(30003),params,xbmcutil.icon('search.png'))
         if not '!download' in self.provider.capabilities():
-            xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))	
+            xbmcutil.add_local_dir(xbmcutil.__lang__(30006),self.settings['downloads'],xbmcutil.icon('download.png'))
         self.list(self.provider.categories())
         return xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -168,7 +168,7 @@ class XBMContentProvider(object):
                 except:
                     pass
         xbmcgui.Dialog().ok(self.provider.name,msg)
-        
+
     def resolve(self,url):
         item = self.provider.video_item()
         item.update({'url':url})
@@ -220,7 +220,13 @@ class XBMContentProvider(object):
                 pass
         menuItems = {}
         if 'menu' in item.keys():
-            menuItems.update(item['menu'])
+            for ctxtitle, value in item['menu'].iteritems():
+                if ctxtitle.find('$') == 0:
+                    try:
+                        ctxtitle = self.addon.getLocalizedString(int(ctxtitle[1:]))
+                    except:
+                        pass
+                menuItems[ctxtitle] = value
         xbmcutil.add_dir(title,params,img,infoLabels=self._extract_infolabels(item),menuItems=menuItems)
 
     def _extract_infolabels(self,item):
@@ -243,13 +249,19 @@ class XBMContentProvider(object):
         title = '%s%s' % (item['title'],item['size'])
         menuItems = {xbmc.getLocalizedString(33003):downparams}
         if 'menu' in item.keys():
-            menuItems.update(item['menu'])
+            for ctxtitle, value in item['menu'].iteritems():
+                if ctxtitle.find('$') == 0:
+                    try:
+                        ctxtitle = self.addon.getLocalizedString(int(ctxtitle[1:]))
+                    except:
+                        pass
+                menuItems[ctxtitle] = value
         xbmcutil.add_video(title,
                 params,
                 item['img'],
                 infoLabels=self._extract_infolabels(item),
                 menuItems=menuItems
-                )	
+                )
 
     def categories(self):
         self.list(self.provider.categories(keyword))
@@ -311,7 +323,7 @@ class XBMCLoginOptionalContentProvider(XBMContentProvider):
     def ask_for_account_type(self):
         if len(self.provider.username) == 0:
             util.info('Username is not set, NOT using VIP account')
-            return False        
+            return False
         if self.settings['vip'] == '0':
             util.info('Asking user whether to use VIP account')
             ret = xbmcgui.Dialog().yesno(self.provider.name,xbmcutil.__lang__(30010))
@@ -338,7 +350,7 @@ class XBMCLoginOptionalDelayedContentProvider(XBMCLoginOptionalContentProvider):
 
     def wait_cb(self,wait):
         left = wait
-        msg = xbmcutil.__lang__(30014).encode('utf-8') 
+        msg = xbmcutil.__lang__(30014).encode('utf-8')
         while left > 0:
             xbmc.executebuiltin("XBMC.Notification(%s,%s,1000,%s)" %(self.provider.name,msg % str(left),''))
             left-=1
