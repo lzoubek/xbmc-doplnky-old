@@ -4,7 +4,8 @@
 TOOLS=$(dirname "$0")
 
 
-BUILD_DIR=repo
+BUILD_DIR=tmp
+PUBLISH_DIR=repo
 echo "Cleaning up *.pyc files.."
 find . -name '*.pyc' | xargs rm -f
 
@@ -63,11 +64,26 @@ for addonFile in $addons ; do
     if [ -f "$icon" ] ; then
         cp "$icon" "$target_dir"/
     fi
-    git add $target_dir
+    echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -) > $BUILD_DIR/${addon_id}.md5
+    git stash
+    git checkout gh-pages
+    mv $target_dir/* $PUBLISH_DIR/$addon_id/
+    mv tmp/${addon_id}.md5 hashes/$addon_id
+    git add $PUBLISH_DIR/$addon_id
+    git add hashes/$addon_id
     # generate unique hash of released addon for further check 
-    echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -) > hashes/$addon_id
+    git commit -m "Release $addon_id $addon_version"
+    git checkout master
+    git stash pop
 done 
 echo "Regenerate addons.xml"
 python addons_xml_generator.py
-git add addons.xml addons.xml.md5
+git stash
+git checkout gh-pages
+mv tmp/addons.xml* repo
+./update-directory-index.sh
+git add repo
+git commit -m 'update metadata files'
+git checkout master
+git stash pop
 echo "Done"

@@ -4,7 +4,7 @@
 import os
 import md5
 
-IGNORED = ['dev','repo','icons','test','hashes']
+IGNORED = ['dev','repo','icons','test','hashes','tmp']
 
 # let's keep ignored (not yet released) addons here
 IGNORED += ['plugin.video.csfd-trailers']
@@ -52,14 +52,14 @@ class Generator:
         # clean and add closing tag
         addons_xml = addons_xml.strip() + u"\n</addons>\n"
         # save file
-        self._save_file( addons_xml.encode( "utf-8" ), file="addons.xml" )
+        self._save_file( addons_xml.encode( "utf-8" ), file="tmp/addons.xml" )
 
     def _generate_md5_file( self ):
         try:
             # create a new md5 hash
-            m = md5.new( open( "addons.xml" ).read() ).hexdigest()
+            m = md5.new( open( "tmp/addons.xml" ).read() ).hexdigest()
             # save file
-            self._save_file( m, file="addons.xml.md5" )
+            self._save_file( m, file="tmp/addons.xml.md5" )
         except Exception, e:
             # oops
             print "An error occurred creating addons.xml.md5 file!\n%s" % ( e, )
