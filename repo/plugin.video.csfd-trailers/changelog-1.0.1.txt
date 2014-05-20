@@ -1,7 +1,0 @@
-[B]1.0.1:[/B]
-- opravena totální nefunčnost na XBMC Dharma 10.1 na windows
-- přidán přehled tvůrců
-- přidána položka kontextového menu u filmů v přehledech kin, možnost zjistit
-kdy a kde se film právě vysílá
-[B]1.0.0:[/B]
-Initial version

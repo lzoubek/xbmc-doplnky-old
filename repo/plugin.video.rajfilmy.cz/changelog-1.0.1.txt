@@ -1,4 +1,0 @@
-[B]1.0.1:[/B]
-- opravy chyb (Ivo)
-[B]1.0.0:[/B]
-Initial version

@@ -1,4 +1,0 @@
-[B]1.0.1:[/B]
-- oprava chyby vícestránkového listování písmene
-[B]1.0.0:[/B]
-Initial version

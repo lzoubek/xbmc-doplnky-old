@@ -1,9 +1,0 @@
-[B]1.0.3:[/B]
-- migrace na ContentProvider API
-[B]1.0.2:[/B]
-- přidaná možnost stahování
-- přidaná možnost volby kvality videa
-[B]1.0.1:[/B]
-- přidán Usage Tracking
-[B]1.0.0:[/B]
-Initial version

@@ -1,7 +1,0 @@
-[B]1.0.1:[/B]
-- oprava stahování z bezvadata (zatím bez přihlášení)
-- přidáno logování, hlavně na ulozto
-- oprava hromadného vyhledávání, kdy chyba na některém servru neblokuje 
-vyhledávání na jiných
-[B]1.0.0:[/B]
-Initial version

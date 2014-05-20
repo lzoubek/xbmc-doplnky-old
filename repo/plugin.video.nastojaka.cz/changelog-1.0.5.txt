@@ -1,7 +1,0 @@
-[B]1.0.2:[/B]
-- migrace na ContentProvider API
-[B]1.0.1:[/B]
- - přidána podpora vyhledávání
- - opraveno : nezobrazují se všechna videa na stránce
-[B]1.0.0:[/B]
-Initial version

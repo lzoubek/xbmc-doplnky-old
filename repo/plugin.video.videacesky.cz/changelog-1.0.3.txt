@@ -1,7 +1,0 @@
-[B]1.0.3:[/B]
-- opraveno listování kategoriemi #67
-- přidaná možnost volby kvality videa
-[B]1.0.2:[/B]
-- přidán Usage Tracking
-[B]1.0.0:[/B]
-Initial version
