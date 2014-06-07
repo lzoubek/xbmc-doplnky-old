@@ -160,6 +160,7 @@ class GordonUra(ProviderTestCase):
         self.provider_class = GordonUraContentProvider
         self.cp = self.provider_class()
         self.list_urls=['?tag=KN-online']
+        self.list_paging=['?tag=HK-online']
         self.resolve_items = [{'url':'http://gordon.ura.cz/?p=3219'}]
         self.categories_list = True
 
