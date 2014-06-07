@@ -74,3 +74,9 @@ class Koukni(ResolverTestCase):
     def setUp(self):
         self.resolver = koukniresolver
         self.urls=['http://koukni.cz/49950514']
+
+import vimeoresolver
+class Vimeo(ResolverTestCase):
+    def setUp(self):
+        self.resolver = vimeoresolver
+        self.urls=['http://player.vimeo.com/video/96091357']
