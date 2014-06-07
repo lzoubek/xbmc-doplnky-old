@@ -22,11 +22,11 @@
 
 import re
 import os
+import urllib
 import urllib2
 import shutil
 import cookielib
 from urlparse import urlparse
-
 
 import util, resolver
 from provider import ContentProvider, ResolveException
@@ -40,9 +40,8 @@ MENU_LISTING_ITER_RE= '<li id=\"(?P<id>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)\">(
 
 PAGER_START = "<div class=\'wp-pagenavi\'>"
 PAGER_END = "</div>"
-PAGER_NEXT_RE = "<a href=\'(?P<url>[^\']+)\' class=\'nextpostslink\'>[^<]+</a>"
-PAGER_PREV_RE = "<a href=\'(?P<url>[^\']+)\' class=\'previouspostslink\'>[^<]+</a>"
-
+PAGER_NEXT_RE = "<a class=\"nextpostslink\" href=\"(?P<url>[^\"]+)\"[^<]+</a>"
+PAGER_PREV_RE = "<a class=\"previouspostslink\" href=\"(?P<url>[^\"]+)\"[^<]+</a>"
 
 class GordonUraContentProvider(ContentProvider):
 
@@ -100,12 +99,12 @@ class GordonUraContentProvider(ContentProvider):
         if prev_m:
             item = self.dir_item()
             item['type'] = 'prev'
-            item['url'] = prev_m.group('url')
+            item['url'] = prev_m.group('url').replace("&amp;","&")
             result.append(item)
         if next_m:
             item = self.dir_item()
             item['type'] = 'next'
-            item['url'] = next_m.group('url')
+            item['url'] = next_m.group('url').replace("&amp;","&")
             result.append(item)
         return result
 
@@ -113,14 +112,20 @@ class GordonUraContentProvider(ContentProvider):
         result = []
         item = item.copy()
         url = self._url(item['url'])
-        data = util.substr(util.request(url), '<embed id', '>')
-        yurl_m = re.search('file=.*?(http[^&]+)&',data,re.DOTALL)
-        yurl = yurl_m and re.sub('youtu.be/','www.youtube.com/watch?v=',yurl_m.group(1)) or ''
-        resolved = resolver.findstreams(yurl, ['(?P<url>[^&]+)'])
-        subs = re.search('captions\.file=([^&]+)', data, re.DOTALL)
-        if resolved and subs:
+        data = util.substr(util.request(url), '<div id="content">', '<div id="sidebar">')
+        embed_m = re.search('<embed.+?/>', data, re.DOTALL)
+        iframe_m = re.search('<iframe.+?/>', data, re.DOTALL)
+        resolve_data = ""
+        if embed_m:
+            resolve_data += embed_m.group()
+        if iframe_m:
+            resolve_data += iframe_m.group()
+        resolve_data = re.sub('youtu.be/','www.youtube.com/watch?v=', resolve_data)
+        resolved = resolver.findstreams(resolve_data, ['file=.*?(?P<url>http[^&]+)&','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]'])
+        subs_m = re.search('captions\.file=([^&]+)', resolve_data, re.DOTALL)
+        if resolved and subs_m:
             for i in resolved:
-                i['subs'] = self._url(subs.group(1))
+                i['subs'] = self._url(subs_m.group(1))
         if not resolved:
             raise ResolveException('Video nenalezeno')
         for i in resolved:
@@ -135,7 +140,6 @@ class GordonUraContentProvider(ContentProvider):
                 item['fmt'] = i['fmt']
             except KeyError:
                 pass
-            print item
             result.append(item)
         if len(result)  == 0:
             return result[0]
