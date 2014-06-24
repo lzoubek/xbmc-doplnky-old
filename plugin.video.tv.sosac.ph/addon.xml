@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.4">
+<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.5">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.19" />
+    <import addon="script.module.stream.resolver" version="1.6.20" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
