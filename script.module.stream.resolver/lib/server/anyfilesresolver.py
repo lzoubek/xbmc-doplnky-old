@@ -86,7 +86,7 @@ def resolve(url):
         headers = {'Cookie':sessc, 'Referer':url}
         data = util.request(furl,headers)
         m1 = re.search('document.cookie = "([^"]+?)"',data)
-        m2 = re.search('var flashvars = {[^"]+?config: "([^"]+?)" }',data)
+        m2 = re.search('src="(\/pcsevlet\?code=[^"]+)', data)
         if m1 and m2:
             headers['Cookie'] = headers['Cookie'] + '; ' + m1.group(1)
             headers['Referer'] = BASE_URL + '/flowplayer/flowplayer.commercial-3.2.16.swf'
