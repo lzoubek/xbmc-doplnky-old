@@ -17,10 +17,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.3">
+<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.4">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.16" />
+    <import addon="script.module.stream.resolver" version="1.6.19" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -51,7 +51,7 @@
   </extension>
 </addon>
 
-<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.18">
+<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.19">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.simplejson" version="2.0.10" />
@@ -85,10 +85,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.14">
+<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.15">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.16" />
+    <import addon="script.module.stream.resolver" version="1.6.19" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -116,6 +116,23 @@
     <summary lang="cs">mtr.sk</summary>
     <description lang="en">Watch online mtr.sk</description>
     <description lang="cs">Sledujte online mtr.sk</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.teevee.sk" name="teevee.sk" provider-name="Lubomir Kucera" version="1.0">
+  <requires>
+    <import addon="xbmc.python" version="2.7.7" />
+    <import addon="script.module.stream.resolver" version="1.6.18" />
+  </requires>
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">teevee.sk</summary>
+    <summary lang="cs">teevee.sk</summary>
+    <description lang="en">Watch online movies and series from teevee.sk</description>
+    <description lang="sk">Sledujte online filmy a seriály zo servera teevee.sk</description>
     <platform>all</platform>
   </extension>
 </addon>
