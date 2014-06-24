@@ -41,8 +41,8 @@ def resolve(url):
                 else:
                     q = '???'
                 if subs:
-                    subs = json.loads(util.request(burl + subs.group(1)))['link']
-                    result.append({'url':stream,'quality':q,'subs':subs,'headers':headers})
+                    s = json.loads(util.request(burl % subs.group(1)))['link']
+                    result.append({'url':stream,'quality':q,'subs':s,'headers':headers})
                 else:
                     result.append({'url':stream,'quality':q,'headers':headers})
                 index+=1
