@@ -20,7 +20,7 @@
 <addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.5">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.20" />
+    <import addon="script.module.stream.resolver" version="1.6.21" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -88,7 +88,7 @@
 <addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.17">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.20" />
+    <import addon="script.module.stream.resolver" version="1.6.21" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
