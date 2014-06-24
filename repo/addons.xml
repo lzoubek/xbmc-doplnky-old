@@ -17,10 +17,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.4">
+<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.5">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.19" />
+    <import addon="script.module.stream.resolver" version="1.6.20" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -51,7 +51,7 @@
   </extension>
 </addon>
 
-<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.19">
+<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.20">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.simplejson" version="2.0.10" />
@@ -85,10 +85,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.15">
+<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.17">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.19" />
+    <import addon="script.module.stream.resolver" version="1.6.20" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
