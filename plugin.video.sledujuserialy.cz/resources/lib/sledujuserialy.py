@@ -22,85 +22,70 @@
 import urllib2,re,os,sys,cookielib
 import util
 from provider import ContentProvider
+import lxml.html
 
 class SledujuserialyContentProvider(ContentProvider):
 
-    def __init__(self,username=None,password=None,filter=None,tmp_dir='.'):
-        ContentProvider.__init__(self,'sledujuserialy.cz','http://www.sledujuserialy.cz/',username,password,filter)
+    def __init__(self, username=None, password=None, filter=None, tmp_dir='.'):
+        ContentProvider.__init__(self, 'sledujuserialy.cz', 'http://www.sledujuserialy.cz', username, password, filter)
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.LWPCookieJar()))
         urllib2.install_opener(opener)
 
     def capabilities(self):
-        return ['resolve','cagegories']
-
+        return [ 'resolve', 'cagetories', '!download' ]
 
     def categories(self):
         result = []
-        item = self.dir_item()
-        item['type'] = 'new'
-        item['url'] = 'simpsonovi/nejnovejsi'
-        result.append(item)
-        page = util.request(self.base_url)
-        data = util.substr(page,'<h2 class=\"vyber_serialu','<div class=\"levy_blok')
-        pattern='<a href=\"(?P<url>[^\"]+).+?class=\"menu_sipecka\">[^>]+>(?P<name>[^<]+)'	
-        for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
+        for category in lxml.html.fromstring(urllib2.urlopen(self.base_url).read()) \
+            .xpath('//div[@id="seznam_vyber"]/table/tr/td/div'):
             item = self.dir_item()
-            item['title'] = m.group('name').strip()
-            item['url'] = m.group('url')
+            item['title'] = category.text_content().encode('utf-8').strip('» ')
+            url = category.xpath('./a')
+            item['url'] = url[0].attrib['href'] if len(url) > 0 else '/'
             result.append(item)
-        item = self.dir_item()
-        item['title'] = 'Simpsonovi'
-        item['url'] = 'simpsonovi'
-        result.append(item)
         return result
 
-    def list_new(self,url):
-        result = []
-        for lasturl in ['simpsonovi/nejnovejsi','simpsonovi/nejnovejsi/vcera','simpsonovi/nejnovejsi/predevcirem']:
-            page = util.request(self._url(lasturl))
-            data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
-            pattern = '<div title=\"(?P<name>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?src=\"(?P<img>[^\"]+)'
-            for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-                item = self.video_item()
-#                item['title'] = util.decode_html(m.group('name').decode('windows-1250').encode('utf-8'))
-                item['title'] = m.group('name')
-                item['url'] = m.group('url')
-                item['img'] = self._url(m.group('img'))
-                self._filter(result,item)
-        return result
-
-    def list(self,url):
-        if url.find('nejnovejsi') > 0:
-            return self.list_new(url)
+    def list(self, url):
+        if url.count('/') == 1:
+            return self.list_series(url)
         return self.list_episodes(url)
 
-    def list_episodes(self,url):
+    def list_series(self, url):
         result = []
-        page = util.request(self._url(url))
-        data = util.substr(page,'<div class=\"pravy_blok\"','<div class=\"paticka')
-        pattern = '<div style=\"background-image\: url\((?P<img>[^\)]+)[^<]+<a href=\"(?P<url>[^\"]+)[^<]+<img.+?title=\"(?P<name>[^\"]+)'
-        for m in re.finditer(pattern, data, re.IGNORECASE | re.DOTALL):
-            item = self.video_item()
-            item['title'] = m.group('name')
-            item['url'] = m.group('url')
-            item['img'] = self._url(m.group('img'))
-            self._filter(result,item)
-        next = re.search('<a href=\"(?P<url>[^\"]+)\" title=\"Dále\"',page)
-        if next:
+        for serie in lxml.html.fromstring(urllib2.urlopen(self.base_url + url).read()) \
+            .xpath('//div[@class="levy_blok"]/div'):
             item = self.dir_item()
-            item['type'] = 'next'
-            item['url'] = next.group('url')
+            item['title'] = serie.text_content().encode('utf-8')
+            item['url'] = re.findall(r'\'([^\']*)\'', serie.attrib['onclick'])[0]
             result.append(item)
         return result
 
-    def resolve(self,item,captcha_cb=None,select_cb=None):
-        item = item.copy()
+    def list_episodes(self, url):
+        result = []
+        got_next = True
+        while got_next:
+            root = lxml.html.fromstring(urllib2.urlopen(self.base_url + url).read())
+            for episode in root.xpath('//div[@class="pravy_blok"]/center/div[@class="nadpis"]/h2/a'):
+                item = self.video_item()
+                item['title'] = episode.text.encode('utf-8').strip()
+                item['url'] = episode.attrib['href']
+                item['img'] = re.findall(r'\([^)].*\)', episode.xpath('../../following-sibling::div[@class="uvodni_video"]')[0] \
+                    .attrib['style'])[0].strip('()')
+                result.append(item)
+            for next in root.xpath('//div[@class="pravy_blok"]/center/table[@class="strankovanicko"]/tr/td/div[@class="strank_bg vice_pad"]/a'):
+                if next.attrib['title'].encode('utf-8') == 'Dále':
+                    url = next.attrib['href']
+                    got_next = True
+                    break
+                got_next = False
+        return result[::-1]
+
+    def resolve(self, item, captcha_cb=None, select_cb=None):
         url = self._url(item['url'])
-        data = util.substr(util.request(url),'<a name=\"video\"','<div class=\"line_line')
-        result = self.findstreams(data+url,['<embed( )src=\"(?P<url>[^\"]+)','<object(.+?)data=\"(?P<url>[^\"]+)','<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]','<object.*?data=(?P<url>.+?)</object>'])
-        if len(result)==1:
+        data = util.substr(util.request(url), '<a name=\"video\"', '<div class=\"line_line')
+        result = self.findstreams(data + url, [ '<embed( )src=\"(?P<url>[^\"]+)', '<object(.+?)data=\"(?P<url>[^\"]+)', '<iframe(.+?)src=[\"\'](?P<url>.+?)[\'\"]', '<object.*?data=(?P<url>.+?)</object>' ])
+        if len(result) == 1:
             return result[0]
         elif len(result) > 1 and select_cb:
             return select_cb(result)
-
-
+        return None

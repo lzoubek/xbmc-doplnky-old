@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<addon id="plugin.video.teevee.sk" name="teevee.sk" provider-name="Lubomir Kucera" version="1.0">
+  <requires>
+    <import addon="xbmc.python" version="2.7.7" />
+    <import addon="script.module.stream.resolver" version="1.6.18" />
+  </requires>
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">teevee.sk</summary>
+    <summary lang="cs">teevee.sk</summary>
+    <description lang="en">Watch online movies and series from teevee.sk</description>
+    <description lang="sk">Sledujte online filmy a seriály zo servera teevee.sk</description>
+    <platform>all</platform>
+  </extension>
+</addon>
