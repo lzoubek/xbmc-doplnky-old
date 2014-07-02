@@ -35,7 +35,7 @@ class HellspyContentProvider(ContentProvider):
         return ['login','search','resolve','categories']
 
     def search(self,keyword):
-        return self.list('search/?q='+urllib.quote(keyword))
+        return self.list('search/?usrq='+urllib.quote(keyword))
 
     def login(self):
         if self.username and self.password and len(self.username)>0 and len(self.password)>0:
@@ -79,8 +79,9 @@ class HellspyContentProvider(ContentProvider):
         if url.find('ucet/favourites') >= 0 and self.login():
             return self.list_favourites(url)
         url = self._url(url)
+        util.init_urllib()
         page = util.request(url)
-        data = util.substr(page,'<div class=\"file-list file-list-horizontal','<div id=\"push')
+        data = util.substr(page,'<div class=\"file-list file-list-horizontal','<div id=\"layout-push')
         result = []
         for m in re.finditer('<div class=\"file-entry.+?<div class="preview.+?<div class=\"data.+?</div>',data, re.IGNORECASE|re.DOTALL):
             entry = m.group(0)
@@ -110,7 +111,7 @@ class HellspyContentProvider(ContentProvider):
         if mnext:
             item = self.dir_item()
             item['type'] = 'next'
-            item['url'] = mnext.group('url')
+            item['url'] = mnext.group('url').replace('&amp;','&')
             result.append(item)
         return result
 
