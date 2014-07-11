@@ -1,0 +1,8 @@
+v0.1.2
+-Rewrite to use seperate api and scraper as lib
+v0.1.1
+-Safety checks on parsing DOM
+-Using qualified host instead of IP
+-Extra checks to get correct stream URL
+v0.1.0
+- Initial version

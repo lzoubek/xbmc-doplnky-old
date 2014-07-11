@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Plugin name -->
+    <string id="30000">Nekonecne</string>
+  <!-- Settings -->
+    <string id="30001">User Email</string>
+    <string id="30002">Password</string>
+  <!-- Main View -->
+
+</strings>
