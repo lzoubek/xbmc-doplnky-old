@@ -25,7 +25,9 @@ import os
 import urllib2
 import shutil
 import cookielib
+import random
 from urlparse import urlparse
+from xml.etree.ElementTree import fromstring
 
 import util
 from provider import ContentProvider
@@ -61,7 +63,7 @@ RELACIE_FIX = ['anosefe']
 SERIALY_FIX = []
 VYMENIT_LINK = {'csmatalent':'http://www.csmatalent.cz/video-cz.html'}
 CHANGE_PATH = { 'www': 'joj', 'plus': 'jojplus' }
-   
+
 def fix_link(url):
     if url in SERIALY_FIX:
         url = url[:url.rfind('-')] + '-epizody.html'
@@ -111,7 +113,6 @@ class JojContentProvider(ContentProvider):
         if url.find('#new#') == 0:
             return self.list_new()
 
-
     def categories(self):
         result = []
         item = self.dir_item()
@@ -140,7 +141,7 @@ class JojContentProvider(ContentProvider):
         item['url'] = "#cat#" + SENZI_URL + '/senzi-archiv.html'
         result.append(item)
         return result
-    
+
     def subcategories(self, url):
         result = []
         if url.startswith(('#rel#','#ser#')):
@@ -152,23 +153,22 @@ class JojContentProvider(ContentProvider):
             item = self.dir_item()
             item['title'] = 'Nevysielane'
             item['url'] = '#subcat##showoff#' + url
-            result.append(item)
+            self._filter(result, item)
         else:
             item = self.dir_item()
             item['title'] = 'Relacie'
             item['url'] = "#cat##rel#" + url + '/?type=relacie'
-            result.append(item)
+            self._filter(result, item)
             item = self.dir_item()
             item['title'] = 'Serialy'
             item['url'] = "#cat##ser#" + url + '/?type=serialy'
-            result.append(item)
+            self._filter(result, item)
             item = self.video_item()
             item['title'] = 'Live'
             item['url'] = url.replace('archiv', 'live')
-            result.append(item)
+            self._filter(result, item)
         return result
-        
-        
+
     def list_show(self, url):
         result = []
         prefix = "#series#"
@@ -181,7 +181,7 @@ class JojContentProvider(ContentProvider):
                 item['plot'] = m.group('desc')
                 item['url'] = prefix + m.group('url')
                 self._filter(result, item)
-        
+
         elif url.startswith("#showoff#"):
             page = util.request(url[9:])
             page = util.substr(page, NEVYSIELANE_START, NEVYSIELANE_END)
@@ -192,7 +192,7 @@ class JojContentProvider(ContentProvider):
                 self._filter(result, item)
         result.sort(key=lambda x:x['title'].lower())
         return result
-    
+
     def list_series(self, url):
         result = []
         page = util.request(url)
@@ -201,9 +201,9 @@ class JojContentProvider(ContentProvider):
             item = self.dir_item()
             item['title'] = m.group('title')
             item['url'] = "#episodes##0#" + 'http://' + urlparse(url).netloc + '/ajax.json?' + m.group('url')
-            result.append(item)
+            self._filter(result, item)
         return result
-        
+
     def list_episodes(self, url, page=0):
         result = []
         if url.find('ajax.json') != -1:
@@ -215,10 +215,10 @@ class JojContentProvider(ContentProvider):
         else:
             httpdata = util.request(url)
             httpdata = util.substr(httpdata, EPISODE_START, EPISODE_END)
-           
+
         entries = 0
         skip_entries = MAX_PAGE_ENTRIES * page
-    
+
         for m in re.finditer(EPISODE_ITER_RE, httpdata, re.DOTALL | re.IGNORECASE):
             entries += 1
             if entries < skip_entries:
@@ -232,11 +232,10 @@ class JojContentProvider(ContentProvider):
                 item = self.dir_item()
                 item['type'] = 'next'
                 item['url'] = "#episodes##%d#" % (page) + url
-                result.append(item)
+                self._filter(result, item)
                 break
         return result
-        
-        
+
     def list_top(self):
         result = []
         page = util.request(self.base_url)
@@ -248,7 +247,7 @@ class JojContentProvider(ContentProvider):
             item['img'] = m.group('img')
             self._filter(result, item)
         return result
-    
+
     def list_new(self):
         result = []
         page = util.request(self.base_url)
@@ -267,16 +266,23 @@ class JojContentProvider(ContentProvider):
                 self._filter(result, item)
         return result
 
-    def rtmp_url(self, serverno, path, url):
-        if int(serverno) > 20:
-            serverno = str(int(serverno) / 2)
-        if len(serverno) == 2:
-            server = 'n' + serverno + '.joj.sk'
+    def rtmp_url(self, playpath, pageurl, type=None, balance=None):
+        if balance is not None and type is not None:
+            try:
+                nodes = balance.find('project[@id="joj"]').find('balance[@type="%s"]'%(type))
+                min_node = int(nodes.find('node').attrib.get('id'))
+                max_node = int(nodes.findall('node')[-1].attrib.get('id'))
+                node_id = random.randint(min_node, max_node)
+                server = balance.find('nodes').find('node[@id="%d"]'%node_id).attrib.get('url')
+            except Exception as e:
+                self.error("cannot get stream server: %s"%(str(e)))
+                self.info("using default stream server")
+                server = 'n11.joj.sk'
         else:
-            server = 'n0' + serverno + '.joj.sk'
+            server = 'n11.joj.sk'
         swfurl = 'http://player.joj.sk/JojPlayer.swf?no_cache=137034'
-        return 'rtmp://' + server + ' playpath=' + path + ' pageUrl=' + url + ' swfUrl=' + swfurl + ' swfVfy=true'
-        
+        return 'rtmp://' + server + ' playpath=' + playpath + ' pageUrl=' + pageurl + ' swfUrl=' + swfurl + ' swfVfy=true'
+
     # modified source from dmd-czech joj video plugin
     def resolve(self, item, captcha_cb=None, select_cb=None):
         result = []
@@ -298,21 +304,21 @@ class JojContentProvider(ContentProvider):
                 playlisturl = basepath + 'services/Video.php?clip=' + videoid + 'pageId=' + pageid
             else:
                 playlisturl = basepath + 'services/Video.php?clip=' + videoid
-            playlist = util.request(playlisturl)
-            title = re.search('title="(.+?)"', playlist).group(1)
-            thumb = re.search('large_image="(.+?)"', playlist).group(1)
-            videos = re.finditer(JOJ_FILES_ITER_RE, playlist, re.DOTALL | re.IGNORECASE)
-            for video in videos:
+            playlist = fromstring(util.request(playlisturl))
+            balanceurl = basepath + 'balance.xml?nc=%d' % random.randint(1000, 9999)
+            balance = fromstring(util.request(balanceurl))
+            for video in playlist.find('files').findall('file'):
                 item = self.video_item()
-                item['quality'] = video.group('quality')
-                item['img'] = thumb
-                item['url'] = self.rtmp_url(video.group('id'), video.group('path'), url)
+                item['img'] = playlist.attrib.get('large_image')
+                item['length'] = playlist.attrib.get('duration')
+                item['quality'] = video.attrib.get('quality')
+                item['url'] = self.rtmp_url(video.attrib.get('path'), playlist.attrib.get('url'), video.attrib.get('type'), balance)
                 result.append(item)
-        except:
+        except Exception:
             for quality in ['360', '540', '720']:
                 item = self.video_item()
                 item['quality'] = quality + 'p'
-                item['url'] = self.rtmp_url('10', fix_path(re.search('http://(\w+).joj.sk', url).group(1)) + '-' + quality, url)
+                item['url'] = self.rtmp_url(fix_path(re.search('http://(\w+).joj.sk', url).group(1)) + '-' + quality, url)
                 result.append(item)
         result.reverse()
         return select_cb(result)
