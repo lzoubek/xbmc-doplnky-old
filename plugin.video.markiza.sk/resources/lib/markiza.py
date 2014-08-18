@@ -165,15 +165,11 @@ class MarkizaContentProvider(ContentProvider):
         video_id = re.search("(\d+)\_", urlpart).group(1)
         videodata = util.json.loads(util.request('http://www.markiza.sk/json/video.json?id=' + video_id))
         for v in videodata['playlist']:
-            for b in v['bitrates']:
-                 item = self.video_item()
-                 item['title'] = v['title']
-                 item['url'] = "%s playpath=%s" % (v['netConnectionUrl'], b['url'])
-                 item['surl'] = v['title']
-                 item['quality'] = b['label']
-                 item['length'] = b['length']
-                 item['size'] = b['size']
-                 result.append(item)
+            item = self.video_item()
+            item['title'] = v['title']
+            item['surl'] = v['title']
+            item['url'] = "%s/%s"%(v['baseUrl'],v['url'].replace('.f4m','.m3u8'))
+            result.append(item)
         if len(result) > 0 and select_cb:
             return select_cb(result)
         return result
