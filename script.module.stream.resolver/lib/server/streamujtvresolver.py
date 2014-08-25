@@ -33,7 +33,7 @@ def resolve(url):
             headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0',
                     'Referer':'http://www.streamuj.tv/mediaplayer/player.swf'}
             for stream in streams:
-                burl = b64decode('aHR0cDovL2Z1LWNlY2gucmhjbG91ZC5jb20vcGF1dGg/cGxheWVyPWh0dHA6Ly93d3cuc3RyZWFtdWoudHYvbmV3LWZsYXNoLXBsYXllci9tcGx1Z2luNC5zd2YmbGluaz0lcwo=')
+                burl = b64decode('aHR0cDovL2Z1LWNlY2gucmhjbG91ZC5jb20vcGF1dGg/cGxheWVyPWh0dHA6Ly93d3cuc3RyZWFtdWoudHYvbmV3LWZsYXNoLXBsYXllci9tcGx1Z2luNC5zd2YmbGluaz0lcw==')
                 res = json.loads(util.request(burl % b64encode(stream)))
                 stream = res['link']
                 q = rn[index]
