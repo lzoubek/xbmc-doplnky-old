@@ -30,11 +30,12 @@ def resolve(url):
             rn = rn.group(1).split(',')
             index = 0
             result = []
+            player = 'http://www.streamuj.tv/new-flash-player/mplugin4.swf'
             headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0',
                     'Referer':'http://www.streamuj.tv/mediaplayer/player.swf'}
             for stream in streams:
                 burl = b64decode('aHR0cDovL2Z1LWNlY2gucmhjbG91ZC5jb20vcGF1dGg=')
-                res = json.loads(util.post_json(burl,{'link':stream,'player':'http://www.streamuj.tv/new-flash-player/mplugin4.swf'}))
+                res = json.loads(util.post_json(burl,{'link':stream,'player':player}))
                 stream = res['link']
                 q = rn[index]
                 if q == 'HD':
@@ -43,8 +44,8 @@ def resolve(url):
                     q = '???'
                 if subs:
                     s = subs.group(1).replace('&','%26')
-                    s = json.loads(util.request(burl % s))['link']
-                    result.append({'url':stream,'quality':q,'subs':s,'headers':headers})
+                    s = json.loads(util.post_json(burl,{'link':s,'player':player}))
+                    result.append({'url':stream,'quality':q,'subs':s['link'],'headers':headers})
                 else:
                     result.append({'url':stream,'quality':q,'headers':headers})
                 index+=1
