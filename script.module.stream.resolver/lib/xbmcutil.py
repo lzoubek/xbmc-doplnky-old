@@ -319,7 +319,10 @@ def remove_search(addon,server,search):
 
 
 def download(addon,filename,url,local,notifyFinishDialog=True,headers={}):
-    util.info('Downloading %s to %s' % (url,local))
+    try:
+        util.info('Downloading %s to %s' % (url,local))
+    except:
+        util.info('Downloading '+url)
     local = xbmc.makeLegalFilename(local)
     try:
         filename = util.replace_diacritic(util.decode_html(filename))
