@@ -17,7 +17,7 @@ class StreamujTv(ResolverTestCase):
 
     def setUp(self):
         self.resolver = streamujtvresolver
-        self.urls = ['http://www.streamuj.tv/video/48246-0661-1c3fd6-d036c1f618ee20c710d3?affid=174&width=610&height=360&remote=1']
+        self.urls = ['http://www.streamuj.tv/video/25080-528d-db4902-0548bd92c2c556e3da22?remote=1&affid=174&width=960&height=525']
 
     def assertions(self,url,results):
         for result in results:
