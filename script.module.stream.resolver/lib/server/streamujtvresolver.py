@@ -33,8 +33,8 @@ def resolve(url):
             headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0',
                     'Referer':'http://www.streamuj.tv/mediaplayer/player.swf'}
             for stream in streams:
-                burl = b64decode('aHR0cDovL2Z1LWNlY2gucmhjbG91ZC5jb20vcGF1dGg/cGxheWVyPWh0dHA6Ly93d3cuc3RyZWFtdWoudHYvbmV3LWZsYXNoLXBsYXllci9tcGx1Z2luNC5zd2YmbGluaz0lcw==')
-                res = json.loads(util.request(burl % b64encode(stream)))
+                burl = b64decode('aHR0cDovL2Z1LWNlY2gucmhjbG91ZC5jb20vcGF1dGg=')
+                res = json.loads(util.post_json(burl,{'link':stream,'player':'http://www.streamuj.tv/new-flash-player/mplugin4.swf'}))
                 stream = res['link']
                 q = rn[index]
                 if q == 'HD':
