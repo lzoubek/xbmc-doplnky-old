@@ -21,6 +21,7 @@
 import sys,os,re,traceback,util,xbmcutil,resolver,time
 import xbmcplugin,xbmc,xbmcgui
 import urlparse, urllib
+from collections import defaultdict
 from provider import ResolveException
 class XBMContentProvider(object):
     '''
@@ -283,7 +284,11 @@ class XBMCMultiResolverContentProvider(XBMContentProvider):
             if len(resolved) == 1 or int(quality) > 0:
                 return resolved[0]
             dialog = xbmcgui.Dialog()
-            ret = dialog.select(xbmcutil.__lang__(30005), ['%s [%s]'%(r['title'],r['quality']) for r in resolved])
+            opts = []
+            for r in resolved:
+                d = defaultdict(lambda:'',r)
+                opts.append('%s [%s]%s' % (d['title'],d['quality'],d['lang']))
+            ret = dialog.select(xbmcutil.__lang__(30005), opts)
             if ret >= 0:
                 return resolved[ret]
         try:

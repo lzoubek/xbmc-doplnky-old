@@ -17,7 +17,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-
+from collections import defaultdict
 import sys,os,util,re,traceback,resolver
 try:
     import StorageServer
@@ -133,7 +133,8 @@ class ContentProvider(object):
         if resolved == []:
             raise ResolveException('Video je na serveru, ktery neni podporovan')
         result = []
-        for i in resolved:
+        for j in resolved:
+            i = defaultdict(lambda:'',j)
             item = self.video_item() 
             item['title'] = i['name']
             item['url'] = i['url']
@@ -141,6 +142,8 @@ class ContentProvider(object):
             item['surl'] = i['surl']
             item['subs'] = i['subs']
             item['headers'] = i['headers']
+            item['lang'] = i['lang']
+            item['info'] = i['info']
             result.append(item)
         return result
 
