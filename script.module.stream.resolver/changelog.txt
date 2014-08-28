@@ -1,3 +1,6 @@
+[B]1.6.24:[/B]
+- resolvers: support for displaying additional info (audio track language, etc)
+- streamujtv: return all possible streams (incl. audio track combinations) #223
 [B]1.6.16:[/B]
 - support for disabled subtitles by plugin setting
 - #217 - incorrect item title on some skins
