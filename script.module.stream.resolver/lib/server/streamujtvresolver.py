@@ -43,7 +43,7 @@ def resolve(url):
                 else:
                     q = '???'
                 if subs:
-                    s = subs.group(1).replace('&','%26')
+                    s = subs.group(1)
                     s = json.loads(util.post_json(burl,{'link':s,'player':player}))
                     result.append({'url':stream,'quality':q,'subs':s['link'],'headers':headers})
                 else:
