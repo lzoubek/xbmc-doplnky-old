@@ -124,7 +124,7 @@ class Rtvs(ProviderTestCase):
                         'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013',
                         'http://www.rtvs.sk/tv.programmes.detail/archive/4348?calendar-date=2013-5&date=04.06.2013&do=calendar-changeMonth',
                         'http://www.rtvs.sk/televizia/program/detail/2577/a3um/archiv?date=25.11.2012']
-        self.resolve_items = [{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'}]
+        self.resolve_items = [{'url':'http://www.rtvs.sk/tv.programmes.detail/archive/6381?date=22.08.2014'},{'url':'http://www.rtvs.sk/televizia/program/detail/4348/nikto-nie-je-dokonaly/archiv?date=04.06.2013'}]
         self.categories_list = True
 
 from joj import JojContentProvider
@@ -183,5 +183,22 @@ class Markiza(ProviderTestCase):
         self.cp = self.provider_class()
         self.list_urls=['video/televizne-noviny','/video/bez-servitky','#subcat#/video/hlas-cesko-slovenska']
         self.resolve_items = [{'url':'http://videoarchiv.markiza.sk/video/televizne-noviny/14596_televizne-noviny'}]
+        self.categories_list = True
+
+from ta3 import TA3ContentProvider
+class TA3(ProviderTestCase):
+
+    def setUp(self):
+        self.provider_class = TA3ContentProvider
+        self.cp = self.provider_class()
+        self.list_urls=['#top1d#',
+                        '#catsp#',
+                        '#catpb#',
+                        '#search#category=196#archiv.html',
+                        '#search#date=12.2.2014#archiv.html',
+                        '#search#date=12.2.2014#archiv/publicistika.html']
+        self.list_paging = ['#search#date=12.2.2014#archiv.html']
+        self.resolve_items = [{'url':'clanok/1045842/debatu-pred-skotskym-referendom-vyhral-stupenec-samostatnosti.html'},
+                              {'url':'live.html'}]
         self.categories_list = True
 
