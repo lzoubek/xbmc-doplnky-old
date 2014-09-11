@@ -40,8 +40,8 @@ MENU_LISTING_ITER_RE= '<li id=\"(?P<id>[^\"]+)[^<]+<a href=\"(?P<url>[^\"]+)\">(
 
 PAGER_START = "<div class=\'wp-pagenavi\'>"
 PAGER_END = "</div>"
-PAGER_NEXT_RE = "<a class=\"nextpostslink\" href=\"(?P<url>[^\"]+)\"[^<]+</a>"
-PAGER_PREV_RE = "<a class=\"previouspostslink\" href=\"(?P<url>[^\"]+)\"[^<]+</a>"
+PAGER_NEXT_RE = "<a class=\"nextpostslink\"(?:.*?)href=\"(?P<url>[^\"]+)\"[^<]+</a>"
+PAGER_PREV_RE = "<a class=\"previouspostslink\"(?:.*?)href=\"(?P<url>[^\"]+)\"[^<]+</a>"
 
 class GordonUraContentProvider(ContentProvider):
 
