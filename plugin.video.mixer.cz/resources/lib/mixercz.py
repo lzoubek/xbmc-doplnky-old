@@ -224,12 +224,14 @@ class MixerczContentProvider(ContentProvider):
             self.error(str(e))
         else:
             for clip in data['clip']:
-                for video in clip['cdn_qualities']:
+                for video in clip['cdn2']:
+                    if video['format'] == "webm":
+                        continue
                     item = self.video_item()
                     ips = u", ".join([ip['name'] for ip in clip['interpreters']])
                     item['title'] = self.cptitle.format(ips, clip['title'])
                     item['surl'] = unicode(clip['id'])
-                    item['url'] = self.vurl.format(video['cdn_id'])
+                    item['url'] = video['url']
                     item['quality'] = video['quality']
                     resolved.append(item)
         resolved = sorted(resolved, key=lambda i:i['quality'])
