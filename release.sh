@@ -67,6 +67,7 @@ for addonFile in $addons ; do
     echo $(find $addon_id -type f | xargs md5sum | md5sum | tr -d -) > $BUILD_DIR/${addon_id}.md5
     git stash
     git checkout gh-pages
+    mkdir -p $PUBLISH_DIR/$addon_id/
     mv $target_dir/* $PUBLISH_DIR/$addon_id/
     mv tmp/${addon_id}.md5 hashes/$addon_id
     git add $PUBLISH_DIR/$addon_id
