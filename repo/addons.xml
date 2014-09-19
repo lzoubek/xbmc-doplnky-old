@@ -17,10 +17,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.5">
+<addon id="plugin.video.tv.sosac.ph" name="TV Sosáč" provider-name="Libor Zoubek" version="1.0.6">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.21" />
+    <import addon="script.module.stream.resolver" version="1.6.24" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -51,7 +51,7 @@
   </extension>
 </addon>
 
-<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.22">
+<addon id="script.module.stream.resolver" name="stream resolver" provider-name="Libor Zoubek" version="1.6.24">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.simplejson" version="2.0.10" />
@@ -85,10 +85,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.18">
+<addon id="plugin.video.befun.cz" name="befun.cz" provider-name="Libor Zoubek" version="1.0.19">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.22" />
+    <import addon="script.module.stream.resolver" version="1.6.23" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
@@ -236,6 +236,25 @@
     <summary lang="cs">videacasky.cz</summary>
     <description lang="en">Watch content from videacesky.cz</description>
     <description lang="cs">Sledujte videa, reklamy, seriály, články a návody ze servru videacesky.cz</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.ta3.com" name="ta3.com" provider-name="Maros Ondrasek" version="1.0.0">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.stream.resolver" version="1.6.22" />
+  </requires>
+  <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">ta3.com</summary>
+    <summary lang="cs">ta3.com</summary>
+    <summary lang="sk">ta3.com</summary>
+    <description lang="en">Watch online TV archive from ta3.com</description>
+    <description lang="cs">Sledujte online TV archiv zo serveru ta3.com</description>
+    <description lang="sk">Sledujte online TV archív zo serveru ta3.com</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -473,14 +492,14 @@
 </addon>
 
 <addon id="repository.xbmc.doplnky"
-  version="1.0.4"
+  version="1.0.5"
   name="XBMC Doplňky (CZ &amp; SK)"
   provider-name="Libor Zoubek">
   <extension point="xbmc.addon.repository"
     name="repozitář českých a slovenských doplňků">
-    <info compressed="false">http://lzoubek.github.io/xbmc-doplnky/repo/addons.xml</info>
-    <checksum>http://lzoubek.github.io/xbmc-doplnky/repo/addons.xml.md5</checksum>
-    <datadir zip="true">http://lzoubek.github.io/xbmc-doplnky/repo/</datadir>
+    <info compressed="false">http://kodi-czsk.github.io/repository/repo/addons.xml</info>
+    <checksum>http://kodi-czsk.github.io/repository/repo/addons.xml.md5</checksum>
+    <datadir zip="true">http://kodi-czsk.github.io/repository/repo/</datadir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>XBMC Doplňky (CZ &amp; SK)</summary>
