@@ -288,22 +288,19 @@ class JojContentProvider(ContentProvider):
         result = []
         item = item.copy()
         url = item['url']
-        pageid = None
-        try:
-            try:
-                httpdata = util.request(url)
-                basepath = re.search('basePath: "(.+?)"', httpdata).group(1)
-                videoid = re.search('videoId: "(.+?)"', httpdata).group(1)
-                pageid = re.search('pageId: "(.+?)"', httpdata).group(1)
-            except:
-                basepath = re.search('basePath=(.+?)&amp', httpdata).group(1)
-                basepath = re.sub('%3A', ':', basepath)
-                basepath = re.sub('%2F', '/', basepath)
-                videoid = re.search('videoId=(.+?)&amp', httpdata).group(1)
-            if pageid:
-                playlisturl = basepath + 'services/Video.php?clip=' + videoid + 'pageId=' + pageid
-            else:
-                playlisturl = basepath + 'services/Video.php?clip=' + videoid
+        if url.endswith('live.html'):
+            for quality in ['360','540','720']:
+                item = self.video_item()
+                item['quality'] = quality + 'p'
+                item['url'] = self.rtmp_url(fix_path(re.search('http://(\w+).joj.sk', url).group(1)) + '-' + quality, url)
+                result.append(item)
+        else:
+            data = util.request(url)
+            playerdata = re.search(r'<div\ class=\"jn-player\"(.+?)>',data).group(1)
+            pageid = re.search(r'data-pageid=[\'\"]([^\'\"]+)',playerdata).group(1) 
+            basepath = re.search(r'data-basepath=[\'\"]([^\'\"]+)',playerdata).group(1)
+	    videoid = re.search(r'data-id=[\'\"]([^\'\"]+)',playerdata).group(1)
+            playlisturl = basepath + 'services/Video.php?clip=' + videoid + 'pageId=' + pageid
             playlist = fromstring(util.request(playlisturl))
             balanceurl = basepath + 'balance.xml?nc=%d' % random.randint(1000, 9999)
             balance = fromstring(util.request(balanceurl))
@@ -313,12 +310,6 @@ class JojContentProvider(ContentProvider):
                 item['length'] = playlist.attrib.get('duration')
                 item['quality'] = video.attrib.get('quality')
                 item['url'] = self.rtmp_url(video.attrib.get('path'), playlist.attrib.get('url'), video.attrib.get('type'), balance)
-                result.append(item)
-        except Exception:
-            for quality in ['360', '540', '720']:
-                item = self.video_item()
-                item['quality'] = quality + 'p'
-                item['url'] = self.rtmp_url(fix_path(re.search('http://(\w+).joj.sk', url).group(1)) + '-' + quality, url)
                 result.append(item)
         result.reverse()
         return select_cb(result)
