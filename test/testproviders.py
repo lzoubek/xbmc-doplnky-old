@@ -181,7 +181,7 @@ class Markiza(ProviderTestCase):
     def setUp(self):
         self.provider_class = MarkizaContentProvider
         self.cp = self.provider_class()
-        self.list_urls=['video/televizne-noviny','/video/bez-servitky','#subcat#/video/hlas-cesko-slovenska']
+        self.list_urls=['video/televizne-noviny','/video/bez-servitky']
         self.resolve_items = [{'url':'http://videoarchiv.markiza.sk/video/televizne-noviny/14596_televizne-noviny'}]
         self.categories_list = True
 
