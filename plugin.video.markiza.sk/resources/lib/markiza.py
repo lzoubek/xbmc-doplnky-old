@@ -31,26 +31,24 @@ import util
 from provider import ContentProvider
 
 
-CATEGORIES_START = '<div class="col-left">'
-CATEGORIES_END = '<div class="col-middle">'
+CATEGORIES_START = '<div class="left-column">'
+CATEGORIES_END = '<div class="right-column">'
 CATEGORIES_ITER_RE = '<li class=\"(?P<type>[^\"]+)\">\s+<a href=\"(?P<url>[^\"]+)\" title=\"(?P<title>[^\"]+)\">.+?</a>\s*</li>'
 LISTING_START = CATEGORIES_END
 LISTING_END = '<div class="footer">'
 LISTING_ITER_RE = """
     <div\ class=\"item\">\s*
         <div\ class=\"image\">.+?<img.+?src=\"(?P<img>[^\"]+)\"\ />.+?</div>\s*
-        <div\ class=\"text\">\s*
-            <h2><a\ href=\"(?P<url>[^\"]+)\">(?P<title>[^<]+)</a></h2>\s*
-            <div\ class=\"info\">\s*
-                <div\ class=\"section\">.+?<a\ href=\"(?P<section_url>[^\"]+)\">(?P<section_title>[^<]+)</a></div>\s*
-                <div\ class=\"length\">.+?(?P<length>\d{2}:\d{2}:\d{2})</div>\s*
-                <div\ class=\"date\">.+?(?P<date>\d{1,2}[^<]+)</div>\s*
-            </div>
+        <div\ class=\"info\">\s*
+                <h2><a\ href=\"(?P<url>[^\"]+)\">(?P<title>[^<]+)</a></h2>\s*
+                <span\ class=\"date\">(?P<date>[^<]+)</span>\s*
+                <span\ class=\"length\">(?P<length>\d{2}:\d{2}:\d{2})?</span>.+?
+        </div>
 """
-PAGER_START = '<div class="paging">'
+PAGER_START = '<div class="paging-bar-section ">'
 PAGER_END = '</div>'
-PAGE_NEXT_RE = '<a\s+href=\"(?P<url>[^\"]+)\".+?id=\"video_list_fwd\">.+?</a>'
-PAGE_PREV_RE = '<a\s+href=\"(?P<url>[^\"]+)\".+?id=\"video_list_back\">.+?</a>'
+PAGE_NEXT_RE = '<a\s+href=\"(?P<url>[^\"]+)\".+?class=\"next\">.+?</a>'
+PAGE_PREV_RE = '<a\s+href=\"(?P<url>[^\"]+)\".+?class=\"prev\">.+?</a>'
 
 class MarkizaContentProvider(ContentProvider):
 
@@ -86,7 +84,7 @@ class MarkizaContentProvider(ContentProvider):
         data = util.request(self.base_url)
         data = util.substr(data, CATEGORIES_START, CATEGORIES_END)
         for m in re.finditer(CATEGORIES_ITER_RE, data, re.IGNORECASE | re.DOTALL):
-            if m.group('type').strip() == 'child':
+            if m.group('type').strip().startswith('child'):
                 continue
             item = self.dir_item()
             item['title'] = m.group('title')
@@ -102,7 +100,7 @@ class MarkizaContentProvider(ContentProvider):
         data = util.substr(page, CATEGORIES_START, CATEGORIES_END)
         data = util.substr(data, category_name, CATEGORIES_END)
         for m in re.finditer(CATEGORIES_ITER_RE, data, re.IGNORECASE | re.DOTALL):
-            if m.group('type').strip() != 'child':
+            if not m.group('type').strip().startswith('child'):
                 break
             item = self.dir_item()
             item['title'] = m.group('title')
