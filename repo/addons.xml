@@ -385,10 +385,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.markiza.sk" name="markiza.sk" provider-name="Maros Ondrasek" version="1.0.3">
+<addon id="plugin.video.markiza.sk" name="markiza.sk" provider-name="Maros Ondrasek" version="1.0.4">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.22" />
+    <import addon="script.module.stream.resolver" version="1.6.24" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
     <provides>video</provides>
