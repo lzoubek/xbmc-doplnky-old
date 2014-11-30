@@ -1,3 +1,6 @@
+[B]1.2.8:[/B]
+- #254 - ulozto: oprava prihlaseni
+- #262 - ulozto: oprava prehravani, vyhledavani
 [B]1.2.7:[/B]
 - #216 - opraveno nefunkční zobrazování captcha
 [B]1.2.5:[/B]
