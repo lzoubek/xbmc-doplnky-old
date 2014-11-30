@@ -259,10 +259,10 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.online-files" name="Soubory Online" provider-name="Libor Zoubek" version="1.2.7">
+<addon id="plugin.video.online-files" name="Soubory Online" provider-name="Libor Zoubek" version="1.2.8">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
-    <import addon="script.module.stream.resolver" version="1.6.16" />
+    <import addon="script.module.stream.resolver" version="1.6.24" />
     <import addon="script.module.elementtree" version="1.2.7" />
   </requires>
   <extension library="default.py" point="xbmc.python.pluginsource" provides="video">
